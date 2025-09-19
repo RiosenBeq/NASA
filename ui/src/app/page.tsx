@@ -100,20 +100,73 @@ export default function Home() {
 
   async function search(query?: string) {
     const qq = (query ?? q).trim();
-    if (!qq) return;
+    if (!qq) {
+      setError("Lütfen bir arama sorgusu girin.");
+      return;
+    }
+    
     setLoading(true);
     setError(null);
+    
     try {
       const params = new URLSearchParams({ q: qq });
-      if (year) { params.set("year_min", year); params.set("year_max", year); }
-      if (organism) params.set("organism", organism);
-      if (platform) params.set("platform", platform);
-      const res = await fetch(`${api}/search?${params.toString()}`);
-      if (!res.ok) throw new Error(`API hata: ${res.status}`);
+      
+      // Add filters with validation
+      if (year) {
+        const yearNum = parseInt(year);
+        if (isNaN(yearNum) || yearNum < 1950 || yearNum > 2030) {
+          throw new Error("Geçersiz yıl formatı (1950-2030 arası olmalı)");
+        }
+        params.set("year_min", year);
+        params.set("year_max", year);
+      }
+      
+      if (organism && organism.trim()) {
+        params.set("organism", organism.trim());
+      }
+      
+      if (platform && platform.trim()) {
+        params.set("platform", platform.trim());
+      }
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+      
+      const res = await fetch(`${api}/search?${params.toString()}`, {
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!res.ok) {
+        const errorText = await res.text().catch(() => 'Unknown error');
+        throw new Error(`API hatası (${res.status}): ${errorText}`);
+      }
+      
       const data = await res.json();
+      
+      if (!Array.isArray(data)) {
+        throw new Error("API'den geçersiz veri formatı alındı");
+      }
+      
       setItems(data);
+      console.log(`Arama tamamlandı: '${qq}' -> ${data.length} sonuç`);
+      
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Bilinmeyen hata";
+      let msg = "Bilinmeyen hata";
+      
+      if (e instanceof Error) {
+        if (e.name === 'AbortError') {
+          msg = "Arama zaman aşımına uğradı. Lütfen tekrar deneyin.";
+        } else {
+          msg = e.message;
+        }
+      }
+      
+      console.error("Arama hatası:", e);
       setError(msg);
       setItems([]);
     } finally {
@@ -165,8 +218,17 @@ export default function Home() {
   }
 
   useEffect(() => {
-    search("microgravity plant root growth");
-  }, [/* search intentionally not added to deps to avoid re-run */]);
+    // Initial search on component mount
+    const performInitialSearch = async () => {
+      try {
+        await search("microgravity plant root growth");
+      } catch (error) {
+        console.error("Initial search failed:", error);
+      }
+    };
+    
+    performInitialSearch();
+  }, []); // Empty dependency array for mount-only effect
 
   const skeletons = Array.from({ length: 5 }).map((_, i) => (
     <div key={`sk-${i}`} style={{ border: "1px solid #2A2E57", padding: 14, borderRadius: 12, background: "rgba(255,255,255,0.04)" }}>

@@ -1,0 +1,15 @@
+{
+  "integration_date": "2025-09-19T14:32:39.201438",
+  "total_publications_processed": 607,
+  "nasa_resources_found": {
+    "publications_with_osdr_matches": 0,
+    "publications_with_taskbook_matches": 0,
+    "total_osdr_studies_found": 0,
+    "total_taskbook_projects_found": 0
+  },
+  "data_files_created": [
+    "nasa_integration_results.json",
+    "osdr_matches.json",
+    "taskbook_matches.json"
+  ]
+}
