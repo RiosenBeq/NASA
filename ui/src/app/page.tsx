@@ -306,7 +306,7 @@ export default function Home() {
                      onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
                   >
                     {/* Corner brand badge */}
-                    <div style={{ position: "absolute", top: 10, right: 10, display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 999, background: "rgba(124,92,255,0.2)", border: "1px solid rgba(124,92,255,0.4)", backdropFilter: "blur(4px)" }}>
+                    <div style={{ position: "absolute", top: 10, right: 10, display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 999, background: "rgba(124,92,255,0.2)", border: "1px solid rgba(124,92,255,0.4)", backdropFilter: "blur(4px)", zIndex: 2 }}>
                       <Image src="/logo.png" alt="brand" width={14} height={14} />
                       <span style={{ fontSize: 11, letterSpacing: 0.3, color: "#E7CFFF", fontWeight: 800 }}>NextGenLAB</span>
                     </div>
@@ -315,7 +315,7 @@ export default function Home() {
                       <a href={it.url} target="_blank" rel="noreferrer" style={{ fontSize: 20, fontWeight: 900, color: "#EAF2FF", textDecoration: "none", lineHeight: 1.3 }}>
                         {it.title || it.url}
                       </a>
-                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center", position: "relative", zIndex: 1 }}>
                         <div title="Arama skoru: Sorgu ile yayın arasındaki semantik benzerlik (0-1). 1’e yakın = daha alakalı."
                              style={{ fontSize: 12, whiteSpace: "nowrap", cursor: "help", border: "1px solid rgba(255,255,255,0.25)", padding: "4px 8px", borderRadius: 10, background: "rgba(255,255,255,0.06)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)" }}>
                           Skor: <span style={{ fontWeight: 800 }}>{it.score.toFixed(3)}</span>
