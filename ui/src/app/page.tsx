@@ -305,11 +305,7 @@ export default function Home() {
                      onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-3px)")}
                      onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
                   >
-                    {/* Corner brand badge */}
-                    <div style={{ position: "absolute", top: 10, right: 10, display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 999, background: "rgba(124,92,255,0.2)", border: "1px solid rgba(124,92,255,0.4)", backdropFilter: "blur(4px)", zIndex: 2 }}>
-                      <Image src="/logo.png" alt="brand" width={14} height={14} />
-                      <span style={{ fontSize: 11, letterSpacing: 0.3, color: "#E7CFFF", fontWeight: 800 }}>NextGenLAB</span>
-                    </div>
+                    {/* Corner brand badge removed per request */}
 
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
                       <a href={it.url} target="_blank" rel="noreferrer" style={{ fontSize: 20, fontWeight: 900, color: "#EAF2FF", textDecoration: "none", lineHeight: 1.3 }}>

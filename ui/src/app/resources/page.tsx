@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default function ResourcesPage() {
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0B0E2C 0%, #1B1270 60%, #4C3FE1 100%)", color: "#EAF2FF" }}>
+    <div style={{ minHeight: "100vh", background: "radial-gradient(900px 520px at 20% -10%, rgba(124,92,255,0.22), transparent), radial-gradient(900px 520px at 100% 0%, rgba(34,197,94,0.12), transparent), linear-gradient(135deg, #0B0E2C 0%, #1B1270 60%, #4C3FE1 100%)", color: "#EAF2FF" }}>
       <header style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", position: "sticky", top: 0, backdropFilter: "saturate(120%) blur(6px)", background: "rgba(11,14,44,0.45)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -19,7 +19,7 @@ export default function ResourcesPage() {
       </header>
 
       <main style={{ maxWidth: 1100, margin: "24px auto", padding: 16 }}>
-        <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: 20 }}>
+        <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: 20, boxShadow: "0 12px 30px rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" }}>
           <h1 style={{ marginTop: 0, fontSize: 22, fontWeight: 900 }}>Resources</h1>
           <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7 }}>
             <li><a href="https://github.com/jgalazka/SB_publications/tree/main" target="_blank" rel="noreferrer" style={{ color: "#E7CFFF" }}>SB_publications</a> – 608 açık erişimli yayın listesi.</li>
