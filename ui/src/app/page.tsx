@@ -13,13 +13,13 @@ type Item = {
 
 const BRAND = {
   name: "NextGenLAB • Space Bio Explorer",
-  primary: "#0B0E2C",
-  secondary: "#4C3FE1",
-  accent: "#E7CFFF",
+  primary: "#0A0E2C", // deep space blue
+  secondary: "#5B4AE6", // nebula violet
+  accent: "#A6E1FF", // starlight cyan
   green: "#22C55E",
-  gradBtn: "linear-gradient(135deg, #4C3FE1 0%, #7C5CFF 50%, #22C55E 100%)",
-  gradChip: "linear-gradient(135deg, rgba(231,207,255,0.35) 0%, rgba(124,92,255,0.25) 100%)",
-  gradBorder: "linear-gradient(135deg, rgba(124,92,255,0.8), rgba(34,197,94,0.8))",
+  gradBtn: "linear-gradient(135deg, #5B4AE6 0%, #7C5CFF 50%, #23B5D3 100%)",
+  gradChip: "linear-gradient(135deg, rgba(166,225,255,0.35) 0%, rgba(124,92,255,0.25) 100%)",
+  gradBorder: "linear-gradient(135deg, rgba(124,92,255,0.85), rgba(35,181,211,0.85))",
 };
 
 export default function Home() {
