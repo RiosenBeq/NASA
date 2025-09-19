@@ -21,17 +21,17 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 _model = None
 
 # CORS
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://0.0.0.0:3000",
-]
+allow_origins_env = os.getenv("ALLOW_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://0.0.0.0:3000")
+if allow_origins_env.strip() == "*":
+    cors_kwargs = dict(allow_origins=["*"])
+else:
+    cors_kwargs = dict(allow_origins=[o.strip() for o in allow_origins_env.split(",") if o.strip()])
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    **cors_kwargs,
 )
 
 # Serve Knowledge Graph JSON directory as static (separate mount to avoid clashing with /kg API)
