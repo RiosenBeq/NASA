@@ -5,6 +5,7 @@ Klasor yapisi:
 - `data/` – CSV/PDF/JSON gibi ham/veri dosyalari
 - `services/` – Backend ve yardimci servisler
 - `frontend/` – React (dashboard) arayuzu
+- `ui/` – Next.js 15 uygulamasi (Vercel root burasi)
 
 Kaynaklar:
 - 608 yayin: https://github.com/jgalazka/SB_publications/tree/main
@@ -18,4 +19,7 @@ Plan (sirayla):
 3) FastAPI backend (arama + ChatGPT ile ozet)
 4) Frontend (React dashboard)
 
-Not: Bu repo su anda sadece klasor iskeleti ve bos dosyalar icermektedir.
+Durum:
+- Vercel icin monorepo root: `ui`
+- UI icinde serverless API endpoint’leri mevcut: `/api/health`, `/api/search`, `/api/summarize`, `/api/qa`
+- Backend icin Render blueprint: `render.yaml`
