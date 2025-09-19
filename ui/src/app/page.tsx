@@ -301,82 +301,64 @@ export default function Home() {
             {loading && skeletons}
             {!loading && items.map((it) => (
               <div key={it.id} style={{ position: "relative", borderRadius: 18, padding: 1, background: BRAND.gradBorder }}>
-                <div style={{ position: "relative", borderRadius: 16, padding: 18, background: "rgba(11,14,44,0.75)", boxShadow: "0 16px 40px rgba(0,0,0,0.45)", transition: "transform .18s ease, box-shadow .18s ease", border: "1px solid rgba(231,207,255,0.12)" }}
+                  <div style={{ position: "relative", borderRadius: 16, padding: 18, background: "linear-gradient(180deg, rgba(11,14,44,0.78) 0%, rgba(20,18,75,0.78) 60%, rgba(76,63,225,0.25) 100%)", boxShadow: "0 16px 40px rgba(0,0,0,0.55)", transition: "transform .18s ease, box-shadow .18s ease", border: "1px solid rgba(231,207,255,0.12)" }}
                      onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-3px)")}
                      onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
-                >
-                  {/* Corner brand badge */}
-                  <div style={{ position: "absolute", top: 10, right: 10, display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 999, background: "rgba(124,92,255,0.25)", border: "1px solid rgba(124,92,255,0.45)" }}>
-                    <Image src="/logo.png" alt="brand" width={14} height={14} />
-                    <span style={{ fontSize: 11, letterSpacing: 0.3, color: "#E7CFFF", fontWeight: 800 }}>NextGenLAB</span>
-                  </div>
+                  >
+                    {/* Corner brand badge */}
+                    <div style={{ position: "absolute", top: 10, right: 10, display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", borderRadius: 999, background: "rgba(124,92,255,0.2)", border: "1px solid rgba(124,92,255,0.4)", backdropFilter: "blur(4px)" }}>
+                      <Image src="/logo.png" alt="brand" width={14} height={14} />
+                      <span style={{ fontSize: 11, letterSpacing: 0.3, color: "#E7CFFF", fontWeight: 800 }}>NextGenLAB</span>
+                    </div>
 
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-                    <a href={it.url} target="_blank" rel="noreferrer" style={{ fontSize: 20, fontWeight: 900, color: "#EAF2FF", textDecoration: "none", lineHeight: 1.3 }}>
-                      {it.title || it.url}
-                    </a>
-                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                      <div title="Arama skoru: Sorgu ile yayın arasındaki semantik benzerlik (0-1). 1’e yakın = daha alakalı."
-                           style={{ fontSize: 12, whiteSpace: "nowrap", cursor: "help", border: "1px solid rgba(255,255,255,0.25)", padding: "4px 8px", borderRadius: 10, background: "rgba(255,255,255,0.06)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)" }}>
-                        Skor: <span style={{ fontWeight: 800 }}>{it.score.toFixed(3)}</span>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                      <a href={it.url} target="_blank" rel="noreferrer" style={{ fontSize: 20, fontWeight: 900, color: "#EAF2FF", textDecoration: "none", lineHeight: 1.3 }}>
+                        {it.title || it.url}
+                      </a>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <div title="Arama skoru: Sorgu ile yayın arasındaki semantik benzerlik (0-1). 1’e yakın = daha alakalı."
+                             style={{ fontSize: 12, whiteSpace: "nowrap", cursor: "help", border: "1px solid rgba(255,255,255,0.25)", padding: "4px 8px", borderRadius: 10, background: "rgba(255,255,255,0.06)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)" }}>
+                          Skor: <span style={{ fontWeight: 800 }}>{it.score.toFixed(3)}</span>
+                        </div>
+                        <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} style={{ padding: "8px 12px", borderRadius: 12, background: "linear-gradient(135deg, #7C5CFF 0%, #4C3FE1 60%, #22C55E 100%)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", fontSize: 12, fontWeight: 800, letterSpacing: 0.2 }}>
+                          {cardSummaries[it.id]?.loading ? T("summarizing") : (cardSummaries[it.id]?.text ? T("hide") : T("summarizeOne"))}
+                        </button>
                       </div>
-                      <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} style={{ padding: "8px 12px", borderRadius: 12, background: "linear-gradient(135deg, #7C5CFF 0%, #4C3FE1 60%, #22C55E 100%)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", fontSize: 12, fontWeight: 800, letterSpacing: 0.2 }}>
-                        {cardSummaries[it.id]?.loading ? T("summarizing") : (cardSummaries[it.id]?.text ? T("hide") : T("summarizeOne"))}
-                      </button>
                     </div>
-                  </div>
-                  {it.snippet && (
-                    <p style={{ marginTop: 8, color: "#D7DBFF", fontSize: 14, lineHeight: 1.6 }}>{it.snippet}</p>
-                  )}
-                  <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, fontSize: 12, background: "rgba(231,207,255,0.18)", border: "1px solid rgba(231,207,255,0.35)", color: "#E7CFFF" }}>
-                      <Image src="/logo.png" alt="mini" width={14} height={14} /> PMC
-                    </span>
-                    <a href={it.url} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: BRAND.accent }}>{T("source")}</a>
-                    <button onClick={() => navigator.clipboard.writeText(it.url)} style={{ fontSize: 13, color: BRAND.primary, background: BRAND.accent, border: "none", padding: "8px 12px", borderRadius: 10, fontWeight: 800, boxShadow: "0 6px 16px rgba(231,207,255,0.25)" }}>{T("copy")}</button>
-                    {/* Resource Buttons from provided sources only */}
-                    <a
-                      href={`https://osdr.nasa.gov/bio/repo/search?q=${encodeURIComponent(it.url || it.title || "")}&data_source=cgene,alsda,esa&data_type=study`}
-                      target="_blank" rel="noreferrer"
-                      style={{ fontSize: 12, color: "#fff", background: "rgba(124,92,255,0.35)", border: "1px solid rgba(124,92,255,0.55)", padding: "6px 10px", borderRadius: 10, backdropFilter: "blur(4px)" }}
-                    >OSDR</a>
-                    <a
-                      href={`https://extapps.ksc.nasa.gov/NSLSL/Search?q=${encodeURIComponent(it.url || it.title || "")}`}
-                      target="_blank" rel="noreferrer"
-                      style={{ fontSize: 12, color: "#fff", background: "rgba(124,92,255,0.35)", border: "1px solid rgba(124,92,255,0.55)", padding: "6px 10px", borderRadius: 10, backdropFilter: "blur(4px)" }}
-                    >NSLSL</a>
-                    <a
-                      href="https://taskbook.nasaprs.com/tbp/welcome.cfm"
-                      target="_blank" rel="noreferrer"
-                      style={{ fontSize: 12, color: "#fff", background: "rgba(124,92,255,0.35)", border: "1px solid rgba(124,92,255,0.55)", padding: "6px 10px", borderRadius: 10, backdropFilter: "blur(4px)" }}
-                    >Task Book</a>
-                  </div>
-                  {cardSummaries[it.id]?.text && (
-                    <div style={{ marginTop: 10, padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", whiteSpace: "pre-wrap" }}>
-                      {cardSummaries[it.id].text}
+                    {it.snippet && (
+                      <p style={{ marginTop: 8, color: "#D7DBFF", fontSize: 14, lineHeight: 1.6 }}>{it.snippet}</p>
+                    )}
+                    <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, fontSize: 12, background: "rgba(231,207,255,0.18)", border: "1px solid rgba(231,207,255,0.35)", color: "#E7CFFF" }}>
+                        <Image src="/logo.png" alt="mini" width={14} height={14} /> PMC
+                      </span>
+                      <a href={it.url} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: BRAND.accent }}>{T("source")}</a>
+                      <button onClick={() => navigator.clipboard.writeText(it.url)} style={{ fontSize: 13, color: BRAND.primary, background: BRAND.accent, border: "none", padding: "8px 12px", borderRadius: 10, fontWeight: 800, boxShadow: "0 6px 16px rgba(231,207,255,0.25)" }}>{T("copy")}</button>
+                      {/* Resource Buttons */}
+                      <a href={`https://osdr.nasa.gov/bio/repo/search?q=${encodeURIComponent(it.url || it.title || "")}&data_source=cgene,alsda,esa&data_type=study`} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#fff", background: "rgba(124,92,255,0.35)", border: "1px solid rgba(124,92,255,0.55)", padding: "6px 10px", borderRadius: 10, backdropFilter: "blur(4px)" }}>OSDR</a>
+                      <a href={`https://extapps.ksc.nasa.gov/NSLSL/Search?q=${encodeURIComponent(it.url || it.title || "")}`} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#fff", background: "rgba(124,92,255,0.35)", border: "1px solid rgba(124,92,255,0.55)", padding: "6px 10px", borderRadius: 10, backdropFilter: "blur(4px)" }}>NSLSL</a>
+                      <a href="https://taskbook.nasaprs.com/tbp/welcome.cfm" target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#fff", background: "rgba(124,92,255,0.35)", border: "1px solid rgba(124,92,255,0.55)", padding: "6px 10px", borderRadius: 10, backdropFilter: "blur(4px)" }}>Task Book</a>
                     </div>
-                  )}
-                  {/* Q&A */}
-                  <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
-                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                      <input
-                        value={cardQA[it.id]?.q || ""}
-                        onChange={(e)=> setCardQA((p)=> ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))}
-                        placeholder={lang==='tr'? 'Bu yayın hakkında soru sorun' : 'Ask a question about this article'}
-                        style={{ flex: 1, padding: 10, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 10, background: "rgba(10,14,44,0.5)", color: "#fff" }}
-                      />
-                      <button onClick={()=> askQA(it.id)} disabled={cardQA[it.id]?.loading}
-                              style={{ padding: "8px 12px", borderRadius: 10, background: "linear-gradient(135deg, #22C55E 0%, #4C3FE1 100%)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", fontWeight: 700, fontSize: 12 }}>
-                        {cardQA[it.id]?.loading ? (lang==='tr'? 'Cevaplanıyor…' : 'Answering…') : (lang==='tr'? 'Sor' : 'Ask')}
-                      </button>
-                    </div>
-                    {cardQA[it.id]?.a && (
-                      <div style={{ padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", whiteSpace: "pre-wrap", fontSize: 14 }}>
-                        {cardQA[it.id]?.a}
+                    {cardSummaries[it.id]?.text && (
+                      <div style={{ marginTop: 10, padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", whiteSpace: "pre-wrap" }}>
+                        {cardSummaries[it.id].text}
                       </div>
                     )}
+                    {/* Q&A */}
+                    <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
+                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <input value={cardQA[it.id]?.q || ""} onChange={(e)=> setCardQA((p)=> ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} placeholder={lang==='tr'? 'Bu yayın hakkında soru sorun' : 'Ask a question about this article'} style={{ flex: 1, padding: 10, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 10, background: "rgba(10,14,44,0.5)", color: "#fff" }} />
+                        <button onClick={()=> askQA(it.id)} disabled={cardQA[it.id]?.loading} style={{ padding: "8px 12px", borderRadius: 10, background: "linear-gradient(135deg, #22C55E 0%, #4C3FE1 100%)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", fontWeight: 700, fontSize: 12 }}>
+                          {cardQA[it.id]?.loading ? (lang==='tr'? 'Cevaplanıyor…' : 'Answering…') : (lang==='tr'? 'Sor' : 'Ask')}
+                        </button>
+                      </div>
+                      {cardQA[it.id]?.a && (
+                        <div style={{ padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", whiteSpace: "pre-wrap", fontSize: 14 }}>
+                          {cardQA[it.id]?.a}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
               </div>
             ))}
             {!loading && items.length === 0 && !error && (

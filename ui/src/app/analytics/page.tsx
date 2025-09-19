@@ -10,7 +10,8 @@ type KgStats = {
 };
 
 export default function AnalyticsPage() {
-  const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+  const apiEnv = process.env.NEXT_PUBLIC_API_URL || "";
+  const api = apiEnv.trim() ? apiEnv : ""; // empty => use local API
   const [stats, setStats] = useState<KgStats | null>(null);
   const [years, setYears] = useState<Record<string, number> | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -18,9 +19,10 @@ export default function AnalyticsPage() {
   useEffect(() => {
     async function load() {
       try {
+        const base = api || "";
         const [s, y] = await Promise.all([
-          fetch(`${api}/kg/stats`).then((r) => r.json()),
-          fetch(`${api}/kg/year_counts`).then((r) => r.json()),
+          fetch(`${base}/api/kg/stats`).then((r) => r.json()).catch(async () => fetch(`/api/kg/stats`).then(r=>r.json())),
+          fetch(`${base}/api/kg/year_counts`).then((r) => r.json()).catch(async () => fetch(`/api/kg/year_counts`).then(r=>r.json())),
         ]);
         setStats(s);
         setYears(y?.data || null);
@@ -46,7 +48,7 @@ export default function AnalyticsPage() {
   }, [years]);
 
   return (
-    <div style={{ minHeight: "100vh", background: "linear-gradient(135deg, #0B0E2C 0%, #1B1270 60%, #4C3FE1 100%)", color: "#EAF2FF" }}>
+    <div style={{ minHeight: "100vh", background: "radial-gradient(1000px 600px at 20% -10%, rgba(124,92,255,0.25), transparent), radial-gradient(900px 500px at 100% 0%, rgba(34,197,94,0.12), transparent), linear-gradient(135deg, #0B0E2C 0%, #1B1270 60%, #4C3FE1 100%)", color: "#EAF2FF" }}>
       <header style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", position: "sticky", top: 0, backdropFilter: "saturate(120%) blur(6px)", background: "rgba(11,14,44,0.45)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ fontWeight: 900, letterSpacing: 0.3, fontSize: 18 }}>Analytics • Knowledge Graph</div>
@@ -84,7 +86,7 @@ export default function AnalyticsPage() {
           <div style={panelStyle}>
             <h3 style={h3}>Node Types</h3>
             {nodeTypeEntries.length === 0 ? (
-              <div>Loading…</div>
+              <div style={loadingStyle}>Loading…</div>
             ) : (
               <PieChart data={nodeTypeEntries} colors={["#4C3FE1", "#22C55E", "#E7CFFF", "#FFC107", "#FF5722", "#7C5CFF"]} />
             )}
@@ -92,7 +94,7 @@ export default function AnalyticsPage() {
           <div style={panelStyle}>
             <h3 style={h3}>Edge Relations</h3>
             {edgeRelEntries.length === 0 ? (
-              <div>Loading…</div>
+              <div style={loadingStyle}>Loading…</div>
             ) : (
               <BarChart data={edgeRelEntries} color="#7C5CFF" />
             )}
@@ -103,7 +105,7 @@ export default function AnalyticsPage() {
         <section style={panelStyle}>
           <h3 style={h3}>Timeline (Publications by Year)</h3>
           {yearEntries.length === 0 ? (
-            <div>Loading…</div>
+            <div style={loadingStyle}>Loading…</div>
           ) : (
             <LineChart data={yearEntries} color="#22C55E" />
           )}
@@ -119,14 +121,17 @@ const cardStyle: React.CSSProperties = {
   borderRadius: 16,
   padding: 16,
   textAlign: "center",
+  boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+  backdropFilter: "blur(4px)",
 };
 const cardTitle: React.CSSProperties = { fontSize: 12, opacity: 0.9 };
 const bigNum: React.CSSProperties = { fontSize: 28, fontWeight: 900, marginTop: 6 };
-const panelStyle: React.CSSProperties = { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: 16 };
+const panelStyle: React.CSSProperties = { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: 16, boxShadow: "0 10px 30px rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" };
 const h3: React.CSSProperties = { marginTop: 0, fontSize: 16, fontWeight: 800 };
+const loadingStyle: React.CSSProperties = { padding: 12, opacity: 0.85 };
 
 function PieChart({ data, colors }: { data: [string, number][]; colors: string[] }) {
-  const total = data.reduce((s, [, v]) => s + v, 0) || 1;
+  const total = data.reduce((sum, [, v]) => sum + v, 0) || 1;
   const size = 240;
   const radius = size / 2;
   let angle = 0;
@@ -198,12 +203,9 @@ function LineChart({ data, color }: { data: [string, number][]; color: string })
   const points = xs.map((x, i) => `${xScale(x)},${yScale(ys[i])}`).join(" ");
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-      {/* axes */}
       <line x1={padding} y1={height - padding} x2={width - padding} y2={height - padding} stroke="#A7B0FF" strokeOpacity={0.4} />
       <line x1={padding} y1={padding} x2={padding} y2={height - padding} stroke="#A7B0FF" strokeOpacity={0.4} />
-      {/* path */}
       <polyline fill="none" stroke={color} strokeWidth={2.5} points={points} />
-      {/* dots + labels */}
       {xs.map((x, i) => (
         <g key={x}>
           <circle cx={xScale(x)} cy={yScale(ys[i])} r={3} fill={color} />
