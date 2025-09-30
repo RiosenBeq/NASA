@@ -151,7 +151,8 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           nodeSpacing: 50,
           edgeLength: 100,
           randomize: false
-        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any,
         minZoom: 0.3,
         maxZoom: 3,
         wheelSensitivity: 0.2
