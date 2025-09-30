@@ -338,17 +338,17 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           <div className="text-sm text-gray-300">
             {selectedInfo.type === 'node' ? (
               <>
-                <p><strong>Label:</strong> {selectedInfo.data.label}</p>
-                <p><strong>Type:</strong> {selectedInfo.data.type}</p>
-                {selectedInfo.data.id && (
-                  <p><strong>ID:</strong> {selectedInfo.data.id}</p>
+                <p><strong>Label:</strong> {(selectedInfo.data as NodeData).label}</p>
+                <p><strong>Type:</strong> {(selectedInfo.data as NodeData).type}</p>
+                {(selectedInfo.data as NodeData).id && (
+                  <p><strong>ID:</strong> {(selectedInfo.data as NodeData).id}</p>
                 )}
               </>
             ) : (
               <>
-                <p><strong>Relation:</strong> {selectedInfo.data.relation}</p>
-                <p><strong>From:</strong> {selectedInfo.data.source}</p>
-                <p><strong>To:</strong> {selectedInfo.data.target}</p>
+                <p><strong>Relation:</strong> {(selectedInfo.data as EdgeData).relation}</p>
+                <p><strong>From:</strong> {(selectedInfo.data as EdgeData).source}</p>
+                <p><strong>To:</strong> {(selectedInfo.data as EdgeData).target}</p>
               </>
             )}
           </div>
