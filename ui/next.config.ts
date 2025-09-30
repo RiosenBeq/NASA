@@ -1,16 +1,23 @@
 import type { NextConfig } from "next";
 
-const backend = process.env.NEXT_PUBLIC_API_URL;
-
 const nextConfig: NextConfig = {
-  async rewrites() {
-    if (!backend) return [];
-    return [
+  // Optimize production build
+  compress: true,
+  poweredByHeader: false,
+  
+  // Image optimization
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
       {
-        source: "/api/:path*",
-        destination: `${backend}/:path*`,
+        protocol: 'https',
+        hostname: 'www.ncbi.nlm.nih.gov',
       },
-    ];
+      {
+        protocol: 'https',
+        hostname: 'raw.githubusercontent.com',
+      },
+    ],
   },
 };
 

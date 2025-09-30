@@ -1,9 +1,6 @@
 {
-  "version": 2,
-  "builds": [
-    { "src": "ui/package.json", "use": "@vercel/next" }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "ui/$1" }
-  ]
+  "buildCommand": "cd ui && npm run build",
+  "outputDirectory": "ui/.next",
+  "framework": "nextjs",
+  "installCommand": "cd ui && npm install"
 }
