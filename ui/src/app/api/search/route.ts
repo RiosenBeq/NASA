@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
   const res = await fetch(CSV_URL);
   const csv = await res.text();
   const lines = csv.split(/\r?\n/).filter(Boolean);
-  const header = lines.shift();
+  lines.shift(); // Remove header
   const items: { id: number; title: string; url: string }[] = [];
   lines.forEach((line, idx) => {
     // Simple CSV split (Title,Link) – titles may contain commas; handle quotes

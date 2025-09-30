@@ -308,7 +308,7 @@ export default function ScientistDashboard() {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'trends' | 'gaps' | 'consensus' | 'kg')}
                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   activeTab === tab.id
                     ? 'bg-blue-600 text-white'

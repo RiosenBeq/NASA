@@ -1,28 +1,39 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
-import cytoscape, { Core, EdgeSingular, NodeSingular } from 'cytoscape';
+import cytoscape, { Core, NodeSingular } from 'cytoscape';
 import cola from 'cytoscape-cola';
 
 // Register the cola layout
 cytoscape.use(cola);
 
+interface NodeData {
+  id: string;
+  label: string;
+  type: string;
+  properties?: Record<string, string | number | boolean>;
+}
+
+interface EdgeData {
+  source: string;
+  target: string;
+  relation: string;
+  properties?: Record<string, string | number | boolean>;
+}
+
+interface GraphData {
+  nodes: NodeData[];
+  edges: EdgeData[];
+}
+
+interface SelectedInfo {
+  type: 'node' | 'edge';
+  data: NodeData | EdgeData;
+}
+
 interface KnowledgeGraphProps {
-  data?: {
-    nodes: Array<{
-      id: string;
-      label: string;
-      type: string;
-      properties?: Record<string, any>;
-    }>;
-    edges: Array<{
-      source: string;
-      target: string;
-      relation: string;
-      properties?: Record<string, any>;
-    }>;
-  };
-  onNodeSelect?: (node: any) => void;
-  onEdgeSelect?: (edge: any) => void;
+  data?: GraphData;
+  onNodeSelect?: (node: NodeData) => void;
+  onEdgeSelect?: (edge: EdgeData) => void;
 }
 
 const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ 
@@ -34,7 +45,7 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
   const [cy, setCy] = useState<Core | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedInfo, setSelectedInfo] = useState<any>(null);
+  const [selectedInfo, setSelectedInfo] = useState<SelectedInfo | null>(null);
 
   // Color scheme for different node types
   const nodeColors = {
@@ -47,13 +58,13 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
     'default': '#6B7280'
   };
 
-  const initializeCytoscape = (graphData: any) => {
+  const initializeCytoscape = (graphData: GraphData) => {
     if (!containerRef.current || !graphData) return;
 
     try {
       // Convert data to Cytoscape format
       const elements = [
-        ...graphData.nodes.map((node: any) => ({
+        ...graphData.nodes.map((node: NodeData) => ({
           data: {
             id: node.id,
             label: node.label,
@@ -61,7 +72,7 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
             ...node.properties
           }
         })),
-        ...graphData.edges.map((edge: any) => ({
+        ...graphData.edges.map((edge: EdgeData) => ({
           data: {
             source: edge.source,
             target: edge.target,
@@ -140,7 +151,7 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
           nodeSpacing: 50,
           edgeLength: 100,
           randomize: false
-        } as any,
+        },
         minZoom: 0.3,
         maxZoom: 3,
         wheelSensitivity: 0.2
@@ -212,6 +223,7 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   useEffect(() => {

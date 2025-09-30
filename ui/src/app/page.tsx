@@ -228,6 +228,7 @@ export default function Home() {
     };
     
     performInitialSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty dependency array for mount-only effect
 
   const skeletons = Array.from({ length: 5 }).map((_, i) => (
