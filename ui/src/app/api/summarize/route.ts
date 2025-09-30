@@ -1,29 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => ({}));
-  const ids: number[] = body?.ids || [];
-  const persona: string | null = body?.persona || null;
-  const section: string | null = body?.section_priority || null;
+  try {
+    const body = await req.json().catch(() => ({}));
+    
+    // Backend API URL'ini al (environment variable veya default)
+    const backendUrl = process.env.BACKEND_API_URL || "http://localhost:8003";
+    
+    // Backend'e proxy yap
+    const response = await fetch(`${backendUrl}/summarize`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
 
-  const citations = ids.map((id) => `https://www.ncbi.nlm.nih.gov/pmc/articles/PMC${String(id).padStart(6, "0")}/`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      return NextResponse.json(
+        { summary: `Backend hatası: ${errorText}`, citations: [], titles: [] },
+        { status: response.status }
+      );
+    }
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ summary: "OpenAI anahtarı yok. Özet mock döndü.", citations, titles: [] });
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("Summarize proxy error:", error);
+    return NextResponse.json(
+      { 
+        summary: `Özet oluşturulamadı: ${error instanceof Error ? error.message : "Bilinmeyen hata"}`, 
+        citations: [], 
+        titles: [] 
+      },
+      { status: 500 }
+    );
   }
-
-  const client = new OpenAI({ apiKey });
-  const prompt = `Summarize NASA bioscience studies results-first. Persona=${persona || ""} Section=${section || "results"}. IDs: ${ids.join(", ")}`;
-  const msg = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.2,
-  });
-  const summary = msg.choices?.[0]?.message?.content || "";
-  return NextResponse.json({ summary, citations, titles: [] });
 }

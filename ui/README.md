@@ -2,7 +2,20 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Environment Variables
+
+Create a `.env.local` file in the `ui/` directory with the following content:
+
+```env
+# Backend API URL for summarize and QA endpoints
+BACKEND_API_URL=http://localhost:8003
+```
+
+If you're deploying to production, set the `BACKEND_API_URL` environment variable to point to your backend API.
+
+### Running the Development Server
+
+First, make sure the backend API is running on port 8003, then run the development server:
 
 ```bash
 npm run dev

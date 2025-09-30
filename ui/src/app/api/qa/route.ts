@@ -1,28 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => ({}));
-  const id: number = body?.id;
-  const question: string = body?.question || "";
-  const persona: string | null = body?.persona || null;
-  const url = `https://www.ncbi.nlm.nih.gov/pmc/articles/PMC${String(id || 1).padStart(6, "0")}/`;
+  try {
+    const body = await req.json().catch(() => ({}));
+    
+    // Backend API URL'ini al (environment variable veya default)
+    const backendUrl = process.env.BACKEND_API_URL || "http://localhost:8003";
+    
+    // Backend'e proxy yap
+    const response = await fetch(`${backendUrl}/qa`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return NextResponse.json({ answer: "OpenAI anahtarı yok. Bu bir mock cevaptır.", citations: [url] });
+    if (!response.ok) {
+      const errorText = await response.text();
+      return NextResponse.json(
+        { answer: `Backend hatası: ${errorText}`, citations: [] },
+        { status: response.status }
+      );
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error("QA proxy error:", error);
+    return NextResponse.json(
+      { 
+        answer: `Soru cevaplanamadı: ${error instanceof Error ? error.message : "Bilinmeyen hata"}`, 
+        citations: [] 
+      },
+      { status: 500 }
+    );
   }
-
-  const client = new OpenAI({ apiKey });
-  const prompt = `NASA space bioscience Q&A. Persona=${persona || ""}. Use concise, cited bullets. ID=${id}. Q=${question}`;
-  const msg = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0.2,
-  });
-  const answer = msg.choices?.[0]?.message?.content || "";
-  return NextResponse.json({ answer, citations: [url] });
 }
