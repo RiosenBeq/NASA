@@ -1,0 +1,2 @@
+# Vercel ignore file
+# These files are large but needed for runtime, so we don't ignore them
