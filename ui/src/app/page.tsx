@@ -11,17 +11,6 @@ type Item = {
   snippet?: string | null;
 };
 
-const BRAND = {
-  name: "NextGenLAB • Space Bio Explorer",
-  primary: "#0A0E2C", // deep space blue
-  secondary: "#5B4AE6", // nebula violet
-  accent: "#A6E1FF", // starlight cyan
-  green: "#22C55E",
-  gradBtn: "linear-gradient(135deg, #5B4AE6 0%, #7C5CFF 50%, #23B5D3 100%)",
-  gradChip: "linear-gradient(135deg, rgba(166,225,255,0.35) 0%, rgba(124,92,255,0.25) 100%)",
-  gradBorder: "linear-gradient(135deg, rgba(124,92,255,0.85), rgba(35,181,211,0.85))",
-};
-
 export default function Home() {
   const [q, setQ] = useState("microgravity plant root growth");
   const [items, setItems] = useState<Item[]>([]);
@@ -41,60 +30,46 @@ export default function Home() {
 
   const T = (key: string) => {
     const tr: Record<string, string> = {
-      title: "NASA Biyobilim Arama",
-      subtitle: "Başlıklara ve Abstract'lere göre semantik arama. Results'a öncelik, kaynaklı ve izlenebilir özetler.",
-      search: "Ara",
-      queryPlaceholder: "Sorgu yazın",
-      year: "Yıl (örn. 2018)",
-      organism: "Organizma (Plant/Rodent/Human)",
-      platform: "Platform (ISS/Shuttle)",
+      title: "NASA Uzay Biyobilim Keşif Platformu",
+      subtitle: "Yapay zeka destekli semantik arama • 608 yayın • Gerçek zamanlı özetler",
+      search: "🚀 Ara",
+      queryPlaceholder: "Uzay biyolojisi araştırmanızı yazın...",
+      year: "Yıl",
+      organism: "Organizma",
+      platform: "Platform",
       clear: "Temizle",
-      noResult: "Sonuç bulunamadı. Farklı bir sorgu deneyin.",
-      copy: "Linki Kopyala",
-      source: "PMC Kaynağı",
-      howTitle: "Nasıl arama yapılır?",
-      howText1: "1) Doğal dil kullanın: 'microgravity plant root growth'.",
-      howText2: "2) Filtreleyin: yıl/organizma/platform alanlarını kullanın.",
-      howText3: "3) Karttaki 'Özetle' ile kaynaklı kısa özet alın.",
-      featTitle: "Özellikler",
-      feat1: "Semantik arama (başlık + abstract)",
-      feat2: "Kaynaklı ve izlenebilir özet",
-      feat3: "Filtreler ve skor bazlı sıralama",
-      feat4: "Uzay temalı modern arayüz",
-      summarizeOne: "Özetle",
+      noResult: "Sonuç bulunamadı. Farklı anahtar kelimeler deneyin.",
+      copy: "Kopyala",
+      source: "Kaynak",
+      summarizeOne: "✨ Özetle",
       hide: "Gizle",
-      summarizing: "Özetleniyor...",
+      summarizing: "🔮 Analiz ediliyor...",
+      askQuestion: "Soru Sor",
+      asking: "Yanıtlanıyor...",
     };
     const en: Record<string, string> = {
-      title: "NASA Bioscience Search",
-      subtitle: "Semantic search over Titles & Abstracts. Results-first, cited and traceable summaries.",
-      search: "Search",
-      queryPlaceholder: "Type your query",
-      year: "Year (e.g., 2018)",
-      organism: "Organism (Plant/Rodent/Human)",
-      platform: "Platform (ISS/Shuttle)",
+      title: "NASA Space Bioscience Explorer",
+      subtitle: "AI-powered semantic search • 608 publications • Real-time summaries",
+      search: "🚀 Search",
+      queryPlaceholder: "Search space biology research...",
+      year: "Year",
+      organism: "Organism",
+      platform: "Platform",
       clear: "Clear",
-      noResult: "No results. Try a different query.",
-      copy: "Copy Link",
-      source: "PMC Source",
-      howTitle: "How to search?",
-      howText1: "1) Use natural language: 'microgravity plant root growth'.",
-      howText2: "2) Narrow down with year/organism/platform filters.",
-      howText3: "3) Use card 'Summarize' for a cited short summary.",
-      featTitle: "Features",
-      feat1: "Semantic search (title + abstract)",
-      feat2: "Cited, traceable summary",
-      feat3: "Filters and score-based ranking",
-      feat4: "Modern space-themed UI",
-      summarizeOne: "Summarize",
+      noResult: "No results found. Try different keywords.",
+      copy: "Copy",
+      source: "Source",
+      summarizeOne: "✨ Summarize",
       hide: "Hide",
-      summarizing: "Summarizing...",
+      summarizing: "🔮 Analyzing...",
+      askQuestion: "Ask",
+      asking: "Answering...",
     };
     return (lang === "tr" ? tr : en)[key] || key;
   };
 
   const filtersActive = useMemo(() => {
-    const tags = [year && `Year:${year}`, organism && `Org:${organism}`, platform && `Plat:${platform}`].filter(Boolean) as string[];
+    const tags = [year && `${year}`, organism && organism, platform && platform].filter(Boolean) as string[];
     return tags;
   }, [year, organism, platform]);
 
@@ -111,7 +86,6 @@ export default function Home() {
     try {
       const params = new URLSearchParams({ q: qq });
       
-      // Add filters with validation
       if (year) {
         const yearNum = parseInt(year);
         if (isNaN(yearNum) || yearNum < 1950 || yearNum > 2030) {
@@ -130,13 +104,11 @@ export default function Home() {
       }
       
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
       
       const res = await fetch(`${api}/search?${params.toString()}`, {
         signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-        }
+        headers: { 'Content-Type': 'application/json' }
       });
       
       clearTimeout(timeoutId);
@@ -153,14 +125,12 @@ export default function Home() {
       }
       
       setItems(data);
-      console.log(`Arama tamamlandı: '${qq}' -> ${data.length} sonuç`);
-      
     } catch (e: unknown) {
       let msg = "Bilinmeyen hata";
       
       if (e instanceof Error) {
         if (e.name === 'AbortError') {
-          msg = "Arama zaman aşımına uğradı. Lütfen tekrar deneyin.";
+          msg = "Arama zaman aşımına uğradı.";
         } else {
           msg = e.message;
         }
@@ -175,7 +145,6 @@ export default function Home() {
   }
 
   async function summarizeOne(id: number) {
-    // Toggle: açık ise gizle
     const current = cardSummaries[id];
     if (current && !current.loading && current.text) {
       setCardSummaries((p) => ({ ...p, [id]: { text: "", loading: false } }));
@@ -189,7 +158,7 @@ export default function Home() {
         body: JSON.stringify({ ids: [id], persona: persona || null, section_priority: sectionPriority || null }),
       });
       const data = await res.json();
-      const text = res.ok && data.summary ? data.summary + (data.citations?.length ? "\n\nCitations:\n" + data.citations.join("\n") : "") : (data?.summary || "");
+      const text = res.ok && data.summary ? data.summary + (data.citations?.length ? "\n\n📚 Kaynaklar:\n" + data.citations.join("\n") : "") : (data?.summary || "");
       setCardSummaries((p) => ({ ...p, [id]: { text, loading: false } }));
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "";
@@ -218,7 +187,6 @@ export default function Home() {
   }
 
   useEffect(() => {
-    // Initial search on component mount
     const performInitialSearch = async () => {
       try {
         await search("microgravity plant root growth");
@@ -226,217 +194,222 @@ export default function Home() {
         console.error("Initial search failed:", error);
       }
     };
-    
     performInitialSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array for mount-only effect
-
-  const skeletons = Array.from({ length: 5 }).map((_, i) => (
-    <div key={`sk-${i}`} style={{ border: "1px solid #2A2E57", padding: 14, borderRadius: 12, background: "rgba(255,255,255,0.04)" }}>
-      <div style={{ height: 16, width: "60%", background: "#2E3166", borderRadius: 6 }} />
-      <div style={{ height: 12, width: "80%", background: "#242856", borderRadius: 6, marginTop: 8 }} />
-      <div style={{ height: 12, width: "40%", background: "#242856", borderRadius: 6, marginTop: 8 }} />
-    </div>
-  ));
-
-  
+  }, []);
 
   return (
-    <div style={{ minHeight: "100vh", position: "relative", background: "linear-gradient(135deg, #0B0E2C 0%, #1B1270 60%, #4C3FE1 100%)", color: "#EAF2FF" }}>
-      {/* Watermark Logo */}
-      <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" }}>
-        <div style={{ position: "absolute", right: -80, top: -40, opacity: 0.08, transform: "rotate(-8deg)" }}>
-          <Image src="/logo.png" alt="logo-bg" width={420} height={420} />
-        </div>
+    <>
+      {/* Uzay Arka Plan Efektleri */}
+      <div className="space-background" />
+      <div className="stars stars-layer-1" />
+      <div className="stars stars-layer-2" />
+      <div className="stars stars-layer-3" />
+      <div className="nebula">
+        <div className="nebula-glow-1" />
+        <div className="nebula-glow-2" />
+        <div className="nebula-glow-3" />
       </div>
 
-      {/* Header */}
-      <header style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", position: "sticky", top: 0, backdropFilter: "saturate(120%) blur(6px)", background: "rgba(11,14,44,0.45)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <Image src="/logo.png" alt="logo" width={56} height={56} priority />
-            <div style={{ fontWeight: 900, letterSpacing: 0.3, fontSize: 18 }}>{BRAND.name}</div>
-          </div>
-          <nav style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <Link href="/guidelines" style={{ color: "#EAF2FF", textDecoration: "none", fontSize: 14 }}>Guidelines</Link>
-            <Link href="/resources" style={{ color: "#EAF2FF", textDecoration: "none", fontSize: 14 }}>Resources</Link>
-            <Link href="/analytics" style={{ color: "#EAF2FF", textDecoration: "none", fontSize: 14 }}>Analytics</Link>
-          </nav>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: 12 }}>
-            <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ background: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 10, padding: "8px 12px" }}>
-              <option value="tr">Türkçe</option>
-              <option value="en">English</option>
-            </select>
-            <select value={persona} onChange={(e)=> setPersona(e.target.value as "scientist" | "manager" | "architect" | "")} title="Persona"
-                    style={{ background: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 10, padding: "8px 12px" }}>
-              <option value="">Persona</option>
-              <option value="scientist">Scientist</option>
-              <option value="manager">Manager</option>
-              <option value="architect">Mission Architect</option>
-            </select>
-            <select value={sectionPriority} onChange={(e)=> setSectionPriority(e.target.value as "results" | "discussion" | "conclusion" | "")} title="Section Priority"
-                    style={{ background: "rgba(255,255,255,0.08)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 10, padding: "8px 12px" }}>
-              <option value="">Section</option>
-              <option value="results">Results</option>
-              <option value="discussion">Discussion</option>
-              <option value="conclusion">Conclusion</option>
-            </select>
-          </div>
-        </div>
-      </header>
-
-      {/* Main */}
-      <main style={{ maxWidth: 1100, margin: "24px auto", padding: 16 }}>
-        <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: 20, boxShadow: "0 12px 30px rgba(0,0,0,0.35)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 10px", borderRadius: 12, background: "rgba(76,63,225,0.15)", border: "1px solid rgba(124,92,255,0.35)" }}>
-              <Image src="/logo.png" alt="logo-mini" width={28} height={28} />
-              <div style={{ fontWeight: 900, letterSpacing: 0.4, color: "#E7CFFF" }}>NextGenLAB</div>
+      <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
+        {/* Header */}
+        <header className="glass-card" style={{ position: "sticky", top: 0, zIndex: 50, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              <div style={{ position: "relative" }}>
+                <Image src="/logo.png" alt="logo" width={48} height={48} priority style={{ filter: "drop-shadow(0 0 10px rgba(139, 92, 246, 0.5))" }} />
+                <div style={{ position: "absolute", inset: -5, background: "radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent)", filter: "blur(10px)", zIndex: -1, animation: "pulse 2s ease-in-out infinite" }} />
+              </div>
+              <div>
+                <div style={{ fontWeight: 900, fontSize: 20, background: "linear-gradient(135deg, #A78BFA, #60A5FA, #06B6D4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: 0.5 }}>
+                  NextGenLAB
+                </div>
+                <div style={{ fontSize: 11, color: "#94A3B8", letterSpacing: 1.5 }}>SPACE BIOSCIENCE</div>
+              </div>
             </div>
-            <h1 style={{ fontSize: 26, fontWeight: 900, margin: 0 }}>{T("title")}</h1>
-          </div>
-          <p style={{ opacity: 0.9, marginTop: 8 }}>{T("subtitle")}</p>
-          <div style={{ display: "flex", gap: 10, marginTop: 14, flexWrap: "wrap" }}>
-            <input
-              value={q}
-              onChange={(e) => setQ(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && search()}
-              placeholder={T("queryPlaceholder")}
-              style={{ flex: 1, minWidth: 280, padding: 14, border: "1px solid rgba(255,255,255,0.2)", borderRadius: 12, background: "rgba(10,14,44,0.5)", color: "#fff" }}
-            />
-            <button onClick={() => search()} disabled={loading} style={{ padding: "12px 18px", borderRadius: 12, background: BRAND.gradBtn, color: "#fff", border: "none", fontWeight: 800, letterSpacing: 0.2, boxShadow: "0 6px 16px rgba(76,63,225,0.45)" }}>
-              {loading ? "…" : T("search")}
-            </button>
-          </div>
+            
+            <nav style={{ display: "flex", alignItems: "center", gap: 20 }}>
+              {[
+                { href: "/guidelines", label: "📖 Guidelines", icon: "📖" },
+                { href: "/resources", label: "🔗 Resources", icon: "🔗" },
+                { href: "/analytics", label: "📊 Analytics", icon: "📊" },
+                { href: "/scientist", label: "🔬 Scientist", icon: "🔬" },
+              ].map((link) => (
+                <Link key={link.href} href={link.href} className="holographic" style={{ padding: "8px 16px", borderRadius: 10, fontSize: 14, fontWeight: 600, transition: "all 0.3s" }}>
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
 
-          {/* Basit filtreler */}
-          <div style={{ display: "flex", gap: 10, marginTop: 12, flexWrap: "wrap" }}>
-            <input value={year} onChange={(e) => setYear(e.target.value)} placeholder={T("year")}
-                   style={{ padding: 10, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 10, background: "rgba(10,14,44,0.5)", color: "#fff" }} />
-            <input value={organism} onChange={(e) => setOrganism(e.target.value)} placeholder={T("organism")}
-                   style={{ padding: 10, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 10, background: "rgba(10,14,44,0.5)", color: "#fff" }} />
-            <input value={platform} onChange={(e) => setPlatform(e.target.value)} placeholder={T("platform")}
-                   style={{ padding: 10, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 10, background: "rgba(10,14,44,0.5)", color: "#fff" }} />
-            {filtersActive.length > 0 && (
-              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                {filtersActive.map((t) => (
-                  <span key={t} style={{ background: BRAND.gradChip, color: "#fff", padding: "6px 10px", borderRadius: 999, fontSize: 12, border: "1px solid rgba(231,207,255,0.45)" }}>{t}</span>
-                ))}
-                <button onClick={() => { setYear(""); setOrganism(""); setPlatform(""); }} style={{ fontSize: 12, color: "#fff", background: "transparent", border: "none", textDecoration: "underline" }}>{T("clear")}</button>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} className="glass-card" style={{ padding: "8px 12px", border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#E0E7FF", fontSize: 13 }}>
+                <option value="tr">🇹🇷 TR</option>
+                <option value="en">🇬🇧 EN</option>
+              </select>
+              
+              <select value={persona} onChange={(e) => setPersona(e.target.value as "scientist" | "manager" | "architect" | "")} className="glass-card" style={{ padding: "8px 12px", border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#E0E7FF", fontSize: 13 }}>
+                <option value="">👤 Persona</option>
+                <option value="scientist">🔬 Scientist</option>
+                <option value="manager">💼 Manager</option>
+                <option value="architect">🏗️ Architect</option>
+              </select>
+              
+              <select value={sectionPriority} onChange={(e) => setSectionPriority(e.target.value as "results" | "discussion" | "conclusion" | "")} className="glass-card" style={{ padding: "8px 12px", border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#E0E7FF", fontSize: 13 }}>
+                <option value="">📑 Section</option>
+                <option value="results">📊 Results</option>
+                <option value="discussion">💭 Discussion</option>
+                <option value="conclusion">✅ Conclusion</option>
+              </select>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
+          {/* Hero Section */}
+          <div className="glass-card holographic" style={{ padding: 32, marginBottom: 32 }}>
+            <div style={{ textAlign: "center", marginBottom: 24 }}>
+              <h1 style={{ fontSize: 40, fontWeight: 900, marginBottom: 12, background: "linear-gradient(135deg, #FFF, #A78BFA, #60A5FA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                {T("title")}
+              </h1>
+              <p style={{ fontSize: 16, color: "#94A3B8", letterSpacing: 0.5 }}>{T("subtitle")}</p>
+            </div>
+
+            {/* Search Bar */}
+            <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
+              <input
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && search()}
+                placeholder={T("queryPlaceholder")}
+                className="glass-card"
+                style={{ flex: 1, padding: "16px 20px", fontSize: 15, color: "#FFF", border: "1px solid rgba(139, 92, 246, 0.3)", borderRadius: 12 }}
+              />
+              <button onClick={() => search()} disabled={loading} className="neon-button" style={{ minWidth: 120, fontSize: 15 }}>
+                {loading ? "⏳" : T("search")}
+              </button>
+            </div>
+
+            {/* Filters */}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
+              <input value={year} onChange={(e) => setYear(e.target.value)} placeholder={T("year")} className="glass-card" style={{ padding: "10px 16px", width: 120, border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#FFF", fontSize: 13 }} />
+              <input value={organism} onChange={(e) => setOrganism(e.target.value)} placeholder={T("organism")} className="glass-card" style={{ padding: "10px 16px", width: 140, border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#FFF", fontSize: 13 }} />
+              <input value={platform} onChange={(e) => setPlatform(e.target.value)} placeholder={T("platform")} className="glass-card" style={{ padding: "10px 16px", width: 140, border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#FFF", fontSize: 13 }} />
+              
+              {filtersActive.length > 0 && (
+                <>
+                  {filtersActive.map((tag) => (
+                    <span key={tag} className="holographic" style={{ padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600, border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                      {tag}
+                    </span>
+                  ))}
+                  <button onClick={() => { setYear(""); setOrganism(""); setPlatform(""); }} style={{ fontSize: 12, color: "#60A5FA", background: "transparent", border: "none", textDecoration: "underline", cursor: "pointer" }}>
+                    {T("clear")}
+                  </button>
+                </>
+              )}
+            </div>
+
+            {error && (
+              <div className="glass-card" style={{ marginTop: 16, padding: 16, border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: 12, color: "#FCA5A5", fontSize: 14 }}>
+                ⚠️ {error}
               </div>
             )}
           </div>
 
-          {error && (
-            <div style={{ marginTop: 12, padding: 12, background: "rgba(255,0,0,0.12)", border: "1px solid rgba(255,0,0,0.3)", borderRadius: 10, color: "#fff" }}>
-              Hata: {error}. API çalışıyor mu? .env.local’daki NEXT_PUBLIC_API_URL doğru mu?
-            </div>
-          )}
-        </div>
+          {/* Results */}
+          <div style={{ display: "grid", gap: 20 }}>
+            {loading && (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="glass-card holographic" style={{ padding: 24, height: 150, animation: "pulse 1.5s ease-in-out infinite" }} />
+              ))
+            )}
 
-        {/* Nasıl arama yapılır + Özellikler + KG Özet */}
-        <section style={{ marginTop: 18, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-          <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: 16 }}>
-            <h3 style={{ marginTop: 0, fontSize: 16, fontWeight: 800 }}>{T("howTitle")}</h3>
-            <ul style={{ margin: 0, paddingLeft: 18 }}>
-              <li>{T("howText1")}</li>
-              <li>{T("howText2")}</li>
-              <li>{T("howText3")}</li>
-            </ul>
-          </div>
-          <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: 16 }}>
-            <h3 style={{ marginTop: 0, fontSize: 16, fontWeight: 800 }}>{T("featTitle")}</h3>
-            <ul style={{ margin: 0, paddingLeft: 18 }}>
-              <li>{T("feat1")}</li>
-              <li>{T("feat2")}</li>
-              <li>{T("feat3")}</li>
-              <li>{T("feat4")}</li>
-            </ul>
-          </div>
-        </section>
-
-
-        {/* Guidelines & Resources ayrı sayfalara taşındı */}
-
-        {/* Sonuçlar */}
-        <section style={{ marginTop: 18 }}>
-          <div style={{ display: "grid", gap: 14 }}>
-            {loading && skeletons}
             {!loading && items.map((it) => (
-              <div key={it.id} style={{ position: "relative", borderRadius: 18, padding: 1, background: BRAND.gradBorder }}>
-                  <div style={{ position: "relative", borderRadius: 16, padding: 18, background: "linear-gradient(180deg, rgba(11,14,44,0.78) 0%, rgba(20,18,75,0.78) 60%, rgba(76,63,225,0.25) 100%)", boxShadow: "0 16px 40px rgba(0,0,0,0.55)", transition: "transform .18s ease, box-shadow .18s ease", border: "1px solid rgba(231,207,255,0.12)" }}
-                     onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-3px)")}
-                     onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
-                  >
-                    {/* Corner brand badge removed per request */}
-
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-                      <a href={it.url} target="_blank" rel="noreferrer" style={{ fontSize: 20, fontWeight: 900, color: "#EAF2FF", textDecoration: "none", lineHeight: 1.3 }}>
-                        {it.title || it.url}
-                      </a>
-                      <div style={{ display: "flex", gap: 8, alignItems: "center", position: "relative", zIndex: 1 }}>
-                        <div title="Arama skoru: Sorgu ile yayın arasındaki semantik benzerlik (0-1). 1’e yakın = daha alakalı."
-                             style={{ fontSize: 12, whiteSpace: "nowrap", cursor: "help", border: "1px solid rgba(255,255,255,0.25)", padding: "4px 8px", borderRadius: 10, background: "rgba(255,255,255,0.06)", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05)" }}>
-                          Skor: <span style={{ fontWeight: 800 }}>{it.score.toFixed(3)}</span>
-                        </div>
-                        <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} style={{ padding: "8px 12px", borderRadius: 12, background: "linear-gradient(135deg, #7C5CFF 0%, #4C3FE1 60%, #22C55E 100%)", border: "1px solid rgba(255,255,255,0.2)", color: "#fff", fontSize: 12, fontWeight: 800, letterSpacing: 0.2 }}>
-                          {cardSummaries[it.id]?.loading ? T("summarizing") : (cardSummaries[it.id]?.text ? T("hide") : T("summarizeOne"))}
-                        </button>
-                      </div>
+              <div key={it.id} className="glass-card" style={{ padding: 24, transition: "all 0.3s", cursor: "pointer" }} onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"} onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 20, marginBottom: 16 }}>
+                  <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: 1, fontSize: 19, fontWeight: 700, color: "#E0E7FF", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s" }} onMouseEnter={(e) => e.currentTarget.style.color = "#A78BFA"} onMouseLeave={(e) => e.currentTarget.style.color = "#E0E7FF"}>
+                    {it.title}
+                  </a>
+                  
+                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    <div className="holographic" style={{ padding: "6px 12px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                      ⭐ {it.score.toFixed(3)}
                     </div>
-                    {it.snippet && (
-                      <p style={{ marginTop: 8, color: "#D7DBFF", fontSize: 14, lineHeight: 1.6 }}>{it.snippet}</p>
-                    )}
-                    <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 10px", borderRadius: 999, fontSize: 12, background: "rgba(231,207,255,0.18)", border: "1px solid rgba(231,207,255,0.35)", color: "#E7CFFF" }}>
-                        <Image src="/logo.png" alt="mini" width={14} height={14} /> PMC
-                      </span>
-                      <a href={it.url} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: BRAND.accent }}>{T("source")}</a>
-                      <button onClick={() => navigator.clipboard.writeText(it.url)} style={{ fontSize: 13, color: BRAND.primary, background: BRAND.accent, border: "none", padding: "8px 12px", borderRadius: 10, fontWeight: 800, boxShadow: "0 6px 16px rgba(231,207,255,0.25)" }}>{T("copy")}</button>
-                      {/* Resource Buttons */}
-                      <a href={`https://osdr.nasa.gov/bio/repo/search?q=${encodeURIComponent(it.url || it.title || "")}&data_source=cgene,alsda,esa&data_type=study`} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#fff", background: "rgba(124,92,255,0.35)", border: "1px solid rgba(124,92,255,0.55)", padding: "6px 10px", borderRadius: 10, backdropFilter: "blur(4px)" }}>OSDR</a>
-                      <a href={`https://extapps.ksc.nasa.gov/NSLSL/Search?q=${encodeURIComponent(it.url || it.title || "")}`} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#fff", background: "rgba(124,92,255,0.35)", border: "1px solid rgba(124,92,255,0.55)", padding: "6px 10px", borderRadius: 10, backdropFilter: "blur(4px)" }}>NSLSL</a>
-                      <a href="https://taskbook.nasaprs.com/tbp/welcome.cfm" target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#fff", background: "rgba(124,92,255,0.35)", border: "1px solid rgba(124,92,255,0.55)", padding: "6px 10px", borderRadius: 10, backdropFilter: "blur(4px)" }}>Task Book</a>
-                    </div>
-                    {cardSummaries[it.id]?.text && (
-                      <div style={{ marginTop: 10, padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", whiteSpace: "pre-wrap" }}>
-                        {cardSummaries[it.id].text}
-                      </div>
-                    )}
-                    {/* Q&A */}
-                    <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
-                      <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                        <input value={cardQA[it.id]?.q || ""} onChange={(e)=> setCardQA((p)=> ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} placeholder={lang==='tr'? 'Bu yayın hakkında soru sorun' : 'Ask a question about this article'} style={{ flex: 1, padding: 10, border: "1px solid rgba(255,255,255,0.18)", borderRadius: 10, background: "rgba(10,14,44,0.5)", color: "#fff" }} />
-                        <button onClick={()=> askQA(it.id)} disabled={cardQA[it.id]?.loading} style={{ padding: "8px 12px", borderRadius: 10, background: "linear-gradient(135deg, #22C55E 0%, #4C3FE1 100%)", color: "#fff", border: "1px solid rgba(255,255,255,0.2)", fontWeight: 700, fontSize: 12 }}>
-                          {cardQA[it.id]?.loading ? (lang==='tr'? 'Cevaplanıyor…' : 'Answering…') : (lang==='tr'? 'Sor' : 'Ask')}
-                        </button>
-                      </div>
-                      {cardQA[it.id]?.a && (
-                        <div style={{ padding: 12, borderRadius: 12, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", whiteSpace: "pre-wrap", fontSize: 14 }}>
-                          {cardQA[it.id]?.a}
-                        </div>
-                      )}
-                    </div>
+                    <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="neon-button" style={{ fontSize: 13, padding: "8px 16px" }}>
+                      {cardSummaries[it.id]?.loading ? T("summarizing") : (cardSummaries[it.id]?.text ? T("hide") : T("summarizeOne"))}
+                    </button>
                   </div>
+                </div>
+
+                {it.snippet && (
+                  <p style={{ color: "#94A3B8", fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>{it.snippet}</p>
+                )}
+
+                {cardSummaries[it.id]?.text && (
+                  <div className="glass-card holographic" style={{ padding: 16, marginTop: 16, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "#CBD5E1" }}>
+                    {cardSummaries[it.id].text}
+                  </div>
+                )}
+
+                {/* Q&A Section */}
+                <div style={{ marginTop: 16, display: "flex", gap: 10, alignItems: "center" }}>
+                  <input 
+                    value={cardQA[it.id]?.q || ""} 
+                    onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
+                    placeholder={lang === 'tr' ? 'Bu makale hakkında soru sorun...' : 'Ask about this article...'}
+                    className="glass-card"
+                    style={{ flex: 1, padding: "12px 16px", border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#FFF", fontSize: 13 }}
+                  />
+                  <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading} className="neon-button" style={{ fontSize: 13, padding: "10px 20px" }}>
+                    {cardQA[it.id]?.loading ? T("asking") : T("askQuestion")}
+                  </button>
+                </div>
+
+                {cardQA[it.id]?.a && (
+                  <div className="glass-card holographic" style={{ padding: 16, marginTop: 12, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "#CBD5E1" }}>
+                    💬 {cardQA[it.id].a}
+                  </div>
+                )}
+
+                {/* Resource Links */}
+                <div style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <a href={it.url} target="_blank" rel="noreferrer" className="holographic" style={{ padding: "6px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(59, 130, 246, 0.3)" }}>
+                    📄 {T("source")}
+                  </a>
+                  <button onClick={() => navigator.clipboard.writeText(it.url)} className="holographic" style={{ padding: "6px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(6, 182, 212, 0.3)", cursor: "pointer", background: "transparent", color: "#E0E7FF" }}>
+                    📋 {T("copy")}
+                  </button>
+                  <a href={`https://osdr.nasa.gov/bio/repo/search?q=${encodeURIComponent(it.title)}`} target="_blank" rel="noreferrer" className="holographic" style={{ padding: "6px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                    🛰️ OSDR
+                  </a>
+                  <a href={`https://extapps.ksc.nasa.gov/NSLSL/Search?q=${encodeURIComponent(it.title)}`} target="_blank" rel="noreferrer" className="holographic" style={{ padding: "6px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                    🔬 NSLSL
+                  </a>
+                </div>
               </div>
             ))}
+
             {!loading && items.length === 0 && !error && (
-              <div style={{ color: "#EAF2FF", padding: 16, display: "flex", alignItems: "center", gap: 12 }}>
-                <Image src="/logo.png" alt="logo-empty" width={32} height={32} />
-                {T("noResult")}
+              <div className="glass-card" style={{ padding: 48, textAlign: "center" }}>
+                <div style={{ fontSize: 48, marginBottom: 16 }}>🌌</div>
+                <div style={{ fontSize: 18, color: "#94A3B8" }}>{T("noResult")}</div>
               </div>
             )}
           </div>
-        </section>
-      </main>
+        </main>
 
-      {/* Footer */}
-      <footer style={{ borderTop: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: 18, fontSize: 12, opacity: 0.9, display: "flex", alignItems: "center", gap: 10 }}>
-          <Image src="/logo.png" alt="logo-footer" width={18} height={18} />
-          NextGenLAB • Bu araç bilimsel bilgi sağlar; klinik tavsiye değildir. Kaynaklar: SB_publications, OSDR, NSLSL, Task Book.
-        </div>
-      </footer>
-    </div>
+        {/* Footer */}
+        <footer className="glass-card" style={{ marginTop: 64, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px", textAlign: "center", fontSize: 13, color: "#64748B" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 12 }}>
+              <Image src="/logo.png" alt="logo" width={24} height={24} style={{ filter: "brightness(0.7)" }} />
+              <span style={{ fontWeight: 600 }}>NextGenLAB Space Bioscience Explorer</span>
+            </div>
+            <div>🚀 Powered by OpenAI GPT-4o-mini • 608 NASA Publications • Real-time Analysis</div>
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }
