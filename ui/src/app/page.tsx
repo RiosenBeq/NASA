@@ -212,53 +212,53 @@ export default function Home() {
       </div>
 
       <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
-        {/* Header */}
-        <header className="glass-card" style={{ position: "sticky", top: 0, zIndex: 50, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "16px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        {/* Premium Header */}
+        <header className="header-sticky">
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
               <div style={{ position: "relative" }}>
-                <Image src="/logo.png" alt="logo" width={48} height={48} priority style={{ filter: "drop-shadow(0 0 10px rgba(139, 92, 246, 0.5))" }} />
-                <div style={{ position: "absolute", inset: -5, background: "radial-gradient(circle, rgba(139, 92, 246, 0.3), transparent)", filter: "blur(10px)", zIndex: -1, animation: "pulse 2s ease-in-out infinite" }} />
+                <Image src="/logo.png" alt="logo" width={52} height={52} priority className="glow pulse-slow" />
+                <div style={{ position: "absolute", inset: -8, background: "radial-gradient(circle, rgba(167, 139, 250, 0.4), transparent)", filter: "blur(12px)", zIndex: -1 }} />
               </div>
               <div>
-                <div style={{ fontWeight: 900, fontSize: 20, background: "linear-gradient(135deg, #A78BFA, #60A5FA, #06B6D4)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", letterSpacing: 0.5 }}>
+                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3 }}>
                   NextGenLAB
                 </div>
-                <div style={{ fontSize: 11, color: "#94A3B8", letterSpacing: 1.5 }}>SPACE BIOSCIENCE</div>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500 }}>SPACE BIOSCIENCE EXPLORER</div>
               </div>
             </div>
             
-            <nav style={{ display: "flex", alignItems: "center", gap: 20 }}>
+            <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
               {[
-                { href: "/guidelines", label: "📖 Guidelines", icon: "📖" },
-                { href: "/resources", label: "🔗 Resources", icon: "🔗" },
-                { href: "/analytics", label: "📊 Analytics", icon: "📊" },
-                { href: "/scientist", label: "🔬 Scientist", icon: "🔬" },
+                { href: "/guidelines", label: "Guidelines" },
+                { href: "/resources", label: "Resources" },
+                { href: "/analytics", label: "Analytics" },
+                { href: "/scientist", label: "Scientist" },
               ].map((link) => (
-                <Link key={link.href} href={link.href} className="holographic" style={{ padding: "8px 16px", borderRadius: 10, fontSize: 14, fontWeight: 600, transition: "all 0.3s" }}>
+                <Link key={link.href} href={link.href} className="btn-secondary" style={{ fontSize: 13 }}>
                   {link.label}
                 </Link>
               ))}
             </nav>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} className="glass-card" style={{ padding: "8px 12px", border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#E0E7FF", fontSize: 13 }}>
-                <option value="tr">🇹🇷 TR</option>
-                <option value="en">🇬🇧 EN</option>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500 }}>
+                <option value="tr">🇹🇷</option>
+                <option value="en">🇬🇧</option>
               </select>
               
-              <select value={persona} onChange={(e) => setPersona(e.target.value as "scientist" | "manager" | "architect" | "")} className="glass-card" style={{ padding: "8px 12px", border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#E0E7FF", fontSize: 13 }}>
-                <option value="">👤 Persona</option>
-                <option value="scientist">🔬 Scientist</option>
-                <option value="manager">💼 Manager</option>
-                <option value="architect">🏗️ Architect</option>
+              <select value={persona} onChange={(e) => setPersona(e.target.value as "scientist" | "manager" | "architect" | "")} style={{ fontSize: 13, fontWeight: 500 }}>
+                <option value="">Persona</option>
+                <option value="scientist">Scientist</option>
+                <option value="manager">Manager</option>
+                <option value="architect">Architect</option>
               </select>
               
-              <select value={sectionPriority} onChange={(e) => setSectionPriority(e.target.value as "results" | "discussion" | "conclusion" | "")} className="glass-card" style={{ padding: "8px 12px", border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#E0E7FF", fontSize: 13 }}>
-                <option value="">📑 Section</option>
-                <option value="results">📊 Results</option>
-                <option value="discussion">💭 Discussion</option>
-                <option value="conclusion">✅ Conclusion</option>
+              <select value={sectionPriority} onChange={(e) => setSectionPriority(e.target.value as "results" | "discussion" | "conclusion" | "")} style={{ fontSize: 13, fontWeight: 500 }}>
+                <option value="">Section</option>
+                <option value="results">Results</option>
+                <option value="discussion">Discussion</option>
+                <option value="conclusion">Conclusion</option>
               </select>
             </div>
           </div>
@@ -266,44 +266,45 @@ export default function Home() {
 
         {/* Main Content */}
         <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
-          {/* Hero Section */}
-          <div className="glass-card holographic" style={{ padding: 32, marginBottom: 32 }}>
-            <div style={{ textAlign: "center", marginBottom: 24 }}>
-              <h1 style={{ fontSize: 40, fontWeight: 900, marginBottom: 12, background: "linear-gradient(135deg, #FFF, #A78BFA, #60A5FA)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+          {/* Premium Hero Section */}
+          <div className="glass-card" style={{ padding: 48, marginBottom: 40, position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none" }} />
+            
+            <div style={{ textAlign: "center", marginBottom: 32, position: "relative", zIndex: 1 }}>
+              <h1 className="text-gradient" style={{ fontSize: 48, fontWeight: 900, marginBottom: 16, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
                 {T("title")}
               </h1>
-              <p style={{ fontSize: 16, color: "#94A3B8", letterSpacing: 0.5 }}>{T("subtitle")}</p>
+              <p style={{ fontSize: 18, color: "var(--text-secondary)", letterSpacing: 0.3, fontWeight: 500, maxWidth: 700, margin: "0 auto" }}>{T("subtitle")}</p>
             </div>
 
-            {/* Search Bar */}
-            <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
+            {/* Premium Search Bar */}
+            <div style={{ display: "flex", gap: 14, marginBottom: 24, position: "relative", zIndex: 1 }}>
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && search()}
                 placeholder={T("queryPlaceholder")}
-                className="glass-card"
-                style={{ flex: 1, padding: "16px 20px", fontSize: 15, color: "#FFF", border: "1px solid rgba(139, 92, 246, 0.3)", borderRadius: 12 }}
+                style={{ flex: 1, padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
               />
-              <button onClick={() => search()} disabled={loading} className="neon-button" style={{ minWidth: 120, fontSize: 15 }}>
+              <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16 }}>
                 {loading ? "⏳" : T("search")}
               </button>
             </div>
 
-            {/* Filters */}
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center" }}>
-              <input value={year} onChange={(e) => setYear(e.target.value)} placeholder={T("year")} className="glass-card" style={{ padding: "10px 16px", width: 120, border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#FFF", fontSize: 13 }} />
-              <input value={organism} onChange={(e) => setOrganism(e.target.value)} placeholder={T("organism")} className="glass-card" style={{ padding: "10px 16px", width: 140, border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#FFF", fontSize: 13 }} />
-              <input value={platform} onChange={(e) => setPlatform(e.target.value)} placeholder={T("platform")} className="glass-card" style={{ padding: "10px 16px", width: 140, border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#FFF", fontSize: 13 }} />
+            {/* Premium Filters */}
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", position: "relative", zIndex: 1 }}>
+              <input value={year} onChange={(e) => setYear(e.target.value)} placeholder={T("year")} style={{ width: 130, fontWeight: 500 }} />
+              <input value={organism} onChange={(e) => setOrganism(e.target.value)} placeholder={T("organism")} style={{ width: 160, fontWeight: 500 }} />
+              <input value={platform} onChange={(e) => setPlatform(e.target.value)} placeholder={T("platform")} style={{ width: 160, fontWeight: 500 }} />
               
               {filtersActive.length > 0 && (
                 <>
                   {filtersActive.map((tag) => (
-                    <span key={tag} className="holographic" style={{ padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600, border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                    <span key={tag} className="badge">
                       {tag}
                     </span>
                   ))}
-                  <button onClick={() => { setYear(""); setOrganism(""); setPlatform(""); }} style={{ fontSize: 12, color: "#60A5FA", background: "transparent", border: "none", textDecoration: "underline", cursor: "pointer" }}>
+                  <button onClick={() => { setYear(""); setOrganism(""); setPlatform(""); }} className="btn-secondary" style={{ fontSize: 12, padding: "6px 16px" }}>
                     {T("clear")}
                   </button>
                 </>
@@ -317,96 +318,103 @@ export default function Home() {
             )}
           </div>
 
-          {/* Results */}
-          <div style={{ display: "grid", gap: 20 }}>
+          {/* Premium Results */}
+          <div style={{ display: "grid", gap: 24 }}>
             {loading && (
               Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="glass-card holographic" style={{ padding: 24, height: 150, animation: "pulse 1.5s ease-in-out infinite" }} />
+                <div key={i} className="result-card loading-shimmer" style={{ height: 180 }} />
               ))
             )}
 
             {!loading && items.map((it) => (
-              <div key={it.id} className="glass-card" style={{ padding: 24, transition: "all 0.3s", cursor: "pointer" }} onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"} onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 20, marginBottom: 16 }}>
-                  <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: 1, fontSize: 19, fontWeight: 700, color: "#E0E7FF", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s" }} onMouseEnter={(e) => e.currentTarget.style.color = "#A78BFA"} onMouseLeave={(e) => e.currentTarget.style.color = "#E0E7FF"}>
+              <div key={it.id} className="result-card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 24, marginBottom: 18 }}>
+                  <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: 1, fontSize: 20, fontWeight: 700, color: "var(--text-primary)", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s" }}>
                     {it.title}
                   </a>
                   
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    <div className="holographic" style={{ padding: "6px 12px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                  <div style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0 }}>
+                    <div className="badge" data-tooltip="Relevance Score">
                       ⭐ {it.score.toFixed(3)}
                     </div>
-                    <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="neon-button" style={{ fontSize: 13, padding: "8px 16px" }}>
-                      {cardSummaries[it.id]?.loading ? T("summarizing") : (cardSummaries[it.id]?.text ? T("hide") : T("summarizeOne"))}
+                    <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>
+                      {cardSummaries[it.id]?.loading ? "⏳" : (cardSummaries[it.id]?.text ? "✕" : "✨ Özetle")}
                     </button>
                   </div>
                 </div>
 
                 {it.snippet && (
-                  <p style={{ color: "#94A3B8", fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>{it.snippet}</p>
+                  <p style={{ color: "var(--text-secondary)", fontSize: 15, lineHeight: 1.7, marginBottom: 20 }}>{it.snippet}</p>
                 )}
 
                 {cardSummaries[it.id]?.text && (
-                  <div className="glass-card holographic" style={{ padding: 16, marginTop: 16, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "#CBD5E1" }}>
+                  <div className="glass-card" style={{ padding: 20, marginTop: 20, marginBottom: 20, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)" }}>
                     {cardSummaries[it.id].text}
                   </div>
                 )}
 
-                {/* Q&A Section */}
-                <div style={{ marginTop: 16, display: "flex", gap: 10, alignItems: "center" }}>
+                {/* Premium Q&A Section */}
+                <div style={{ marginTop: 20, display: "flex", gap: 12, alignItems: "center" }}>
                   <input 
                     value={cardQA[it.id]?.q || ""} 
                     onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
-                    placeholder={lang === 'tr' ? 'Bu makale hakkında soru sorun...' : 'Ask about this article...'}
-                    className="glass-card"
-                    style={{ flex: 1, padding: "12px 16px", border: "1px solid rgba(148, 163, 184, 0.2)", borderRadius: 10, color: "#FFF", fontSize: 13 }}
+                    placeholder={lang === 'tr' ? '💬 Bu makale hakkında soru sorun...' : '💬 Ask about this article...'}
+                    style={{ flex: 1, fontWeight: 500 }}
                   />
-                  <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading} className="neon-button" style={{ fontSize: 13, padding: "10px 20px" }}>
-                    {cardQA[it.id]?.loading ? T("asking") : T("askQuestion")}
+                  <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px" }}>
+                    {cardQA[it.id]?.loading ? "⏳" : "🤔 Sor"}
                   </button>
                 </div>
 
                 {cardQA[it.id]?.a && (
-                  <div className="glass-card holographic" style={{ padding: 16, marginTop: 12, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "#CBD5E1" }}>
-                    💬 {cardQA[it.id].a}
+                  <div className="glass-card" style={{ padding: 20, marginTop: 16, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)", borderLeft: "3px solid var(--nebula-purple)" }}>
+                    <div style={{ fontWeight: 600, marginBottom: 10, color: "var(--nebula-purple)" }}>💡 Yanıt:</div>
+                    {cardQA[it.id].a}
                   </div>
                 )}
 
-                {/* Resource Links */}
-                <div style={{ marginTop: 16, display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <a href={it.url} target="_blank" rel="noreferrer" className="holographic" style={{ padding: "6px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(59, 130, 246, 0.3)" }}>
-                    📄 {T("source")}
+                {/* Premium Resource Links */}
+                <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid rgba(167, 139, 250, 0.1)", display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <a href={it.url} target="_blank" rel="noreferrer" className="badge">
+                    📄 PMC Source
                   </a>
-                  <button onClick={() => navigator.clipboard.writeText(it.url)} className="holographic" style={{ padding: "6px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(6, 182, 212, 0.3)", cursor: "pointer", background: "transparent", color: "#E0E7FF" }}>
-                    📋 {T("copy")}
+                  <button onClick={() => navigator.clipboard.writeText(it.url)} className="badge" style={{ cursor: "pointer", background: "transparent" }}>
+                    📋 Copy Link
                   </button>
-                  <a href={`https://osdr.nasa.gov/bio/repo/search?q=${encodeURIComponent(it.title)}`} target="_blank" rel="noreferrer" className="holographic" style={{ padding: "6px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                  <a href={`https://osdr.nasa.gov/bio/repo/search?q=${encodeURIComponent(it.title)}`} target="_blank" rel="noreferrer" className="badge">
                     🛰️ OSDR
                   </a>
-                  <a href={`https://extapps.ksc.nasa.gov/NSLSL/Search?q=${encodeURIComponent(it.title)}`} target="_blank" rel="noreferrer" className="holographic" style={{ padding: "6px 14px", borderRadius: 10, fontSize: 12, fontWeight: 600, border: "1px solid rgba(139, 92, 246, 0.3)" }}>
+                  <a href={`https://extapps.ksc.nasa.gov/NSLSL/Search?q=${encodeURIComponent(it.title)}`} target="_blank" rel="noreferrer" className="badge">
                     🔬 NSLSL
+                  </a>
+                  <a href="https://taskbook.nasaprs.com/tbp/welcome.cfm" target="_blank" rel="noreferrer" className="badge">
+                    📚 Task Book
                   </a>
                 </div>
               </div>
             ))}
 
             {!loading && items.length === 0 && !error && (
-              <div className="glass-card" style={{ padding: 48, textAlign: "center" }}>
-                <div style={{ fontSize: 48, marginBottom: 16 }}>🌌</div>
-                <div style={{ fontSize: 18, color: "#94A3B8" }}>{T("noResult")}</div>
+              <div className="glass-card" style={{ padding: 60, textAlign: "center" }}>
+                <div style={{ fontSize: 64, marginBottom: 20 }}>🌌</div>
+                <div style={{ fontSize: 20, color: "var(--text-secondary)", fontWeight: 500 }}>{T("noResult")}</div>
+                <div style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 12, opacity: 0.7 }}>Farklı anahtar kelimeler deneyin veya filtreleri değiştirin</div>
               </div>
             )}
           </div>
         </main>
 
-        {/* Footer */}
-        <footer className="glass-card" style={{ marginTop: 64, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px", textAlign: "center", fontSize: 13, color: "#64748B" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 12 }}>
-              <Image src="/logo.png" alt="logo" width={24} height={24} style={{ filter: "brightness(0.7)" }} />
-              <span style={{ fontWeight: 600 }}>NextGenLAB Space Bioscience Explorer</span>
+        {/* Premium Footer */}
+        <footer className="glass-card" style={{ marginTop: 80, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", textAlign: "center", fontSize: 14, color: "var(--text-secondary)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, marginBottom: 16 }}>
+              <Image src="/logo.png" alt="logo" width={28} height={28} className="glow" />
+              <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>NextGenLAB Space Bioscience Explorer</span>
             </div>
-            <div>🚀 Powered by OpenAI GPT-4o-mini • 608 NASA Publications • Real-time Analysis</div>
+            <div style={{ marginBottom: 12 }}>
+              <span style={{ opacity: 0.8 }}>🚀 Powered by</span> <span style={{ color: "var(--nebula-purple)", fontWeight: 600 }}>OpenAI GPT-4o-mini</span>
+            </div>
+            <div style={{ fontSize: 13, opacity: 0.7 }}>608 NASA Publications • Real-time AI Analysis • Knowledge Graph Visualization</div>
           </div>
         </footer>
       </div>
