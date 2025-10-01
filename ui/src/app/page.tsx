@@ -199,9 +199,6 @@ export default function Home() {
             
             <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
               {[
-                { href: "/scientist", label: "Scientist" },
-                { href: "/manager", label: "Manager" },
-                { href: "/architect", label: "Architect" },
                 { href: "/analytics", label: "Analytics" },
                 { href: "/guidelines", label: "Guidelines" },
                 { href: "/resources", label: "Resources" },

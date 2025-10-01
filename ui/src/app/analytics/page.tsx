@@ -262,7 +262,6 @@ export default function AnalyticsPage() {
                 <Link href="/" className="btn-secondary" style={{ fontSize: 13 }}>Home</Link>
                 <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13 }}>Guidelines</Link>
                 <Link href="/resources" className="btn-secondary" style={{ fontSize: 13 }}>Resources</Link>
-                <Link href="/scientist" className="btn-secondary" style={{ fontSize: 13 }}>Scientist</Link>
           </nav>
             </div>
         </div>

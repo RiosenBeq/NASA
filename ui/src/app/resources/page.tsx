@@ -80,7 +80,6 @@ export default function ResourcesPage() {
               <Link href="/" className="btn-secondary" style={{ fontSize: 13 }}>Home</Link>
               <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13 }}>Guidelines</Link>
               <Link href="/analytics" className="btn-secondary" style={{ fontSize: 13 }}>Analytics</Link>
-              <Link href="/scientist" className="btn-secondary" style={{ fontSize: 13 }}>Scientist</Link>
             </nav>
           </div>
         </header>

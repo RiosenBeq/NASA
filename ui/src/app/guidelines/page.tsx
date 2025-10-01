@@ -34,7 +34,6 @@ export default function GuidelinesPage() {
               <Link href="/" className="btn-secondary" style={{ fontSize: 13 }}>Home</Link>
               <Link href="/resources" className="btn-secondary" style={{ fontSize: 13 }}>Resources</Link>
               <Link href="/analytics" className="btn-secondary" style={{ fontSize: 13 }}>Analytics</Link>
-              <Link href="/scientist" className="btn-secondary" style={{ fontSize: 13 }}>Scientist</Link>
           </nav>
         </div>
       </header>
