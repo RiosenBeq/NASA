@@ -12,7 +12,7 @@ type Item = {
 };
 
 export default function Home() {
-  const [q, setQ] = useState("microgravity plant root growth");
+  const [q, setQ] = useState("");
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,9 +21,24 @@ export default function Home() {
   const [cardQA, setCardQA] = useState<Record<number, {q: string; a: string; loading: boolean}>>({});
   const [persona, setPersona] = useState<"scientist" | "manager" | "architect" | "">("");
   const [sectionPriority, setSectionPriority] = useState<"results" | "discussion" | "conclusion" | "">("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const apiEnv = process.env.NEXT_PUBLIC_API_URL;
   const api = apiEnv && apiEnv.trim().length > 0 ? apiEnv : "/api";
+
+  // Popular search suggestions
+  const searchSuggestions = [
+    "microgravity plant root growth",
+    "space radiation effects on DNA",
+    "artificial gravity systems",
+    "closed-loop life support",
+    "space agriculture technology",
+    "crew psychological health",
+    "Mars mission preparation",
+    "space medicine research",
+    "bone loss in space",
+    "space biotechnology"
+  ];
 
   const T = (key: string) => {
     const tr: Record<string, string> = {
@@ -167,6 +182,19 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-suggestions-container]')) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <>
       {/* Uzay Arka Plan Efektleri */}
@@ -246,17 +274,58 @@ export default function Home() {
             </div>
 
             {/* Premium Search Bar */}
-            <div style={{ display: "flex", gap: 14, marginBottom: 24, position: "relative", zIndex: 1 }}>
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && search()}
-                placeholder={T("queryPlaceholder")}
-                style={{ flex: 1, padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
-              />
-              <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16 }}>
-                {loading ? "⏳" : T("search")}
-              </button>
+            <div style={{ position: "relative", zIndex: 1 }}>
+              <div style={{ display: "flex", gap: 14, marginBottom: 24 }}>
+                <div style={{ position: "relative", flex: 1 }}>
+                  <input
+                    value={q}
+                    onChange={(e) => {
+                      setQ(e.target.value);
+                      setShowSuggestions(e.target.value.length === 0);
+                    }}
+                    onFocus={() => setShowSuggestions(q.length === 0)}
+                    onKeyDown={(e) => e.key === "Enter" && search()}
+                    placeholder={T("queryPlaceholder")}
+                    style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
+                  />
+                  
+                  {/* Search Suggestions */}
+                  {showSuggestions && (
+                    <div className="glass-card" data-suggestions-container style={{ 
+                      position: "absolute", 
+                      top: "100%", 
+                      left: 0, 
+                      right: 0, 
+                      marginTop: 8, 
+                      padding: 16,
+                      zIndex: 1000
+                    }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: "var(--text-secondary)" }}>
+                        🔍 Popüler Aramalar
+                      </div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {searchSuggestions.map((suggestion, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              setQ(suggestion);
+                              setShowSuggestions(false);
+                              search();
+                            }}
+                            className="btn-secondary"
+                            style={{ fontSize: 12, padding: "8px 12px", whiteSpace: "nowrap" }}
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16 }}>
+                  {loading ? "⏳" : T("search")}
+                </button>
+              </div>
             </div>
 
 

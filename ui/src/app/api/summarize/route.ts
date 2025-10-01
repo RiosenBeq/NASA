@@ -100,44 +100,35 @@ PUBLICATIONS TO ANALYZE:
 ${titles.map((t, i) => `${i + 1}. ${t}`).join("\n")}
 
 CRITICAL REQUIREMENTS:
-Create an extremely detailed, comprehensive summary following NASA's Space Bioscience Research Challenge guidelines. This summary will be used by NASA scientists, mission planners, and program managers for critical decision-making.
+Create a concise, focused summary following NASA's Space Bioscience Research Challenge guidelines. This summary will be used by NASA scientists, mission planners, and program managers for critical decision-making.
 
 STRUCTURE YOUR ANALYSIS AS FOLLOWS:
 
 ## 🚀 EXECUTIVE SUMMARY
-Provide a comprehensive 4-5 sentence overview covering:
+Provide a concise 2-3 sentence overview covering:
 - Research scope and primary objectives
-- Key methodologies employed
 - Major findings and their significance
 - Direct relevance to NASA's space exploration goals
 
-## 🔬 DETAILED RESEARCH FINDINGS
+## 🔬 KEY RESEARCH FINDINGS
 For each publication, provide:
-- **Experimental Design**: Detailed methodology, sample sizes, control groups
-- **Primary Results**: Specific data points, statistical analyses, effect sizes
-- **Secondary Findings**: Unexpected discoveries, correlations, trends
-- **Data Quality**: Sample size adequacy, statistical power, reproducibility
-- **Limitations**: Study constraints, potential biases, methodological concerns
+- **Experimental Design**: Methodology and sample sizes
+- **Primary Results**: Key data points and findings
+- **Limitations**: Study constraints and methodological concerns
 
-## 🌌 SCIENTIFIC PROGRESS & IMPACT ANALYSIS
-- **Knowledge Advancement**: How this research pushes the boundaries of space biology
-- **Mechanism Understanding**: What biological processes are revealed
-- **Space Environment Effects**: Specific impacts of microgravity, radiation, isolation
-- **Human Spaceflight Implications**: Direct applications for Moon/Mars missions
-- **Technology Development**: Required hardware, systems, or protocols
+## 🌌 SPACE BIOLOGY IMPACT
+- **Knowledge Advancement**: How this research advances space biology
+- **Space Environment Effects**: Impacts of microgravity, radiation, isolation
+- **Human Spaceflight Implications**: Applications for Moon/Mars missions
 
-## 🔍 COMPREHENSIVE KNOWLEDGE GAPS
+## 🔍 RESEARCH GAPS
 - **Unanswered Questions**: Specific research questions that remain
 - **Methodological Gaps**: Experimental approaches not yet attempted
 - **Data Gaps**: Missing information or insufficient sample sizes
-- **Longitudinal Studies**: Need for extended duration research
-- **Cross-Species Comparisons**: Comparative biology requirements
 
-## ⚖️ CONSENSUS & CONTROVERSIES ANALYSIS
-- **Scientific Consensus**: Areas of agreement across multiple studies
-- **Conflicting Evidence**: Contradictory findings and possible explanations
-- **Methodological Differences**: How different approaches yield different results
-- **Interpretation Disagreements**: Alternative explanations for findings
+## ⚖️ SCIENTIFIC CONSENSUS
+- **Scientific Consensus**: Areas of agreement across studies
+- **Conflicting Evidence**: Contradictory findings and explanations
 - **Replication Status**: Which findings have been independently verified
 
 ## 💡 STRATEGIC ACTIONABLE INSIGHTS
@@ -193,11 +184,11 @@ ${!persona ? `
 
 FORMATTING REQUIREMENTS:
 - Use clear section headers with emojis (## 🚀)
-- Use detailed bullet points with sub-bullets
-- Include specific data points and measurements
-- Provide concrete examples and case studies
+- Use concise bullet points
+- Include key data points and measurements
+- Provide concrete examples
 - Maintain scientific rigor while being accessible
-- Length: Comprehensive (800-1200 words minimum)
+- Length: Concise and focused (300-500 words maximum)
 - Include specific recommendations and actionable items
 
 TONE: Highly professional, evidence-based, forward-looking, strategically actionable, scientifically rigorous
