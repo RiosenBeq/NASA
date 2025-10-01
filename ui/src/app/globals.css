@@ -52,7 +52,7 @@ body {
     radial-gradient(ellipse 60% 80% at 100% 50%, rgba(96, 165, 250, 0.08), transparent),
     radial-gradient(ellipse 100% 100% at 0% 100%, rgba(34, 211, 238, 0.05), transparent),
     linear-gradient(180deg, var(--deep-space) 0%, var(--space-dark) 100%);
-  z-index: -3;
+  z-index: 1;
 }
 
 /* Yıldızlar - Katmanlar */
@@ -60,7 +60,7 @@ body {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: -2;
+  z-index: 2;
 }
 
 .stars-layer-1 {
@@ -483,7 +483,7 @@ input::placeholder, textarea::placeholder {
 .header-sticky {
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   backdrop-filter: blur(20px) saturate(180%);
   background: rgba(10, 1, 24, 0.85);
   border-bottom: 1px solid rgba(167, 139, 250, 0.1);
@@ -576,21 +576,49 @@ a:hover {
   50% { opacity: 0.7; }
 }
 
-/* Search Suggestions Container */
+/* Search Suggestions Container - PROFESSIONAL FIX */
 [data-suggestions-container] {
-  z-index: 999999 !important;
+  z-index: 9999999 !important;
   position: absolute !important;
   top: 100% !important;
   left: 0 !important;
   right: 0 !important;
   margin-top: 8px !important;
-  background: rgba(15, 8, 36, 0.98) !important;
-  backdrop-filter: blur(25px) !important;
-  border: 2px solid rgba(167, 139, 250, 0.6) !important;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6) !important;
+  background: rgba(15, 8, 36, 0.99) !important;
+  backdrop-filter: blur(30px) !important;
+  border: 3px solid rgba(167, 139, 250, 0.8) !important;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(167, 139, 250, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   border-radius: 12px !important;
   max-height: 400px !important;
   overflow-y: auto !important;
+  transform: translateZ(0) !important;
+  will-change: transform !important;
+}
+
+/* FORCE SUGGESTIONS TO TOP - EMERGENCY FIX */
+[data-suggestions-container] {
+  z-index: 9999999 !important;
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin-top: 8px !important;
+  background: rgba(15, 8, 36, 0.99) !important;
+  backdrop-filter: blur(30px) !important;
+  border: 3px solid rgba(167, 139, 250, 0.8) !important;
+  box-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(167, 139, 250, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  transform: translateZ(0) !important;
+  will-change: transform !important;
+  isolation: isolate !important;
 }
 
 /* Responsive Design */
@@ -665,7 +693,7 @@ a:hover {
     left: 0 !important;
     right: 0 !important;
     margin-top: 8px !important;
-    z-index: 999999 !important;
+    z-index: 9999999 !important;
     padding: 16px !important;
     max-height: 300px !important;
   }

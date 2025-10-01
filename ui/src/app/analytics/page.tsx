@@ -222,7 +222,7 @@ export default function AnalyticsPage() {
         <div className="nebula-glow-3" />
       </div>
 
-      <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
+      <div style={{ minHeight: "100vh", position: "relative", zIndex: 10 }}>
         {/* Premium Header */}
         <header className="header-sticky">
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>

@@ -208,7 +208,7 @@ export default function Home() {
         <div className="nebula-glow-3" />
       </div>
 
-      <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
+      <div style={{ minHeight: "100vh", position: "relative", zIndex: 10 }}>
         {/* Premium Header */}
         <header className="header-sticky">
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
@@ -274,7 +274,7 @@ export default function Home() {
             </div>
 
             {/* Premium Search Bar */}
-            <div style={{ position: "relative", zIndex: 1000 }}>
+            <div style={{ position: "relative", zIndex: 10000 }}>
               <div style={{ display: "flex", gap: 14, marginBottom: 24, flexWrap: "wrap" }}>
                 <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
             <input
@@ -301,7 +301,7 @@ export default function Home() {
                         right: 0,
                         marginTop: 8,
                         padding: 20,
-                        zIndex: 999999,
+                        zIndex: 9999999,
                         boxShadow: "0 25px 50px rgba(0, 0, 0, 0.6)",
                         backgroundColor: "rgba(15, 8, 36, 0.98)",
                         backdropFilter: "blur(25px)",
