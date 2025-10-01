@@ -24,6 +24,7 @@ export default function Home() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [showImages, setShowImages] = useState<Record<number, boolean>>({});
 
+
   // Rastgele görsel seçme fonksiyonu (gelecekte kullanılacak)
   // const getRandomImage = (id: number) => {
   //   const images = [
