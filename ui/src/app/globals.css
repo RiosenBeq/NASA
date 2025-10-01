@@ -86,7 +86,7 @@ body {
 }
 
 .stars-layer-3 {
-  background-image: 
+  background-image:
     radial-gradient(2px 2px at 15% 80%, rgba(59, 130, 246, 0.7), transparent),
     radial-gradient(2px 2px at 40% 30%, rgba(139, 92, 246, 0.7), transparent),
     radial-gradient(2px 2px at 75% 50%, rgba(6, 182, 212, 0.6), transparent);
@@ -539,8 +539,33 @@ a:hover {
 }
 
 .glow {
-  filter: drop-shadow(0 0 10px rgba(167, 139, 250, 0.6));
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.6));
 }
+
+/* Loading Shimmer */
+.loading-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(167, 139, 250, 0.1) 0%, 
+    rgba(167, 139, 250, 0.2) 50%, 
+    rgba(167, 139, 250, 0.1) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Active Button State */
+.btn-secondary.active,
+.btn-primary.active {
+  background: linear-gradient(135deg, var(--nebula-purple), var(--nebula-blue));
+  border-color: var(--nebula-purple);
+  color: var(--star-white);
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.4);
+}
+
 
 .pulse-slow {
   animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;

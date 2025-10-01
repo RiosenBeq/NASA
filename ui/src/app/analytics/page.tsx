@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -10,43 +10,204 @@ type KgStats = {
   edge_count: number;
 };
 
+type AnalyticsData = {
+  stats: KgStats | null;
+  years: Record<string, number> | null;
+  lastUpdated: Date;
+  loading: boolean;
+  error: string | null;
+};
+
+type FilterOptions = {
+  timeRange: 'all' | 'recent' | 'decade';
+  nodeType: string | 'all';
+  sortBy: 'count' | 'name' | 'trend';
+};
+
 export default function AnalyticsPage() {
   const apiEnv = process.env.NEXT_PUBLIC_API_URL || "";
   const api = apiEnv.trim() ? apiEnv : "";
-  const [stats, setStats] = useState<KgStats | null>(null);
-  const [years, setYears] = useState<Record<string, number> | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData] = useState<AnalyticsData>({
+    stats: null,
+    years: null,
+    lastUpdated: new Date(),
+    loading: true,
+    error: null
+  });
+  const [filters, setFilters] = useState<FilterOptions>({
+    timeRange: 'all',
+    nodeType: 'all',
+    sortBy: 'count'
+  });
+  const [selectedMetric, setSelectedMetric] = useState<'nodes' | 'edges' | 'years'>('nodes');
+  const [autoRefresh, setAutoRefresh] = useState(true);
 
-  useEffect(() => {
-    async function load() {
-      try {
+  const loadData = useCallback(async () => {
+    try {
+      setData(prev => ({ ...prev, loading: true, error: null }));
         const base = api || "";
         const [s, y] = await Promise.all([
           fetch(`${base}/api/kg/stats`).then((r) => r.json()).catch(async () => fetch(`/api/kg/stats`).then(r=>r.json())),
           fetch(`${base}/api/kg/year_counts`).then((r) => r.json()).catch(async () => fetch(`/api/kg/year_counts`).then(r=>r.json())),
         ]);
-        setStats(s);
-        setYears(y?.data || null);
+      setData({
+        stats: s,
+        years: y?.data || null,
+        lastUpdated: new Date(),
+        loading: false,
+        error: null
+      });
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : "Failed to load analytics";
-        setError(msg);
-      }
+      setData(prev => ({ ...prev, loading: false, error: msg }));
     }
-    load();
   }, [api]);
 
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
+
+  // Auto-refresh every 30 seconds
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const interval = setInterval(loadData, 30000);
+    return () => clearInterval(interval);
+  }, [autoRefresh, loadData]);
+
+  // Computed metrics
   const nodeTypeEntries = useMemo<[string, number][]>(() => {
-    return stats?.node_types ? (Object.entries(stats.node_types) as [string, number][]) : [];
-  }, [stats]);
+    if (!data.stats?.node_types) return [];
+    let entries = Object.entries(data.stats.node_types) as [string, number][];
+    
+    // Apply filters
+    if (filters.nodeType !== 'all') {
+      entries = entries.filter(([type]) => type === filters.nodeType);
+    }
+    
+    // Apply sorting
+    switch (filters.sortBy) {
+      case 'count':
+        entries.sort((a, b) => b[1] - a[1]);
+        break;
+      case 'name':
+        entries.sort((a, b) => a[0].localeCompare(b[0]));
+        break;
+      case 'trend':
+        // Simple trend calculation based on position
+        entries.sort((a, b) => b[1] - a[1]);
+        break;
+    }
+    
+    return entries;
+  }, [data.stats, filters]);
 
   const edgeRelEntries = useMemo<[string, number][]>(() => {
-    return stats?.edge_relations ? (Object.entries(stats.edge_relations) as [string, number][]) : [];
-  }, [stats]);
+    if (!data.stats?.edge_relations) return [];
+    const entries = Object.entries(data.stats.edge_relations) as [string, number][];
+    
+    switch (filters.sortBy) {
+      case 'count':
+        entries.sort((a, b) => b[1] - a[1]);
+        break;
+      case 'name':
+        entries.sort((a, b) => a[0].localeCompare(b[0]));
+        break;
+    }
+    
+    return entries;
+  }, [data.stats, filters]);
 
   const yearEntries = useMemo<[string, number][]>(() => {
-    if (!years) return [] as [string, number][];
-    return (Object.entries(years) as [string, number][])?.sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
-  }, [years]);
+    if (!data.years) return [];
+    let entries = Object.entries(data.years) as [string, number][];
+    
+    // Apply time range filter
+    const currentYear = new Date().getFullYear();
+    switch (filters.timeRange) {
+      case 'recent':
+        entries = entries.filter(([year]) => parseInt(year) >= currentYear - 5);
+        break;
+      case 'decade':
+        entries = entries.filter(([year]) => parseInt(year) >= currentYear - 10);
+        break;
+    }
+    
+    return entries.sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+  }, [data.years, filters]);
+
+  // Additional metrics
+  const totalPublications = useMemo(() => {
+    return yearEntries.reduce((sum, [, count]) => sum + count, 0);
+  }, [yearEntries]);
+
+  const averagePerYear = useMemo(() => {
+    return yearEntries.length > 0 ? Math.round(totalPublications / yearEntries.length) : 0;
+  }, [totalPublications, yearEntries.length]);
+
+  const growthRate = useMemo(() => {
+    if (yearEntries.length < 2) return 0;
+    const recent = yearEntries.slice(-3).reduce((sum, [, count]) => sum + count, 0);
+    const previous = yearEntries.slice(-6, -3).reduce((sum, [, count]) => sum + count, 0);
+    return previous > 0 ? Math.round(((recent - previous) / previous) * 100) : 0;
+  }, [yearEntries]);
+
+  // Export functions
+  const exportChart = useCallback((type: 'nodes' | 'edges' | 'timeline') => {
+    let dataToExport: [string, number][];
+    let filename: string;
+    
+    switch (type) {
+      case 'nodes':
+        dataToExport = nodeTypeEntries;
+        filename = 'node_types_distribution.json';
+        break;
+      case 'edges':
+        dataToExport = edgeRelEntries;
+        filename = 'edge_relations.json';
+        break;
+      case 'timeline':
+        dataToExport = yearEntries;
+        filename = 'publication_timeline.json';
+        break;
+    }
+    
+    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [nodeTypeEntries, edgeRelEntries, yearEntries]);
+
+  const exportAllData = useCallback(() => {
+    const allData = {
+      metadata: {
+        exportedAt: new Date().toISOString(),
+        filters: filters,
+        totalNodes: data.stats?.node_count,
+        totalEdges: data.stats?.edge_count,
+        totalPublications: totalPublications,
+        averagePerYear: averagePerYear,
+        growthRate: growthRate
+      },
+      nodeTypes: nodeTypeEntries,
+      edgeRelations: edgeRelEntries,
+      timeline: yearEntries
+    };
+    
+    const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `nasa_analytics_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, [data.stats, filters, totalPublications, averagePerYear, growthRate, nodeTypeEntries, edgeRelEntries, yearEntries]);
 
   return (
     <>
@@ -71,33 +232,120 @@ export default function AnalyticsPage() {
                 <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3 }}>
                   Analytics Dashboard
                 </div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500 }}>KNOWLEDGE GRAPH INSIGHTS</div>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500 }}>
+                  KNOWLEDGE GRAPH INSIGHTS • {data.lastUpdated.toLocaleTimeString()}
+                </div>
               </div>
             </div>
             
-            <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <Link href="/" className="btn-secondary" style={{ fontSize: 13 }}>Home</Link>
-              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13 }}>Guidelines</Link>
-              <Link href="/resources" className="btn-secondary" style={{ fontSize: 13 }}>Resources</Link>
-              <Link href="/scientist" className="btn-secondary" style={{ fontSize: 13 }}>Scientist</Link>
-            </nav>
-          </div>
-        </header>
+            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+              {/* Auto-refresh toggle */}
+              <button
+                onClick={() => setAutoRefresh(!autoRefresh)}
+                className={`btn-secondary ${autoRefresh ? 'active' : ''}`}
+                style={{ fontSize: 12, padding: '8px 12px' }}
+              >
+                {autoRefresh ? '🔄 Auto' : '⏸️ Manual'}
+              </button>
+              
+              {/* Refresh button */}
+              <button
+                onClick={loadData}
+                className="btn-primary"
+                style={{ fontSize: 12, padding: '8px 12px' }}
+                disabled={data.loading}
+              >
+                {data.loading ? '⏳' : '🔄'} Refresh
+              </button>
+              
+              <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Link href="/" className="btn-secondary" style={{ fontSize: 13 }}>Home</Link>
+                <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13 }}>Guidelines</Link>
+                <Link href="/resources" className="btn-secondary" style={{ fontSize: 13 }}>Resources</Link>
+                <Link href="/scientist" className="btn-secondary" style={{ fontSize: 13 }}>Scientist</Link>
+          </nav>
+            </div>
+        </div>
+      </header>
 
         <main style={{ maxWidth: 1200, margin: "32px auto", padding: "0 24px" }}>
-          {error && (
+          {data.error && (
             <div className="glass-card" style={{ marginBottom: 24, padding: 20, border: "1px solid rgba(239, 68, 68, 0.3)", color: "#FCA5A5" }}>
-              ⚠️ {error}
+              ⚠️ {data.error}
             </div>
           )}
 
+          {/* Filter Controls */}
+          <section className="glass-card" style={{ marginBottom: 24, padding: 20 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
+                  🔍 Filters & Controls
+                </h3>
+              </div>
+              
+              <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                {/* Time Range Filter */}
+                <select
+                  value={filters.timeRange}
+                  onChange={(e) => setFilters(prev => ({ ...prev, timeRange: e.target.value as FilterOptions['timeRange'] }))}
+                  className="btn-secondary"
+                  style={{ fontSize: 12, padding: '6px 10px', border: '1px solid rgba(167, 139, 250, 0.3)' }}
+                >
+                  <option value="all">All Time</option>
+                  <option value="decade">Last Decade</option>
+                  <option value="recent">Last 5 Years</option>
+                </select>
+                
+                {/* Node Type Filter */}
+                <select
+                  value={filters.nodeType}
+                  onChange={(e) => setFilters(prev => ({ ...prev, nodeType: e.target.value }))}
+                  className="btn-secondary"
+                  style={{ fontSize: 12, padding: '6px 10px', border: '1px solid rgba(167, 139, 250, 0.3)' }}
+                >
+                  <option value="all">All Types</option>
+                  {data.stats?.node_types && Object.keys(data.stats.node_types).map(type => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+                
+                {/* Sort By */}
+                <select
+                  value={filters.sortBy}
+                  onChange={(e) => setFilters(prev => ({ ...prev, sortBy: e.target.value as FilterOptions['sortBy'] }))}
+                  className="btn-secondary"
+                  style={{ fontSize: 12, padding: '6px 10px', border: '1px solid rgba(167, 139, 250, 0.3)' }}
+                >
+                  <option value="count">Sort by Count</option>
+                  <option value="name">Sort by Name</option>
+                  <option value="trend">Sort by Trend</option>
+                </select>
+                
+                {/* Metric Selector */}
+                <div style={{ display: "flex", gap: 4 }}>
+                  {(['nodes', 'edges', 'years'] as const).map(metric => (
+                    <button
+                      key={metric}
+                      onClick={() => setSelectedMetric(metric)}
+                      className={`btn-secondary ${selectedMetric === metric ? 'active' : ''}`}
+                      style={{ fontSize: 11, padding: '6px 8px' }}
+                    >
+                      {metric === 'nodes' ? '🔬' : metric === 'edges' ? '🔗' : '📅'} {metric}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Summary Cards */}
-          <section style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginBottom: 32 }}>
+          <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 20, marginBottom: 32 }}>
             <div className="glass-card" style={{ padding: 28, textAlign: "center", position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, background: "radial-gradient(circle, rgba(167, 139, 250, 0.2), transparent)", filter: "blur(30px)" }} />
               <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, marginBottom: 12, letterSpacing: 1.2 }}>TOTAL NODES</div>
               <div className="text-gradient" style={{ fontSize: 42, fontWeight: 900, position: "relative" }}>
-                {stats?.node_count?.toLocaleString() ?? "..."}
+                {data.stats?.node_count?.toLocaleString() ?? "..."}
               </div>
               <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 8, opacity: 0.8 }}>🔬 Research entities</div>
             </div>
@@ -106,58 +354,133 @@ export default function AnalyticsPage() {
               <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, background: "radial-gradient(circle, rgba(96, 165, 250, 0.2), transparent)", filter: "blur(30px)" }} />
               <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, marginBottom: 12, letterSpacing: 1.2 }}>TOTAL EDGES</div>
               <div className="text-gradient" style={{ fontSize: 42, fontWeight: 900, position: "relative" }}>
-                {stats?.edge_count?.toLocaleString() ?? "..."}
+                {data.stats?.edge_count?.toLocaleString() ?? "..."}
               </div>
               <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 8, opacity: 0.8 }}>🔗 Relationships</div>
             </div>
             
             <div className="glass-card" style={{ padding: 28, textAlign: "center", position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, background: "radial-gradient(circle, rgba(34, 211, 238, 0.2), transparent)", filter: "blur(30px)" }} />
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, marginBottom: 12, letterSpacing: 1.2 }}>PUBLICATIONS</div>
+              <div className="text-gradient" style={{ fontSize: 42, fontWeight: 900, position: "relative" }}>
+                {totalPublications.toLocaleString()}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 8, opacity: 0.8 }}>📚 Total papers</div>
+            </div>
+            
+            <div className="glass-card" style={{ padding: 28, textAlign: "center", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, background: "radial-gradient(circle, rgba(52, 211, 153, 0.2), transparent)", filter: "blur(30px)" }} />
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, marginBottom: 12, letterSpacing: 1.2 }}>AVG/YEAR</div>
+              <div className="text-gradient" style={{ fontSize: 42, fontWeight: 900, position: "relative" }}>
+                {averagePerYear}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 8, opacity: 0.8 }}>📊 Average</div>
+            </div>
+            
+            <div className="glass-card" style={{ padding: 28, textAlign: "center", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, background: "radial-gradient(circle, rgba(245, 101, 101, 0.2), transparent)", filter: "blur(30px)" }} />
+              <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, marginBottom: 12, letterSpacing: 1.2 }}>GROWTH RATE</div>
+              <div className="text-gradient" style={{ fontSize: 42, fontWeight: 900, position: "relative", color: growthRate >= 0 ? "#22d3ee" : "#f87171" }}>
+                {growthRate >= 0 ? '+' : ''}{growthRate}%
+              </div>
+              <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 8, opacity: 0.8 }}>📈 Recent trend</div>
+          </div>
+            
+            <div className="glass-card" style={{ padding: 28, textAlign: "center", position: "relative", overflow: "hidden" }}>
+              <div style={{ position: "absolute", top: -20, right: -20, width: 100, height: 100, background: "radial-gradient(circle, rgba(168, 85, 247, 0.2), transparent)", filter: "blur(30px)" }} />
               <div style={{ fontSize: 13, color: "var(--text-secondary)", fontWeight: 600, marginBottom: 12, letterSpacing: 1.2 }}>YEAR SPAN</div>
               <div className="text-gradient" style={{ fontSize: 42, fontWeight: 900, position: "relative" }}>
                 {yearEntries.length || "..."}
-              </div>
+          </div>
               <div style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 8, opacity: 0.8 }}>📅 Publication years</div>
-            </div>
-          </section>
+          </div>
+        </section>
 
           {/* Charts Section */}
           <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 32 }}>
             <div className="glass-card" style={{ padding: 28 }}>
-              <h3 style={{ margin: 0, marginBottom: 20, fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>
-                🔬 Node Types Distribution
-              </h3>
-              {nodeTypeEntries.length === 0 ? (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>
+                  🔬 Node Types Distribution
+                </h3>
+                <button
+                  onClick={() => exportChart('nodes')}
+                  className="btn-secondary"
+                  style={{ fontSize: 11, padding: '6px 10px' }}
+                >
+                  📊 Export
+                </button>
+              </div>
+              {data.loading ? (
                 <div className="loading-shimmer" style={{ height: 240, borderRadius: 12 }} />
+              ) : nodeTypeEntries.length === 0 ? (
+                <div style={{ height: 240, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
+                  No data available
+                </div>
               ) : (
                 <PieChart data={nodeTypeEntries} colors={["#a78bfa", "#60a5fa", "#22d3ee", "#f472b6", "#fbbf24", "#34d399"]} />
-              )}
-            </div>
+            )}
+          </div>
             
             <div className="glass-card" style={{ padding: 28 }}>
-              <h3 style={{ margin: 0, marginBottom: 20, fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>
-                🔗 Edge Relations
-              </h3>
-              {edgeRelEntries.length === 0 ? (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>
+                  🔗 Edge Relations
+                </h3>
+                <button
+                  onClick={() => exportChart('edges')}
+                  className="btn-secondary"
+                  style={{ fontSize: 11, padding: '6px 10px' }}
+                >
+                  📊 Export
+                </button>
+              </div>
+              {data.loading ? (
                 <div className="loading-shimmer" style={{ height: 240, borderRadius: 12 }} />
+              ) : edgeRelEntries.length === 0 ? (
+                <div style={{ height: 240, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
+                  No data available
+                </div>
               ) : (
                 <BarChart data={edgeRelEntries} color="#a78bfa" />
-              )}
-            </div>
-          </section>
+            )}
+          </div>
+        </section>
 
           {/* Timeline */}
           <section className="glass-card" style={{ padding: 32 }}>
-            <h3 style={{ margin: 0, marginBottom: 24, fontSize: 20, fontWeight: 700, color: "var(--text-primary)" }}>
-              📊 Publication Timeline
-            </h3>
-            {yearEntries.length === 0 ? (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
+              <h3 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "var(--text-primary)" }}>
+                📊 Publication Timeline
+              </h3>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button
+                  onClick={() => exportChart('timeline')}
+                  className="btn-secondary"
+                  style={{ fontSize: 11, padding: '6px 10px' }}
+                >
+                  📊 Export
+                </button>
+                <button
+                  onClick={() => exportAllData()}
+                  className="btn-primary"
+                  style={{ fontSize: 11, padding: '6px 10px' }}
+                >
+                  📁 Export All
+                </button>
+              </div>
+            </div>
+            {data.loading ? (
               <div className="loading-shimmer" style={{ height: 300, borderRadius: 12 }} />
+            ) : yearEntries.length === 0 ? (
+              <div style={{ height: 300, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
+                No timeline data available
+              </div>
             ) : (
               <LineChart data={yearEntries} color="#22d3ee" />
-            )}
-          </section>
-        </main>
+          )}
+        </section>
+      </main>
 
         {/* Footer */}
         <footer className="glass-card" style={{ marginTop: 80, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
@@ -169,7 +492,7 @@ export default function AnalyticsPage() {
             <div style={{ fontSize: 13, opacity: 0.7 }}>Knowledge Graph Analytics • Real-time Insights</div>
           </div>
         </footer>
-      </div>
+    </div>
     </>
   );
 }
