@@ -291,22 +291,52 @@ export default function Home() {
                   
                   {/* Search Suggestions */}
                   {showSuggestions && (
-                    <div className="glass-card" data-suggestions-container style={{ 
-                      position: "absolute", 
-                      top: "100%", 
-                      left: 0, 
-                      right: 0, 
-                      marginTop: 8, 
-                      padding: 16,
-                      zIndex: 99999,
-                      boxShadow: "0 20px 40px rgba(0, 0, 0, 0.5)",
-                      backgroundColor: "rgba(15, 8, 36, 0.95)",
-                      backdropFilter: "blur(20px)"
-                    }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: "var(--text-secondary)" }}>
+                    <>
+                      {/* Background Overlay */}
+                      <div 
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          backgroundColor: "rgba(0, 0, 0, 0.7)",
+                          zIndex: 999998,
+                          backdropFilter: "blur(5px)"
+                        }}
+                        onClick={() => setShowSuggestions(false)}
+                      />
+                      
+                      {/* Suggestions Modal */}
+                      <div 
+                        className="glass-card" 
+                        data-suggestions-container 
+                        style={{ 
+                          position: "fixed",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -50%)",
+                          width: "90%",
+                          maxWidth: "600px",
+                          padding: 24,
+                          zIndex: 999999,
+                          boxShadow: "0 30px 60px rgba(0, 0, 0, 0.8)",
+                          backgroundColor: "rgba(15, 8, 36, 0.98)",
+                          backdropFilter: "blur(30px)",
+                          border: "2px solid rgba(167, 139, 250, 0.5)",
+                          borderRadius: 16
+                        }}
+                      >
+                      <div style={{ 
+                        fontSize: 16, 
+                        fontWeight: 700, 
+                        marginBottom: 16, 
+                        color: "var(--nebula-purple)",
+                        textAlign: "center"
+                      }}>
                         🔍 Popüler Aramalar
                       </div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
                         {searchSuggestions.map((suggestion, index) => (
                           <button
                             key={index}
@@ -316,13 +346,29 @@ export default function Home() {
                               search();
                             }}
                             className="btn-secondary"
-                            style={{ fontSize: 12, padding: "8px 12px", whiteSpace: "nowrap" }}
+                            style={{ 
+                              fontSize: 13, 
+                              padding: "10px 16px", 
+                              whiteSpace: "nowrap",
+                              borderRadius: 8,
+                              border: "1px solid rgba(167, 139, 250, 0.3)"
+                            }}
                           >
                             {suggestion}
                           </button>
                         ))}
                       </div>
-                    </div>
+                      <div style={{ 
+                        textAlign: "center", 
+                        marginTop: 16, 
+                        fontSize: 12, 
+                        color: "var(--text-secondary)",
+                        opacity: 0.7
+                      }}>
+                        Bir öneri seçin veya dışarı tıklayın
+                      </div>
+                      </div>
+                    </>
                   )}
                 </div>
                 <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">

@@ -578,12 +578,18 @@ a:hover {
 
 /* Search Suggestions Container */
 [data-suggestions-container] {
-  z-index: 99999 !important;
-  position: absolute !important;
-  background: rgba(15, 8, 36, 0.95) !important;
-  backdrop-filter: blur(20px) !important;
-  border: 1px solid rgba(167, 139, 250, 0.3) !important;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+  z-index: 999999 !important;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 90% !important;
+  max-width: 600px !important;
+  background: rgba(15, 8, 36, 0.98) !important;
+  backdrop-filter: blur(30px) !important;
+  border: 2px solid rgba(167, 139, 250, 0.5) !important;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8) !important;
+  border-radius: 16px !important;
 }
 
 /* Responsive Design */
@@ -655,10 +661,12 @@ a:hover {
   [data-suggestions-container] {
     position: fixed !important;
     top: 50% !important;
-    left: 16px !important;
-    right: 16px !important;
-    transform: translateY(-50%) !important;
-    z-index: 100000 !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 95% !important;
+    max-width: 400px !important;
+    z-index: 999999 !important;
+    padding: 20px !important;
   }
   
   /* Mobile Q&A Input */
