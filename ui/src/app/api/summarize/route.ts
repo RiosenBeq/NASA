@@ -100,36 +100,28 @@ PUBLICATIONS TO ANALYZE:
 ${titles.map((t, i) => `${i + 1}. ${t}`).join("\n")}
 
 CRITICAL REQUIREMENTS:
-Create a concise, focused summary following NASA's Space Bioscience Research Challenge guidelines. This summary will be used by NASA scientists, mission planners, and program managers for critical decision-making.
+Create a very concise summary following NASA's Space Bioscience Research Challenge guidelines. Keep it brief and actionable.
 
 STRUCTURE YOUR ANALYSIS AS FOLLOWS:
 
 ## 🚀 EXECUTIVE SUMMARY
-Provide a concise 2-3 sentence overview covering:
-- Research scope and primary objectives
-- Major findings and their significance
+Provide a 1-2 sentence overview covering:
+- Research scope and key findings
 - Direct relevance to NASA's space exploration goals
 
-## 🔬 KEY RESEARCH FINDINGS
+## 🔬 KEY FINDINGS
 For each publication, provide:
-- **Experimental Design**: Methodology and sample sizes
-- **Primary Results**: Key data points and findings
-- **Limitations**: Study constraints and methodological concerns
+- **Methodology**: Brief experimental approach
+- **Results**: Key findings only
+- **Limitations**: Main study constraints
 
-## 🌌 SPACE BIOLOGY IMPACT
-- **Knowledge Advancement**: How this research advances space biology
-- **Space Environment Effects**: Impacts of microgravity, radiation, isolation
-- **Human Spaceflight Implications**: Applications for Moon/Mars missions
+## 🌌 NASA IMPACT
+- **Space Biology Advancement**: How this advances space biology
+- **Mission Applications**: Direct applications for Moon/Mars missions
 
 ## 🔍 RESEARCH GAPS
-- **Unanswered Questions**: Specific research questions that remain
-- **Methodological Gaps**: Experimental approaches not yet attempted
-- **Data Gaps**: Missing information or insufficient sample sizes
-
-## ⚖️ SCIENTIFIC CONSENSUS
-- **Scientific Consensus**: Areas of agreement across studies
-- **Conflicting Evidence**: Contradictory findings and explanations
-- **Replication Status**: Which findings have been independently verified
+- **Critical Questions**: Most important unanswered questions
+- **Next Steps**: Essential follow-up research needed
 
 ## 💡 STRATEGIC ACTIONABLE INSIGHTS
 ${persona === 'scientist' ? `
@@ -184,12 +176,12 @@ ${!persona ? `
 
 FORMATTING REQUIREMENTS:
 - Use clear section headers with emojis (## 🚀)
-- Use concise bullet points
-- Include key data points and measurements
-- Provide concrete examples
+- Use concise bullet points (max 2-3 per section)
+- Include only essential data points
+- Provide brief examples
 - Maintain scientific rigor while being accessible
-- Length: Concise and focused (300-500 words maximum)
-- Include specific recommendations and actionable items
+- Length: Very concise and focused (150-250 words maximum)
+- Include only critical recommendations
 
 TONE: Highly professional, evidence-based, forward-looking, strategically actionable, scientifically rigorous
 

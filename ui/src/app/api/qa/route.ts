@@ -77,33 +77,34 @@ ${question}
 TARGET AUDIENCE: ${personaContext}
 
 INSTRUCTIONS:
-Provide a comprehensive, evidence-based answer that:
+Focus specifically on the publication "${title}" and provide a detailed answer that:
 
-1. **DIRECTLY ANSWERS THE QUESTION**
-   - Be specific and detailed
-   - Reference the publication title and what it suggests
-   - Use domain expertise in space bioscience
+1. **ANALYZE THE SPECIFIC PUBLICATION**
+   - What this specific study investigated
+   - Key findings from this publication
+   - Methodology used in this research
+   - Sample size and experimental conditions
 
-2. **PROVIDE SCIENTIFIC CONTEXT**
-   - How this relates to NASA's space exploration goals
-   - Relevant background in space biology/physiology
-   - Connection to lunar/Mars mission planning
+2. **ANSWER THE USER'S QUESTION**
+   - Directly address what they're asking about this publication
+   - Use the publication title and context to inform your answer
+   - Be specific about findings from this particular study
 
-3. **DISCUSS IMPLICATIONS**
-   ${persona === 'scientist' ? '- Research methodology insights\n   - Experimental design considerations\n   - Hypothesis generation opportunities' : ''}
-   ${persona === 'manager' ? '- Strategic importance\n   - Investment priorities\n   - Program alignment' : ''}
-   ${persona === 'architect' ? '- Mission design implications\n   - Operational constraints\n   - Risk mitigation strategies' : ''}
-   ${!persona ? '- Practical applications\n   - Future research directions\n   - Mission planning considerations' : ''}
+3. **PROVIDE RELEVANT CONTEXT**
+   - How this specific publication fits into NASA's space biology research
+   - What makes this study unique or important
+   - Connection to current NASA missions (Artemis, Mars, ISS)
 
-4. **ACKNOWLEDGE LIMITATIONS**
-   - State if full abstract/methods are not available
-   - Indicate what additional information would be helpful
-   - Suggest related NASA resources (OSDR, Task Book, etc.)
+4. **DISCUSS IMPLICATIONS OF THIS SPECIFIC STUDY**
+   ${persona === 'scientist' ? '- What this study teaches us about research methods\n   - How to build upon these specific findings\n   - Experimental approaches used in this study' : ''}
+   ${persona === 'manager' ? '- Strategic value of this specific research\n   - Investment implications of these findings\n   - How this study supports program goals' : ''}
+   ${persona === 'architect' ? '- Mission design insights from this study\n   - Operational implications of these findings\n   - Risk factors identified in this research' : ''}
+   ${!persona ? '- Practical applications of these specific findings\n   - How this study advances space biology\n   - Mission planning insights from this research' : ''}
 
-5. **ACTIONABLE INSIGHTS**
-   - Next steps for investigation
-   - Related research to explore
-   - Potential collaborations or data sources
+5. **ACKNOWLEDGE STUDY LIMITATIONS**
+   - What this specific study couldn't determine
+   - Limitations of the methodology used
+   - What additional research would complement these findings
 
 FORMAT:
 - Use clear paragraphs with headers (###) where appropriate

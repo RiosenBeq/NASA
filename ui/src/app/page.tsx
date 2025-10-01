@@ -377,10 +377,15 @@ export default function Home() {
                   <input 
                     value={cardQA[it.id]?.q || ""} 
                     onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
-                    placeholder={lang === 'tr' ? '💬 Bu makale hakkında soru sorun...' : '💬 Ask about this article...'}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !cardQA[it.id]?.loading && cardQA[it.id]?.q?.trim()) {
+                        askQA(it.id);
+                      }
+                    }}
+                    placeholder={lang === 'tr' ? '💬 Bu makale hakkında soru sorun... (Enter ile sor)' : '💬 Ask about this article... (Press Enter)'}
                     style={{ flex: 1, fontWeight: 500 }}
                   />
-                  <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px" }}>
+                  <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px" }}>
                     {cardQA[it.id]?.loading ? "⏳" : "🤔 Sor"}
                   </button>
                 </div>
