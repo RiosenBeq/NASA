@@ -199,10 +199,12 @@ export default function Home() {
             
             <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
               {[
+                { href: "/scientist", label: "Scientist" },
+                { href: "/manager", label: "Manager" },
+                { href: "/architect", label: "Architect" },
+                { href: "/analytics", label: "Analytics" },
                 { href: "/guidelines", label: "Guidelines" },
                 { href: "/resources", label: "Resources" },
-                { href: "/analytics", label: "Analytics" },
-                { href: "/scientist", label: "Scientist" },
               ].map((link) => (
                 <Link key={link.href} href={link.href} className="btn-secondary" style={{ fontSize: 13 }}>
                   {link.label}
