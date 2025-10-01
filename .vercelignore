@@ -7,10 +7,12 @@ ui/.next/
 ui/out/
 .next/
 
-# Everything except ui folder
+# Everything except necessary files
 *
 !ui/
 !ui/**
+!vercel.json
+!package.json
 
 # Environment
 .env
