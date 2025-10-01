@@ -4,5 +4,6 @@
   "devCommand": "cd ui && npm run dev",
   "installCommand": "cd ui && npm install",
   "framework": "nextjs",
-  "outputDirectory": "ui/.next"
+  "outputDirectory": "ui/.next",
+  "rootDirectory": "ui"
 }
