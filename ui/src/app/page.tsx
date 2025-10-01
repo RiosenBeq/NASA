@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -73,7 +73,7 @@ export default function Home() {
   };
 
 
-  async function search(query?: string) {
+  const search = useCallback(async (query?: string) => {
     const qq = (query ?? q).trim();
     if (!qq) {
       setError("Lütfen bir arama sorgusu girin.");
@@ -126,9 +126,9 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }
+  }, [q, api]);
 
-  async function summarizeOne(id: number) {
+  const summarizeOne = useCallback(async (id: number) => {
     const current = cardSummaries[id];
     if (current && !current.loading && current.text) {
       setCardSummaries((p) => ({ ...p, [id]: { text: "", loading: false } }));
@@ -148,9 +148,9 @@ export default function Home() {
       const msg = e instanceof Error ? e.message : "";
       setCardSummaries((p) => ({ ...p, [id]: { text: `Özetleme başarısız: ${msg}`, loading: false } }));
     }
-  }
+  }, [api, persona, sectionPriority, cardSummaries]);
 
-  async function askQA(id: number) {
+  const askQA = useCallback(async (id: number) => {
     const qa = cardQA[id] || { q: "", a: "", loading: false };
     const question = (qa.q || "").trim();
     if (!question) return;
@@ -168,7 +168,7 @@ export default function Home() {
       const msg = e instanceof Error ? e.message : "";
       setCardQA((p) => ({ ...p, [id]: { q: question, a: `Soru cevaplanamadı: ${msg}`, loading: false } }));
     }
-  }
+  }, [api, persona, cardQA]);
 
   useEffect(() => {
     const performInitialSearch = async () => {
@@ -211,46 +211,46 @@ export default function Home() {
       <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
         {/* Premium Header */}
         <header className="header-sticky">
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-              <div style={{ position: "relative" }}>
-                <Image src="/logo.png" alt="logo" width={52} height={52} priority className="glow pulse-slow" />
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
                 <div style={{ position: "absolute", inset: -8, background: "radial-gradient(circle, rgba(167, 139, 250, 0.4), transparent)", filter: "blur(12px)", zIndex: -1 }} />
               </div>
-              <div>
-                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3 }}>
+              <div style={{ minWidth: 0 }}>
+                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
                   NextGenLAB
                 </div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500 }}>SPACE BIOSCIENCE EXPLORER</div>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>SPACE BIOSCIENCE EXPLORER</div>
               </div>
             </div>
             
-            <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
               {[
                 { href: "/analytics", label: "Analytics" },
                 { href: "/guidelines", label: "Guidelines" },
                 { href: "/resources", label: "Resources" },
               ].map((link) => (
-                <Link key={link.href} href={link.href} className="btn-secondary" style={{ fontSize: 13 }}>
+                <Link key={link.href} href={link.href} className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
                   {link.label}
                 </Link>
               ))}
             </nav>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end", minWidth: 0 }}>
+              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500, minWidth: 60 }}>
                 <option value="tr">🇹🇷</option>
                 <option value="en">🇬🇧</option>
               </select>
               
-              <select value={persona} onChange={(e) => setPersona(e.target.value as "scientist" | "manager" | "architect" | "")} style={{ fontSize: 13, fontWeight: 500 }}>
+              <select value={persona} onChange={(e) => setPersona(e.target.value as "scientist" | "manager" | "architect" | "")} style={{ fontSize: 13, fontWeight: 500, minWidth: 80 }}>
                 <option value="">Persona</option>
                 <option value="scientist">Scientist</option>
                 <option value="manager">Manager</option>
                 <option value="architect">Architect</option>
               </select>
               
-              <select value={sectionPriority} onChange={(e) => setSectionPriority(e.target.value as "results" | "discussion" | "conclusion" | "")} style={{ fontSize: 13, fontWeight: 500 }}>
+              <select value={sectionPriority} onChange={(e) => setSectionPriority(e.target.value as "results" | "discussion" | "conclusion" | "")} style={{ fontSize: 13, fontWeight: 500, minWidth: 80 }}>
                 <option value="">Section</option>
                 <option value="results">Results</option>
                 <option value="discussion">Discussion</option>
@@ -263,20 +263,20 @@ export default function Home() {
         {/* Main Content */}
         <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
           {/* Premium Hero Section */}
-          <div className="glass-card" style={{ padding: 48, marginBottom: 40, position: "relative", overflow: "hidden" }}>
+          <div className="glass-card" style={{ padding: "48px 24px", marginBottom: 40, position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none" }} />
             
             <div style={{ textAlign: "center", marginBottom: 32, position: "relative", zIndex: 1 }}>
-              <h1 className="text-gradient" style={{ fontSize: 48, fontWeight: 900, marginBottom: 16, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
+              <h1 className="text-gradient" style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 900, marginBottom: 16, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
                 {T("title")}
               </h1>
-              <p style={{ fontSize: 18, color: "var(--text-secondary)", letterSpacing: 0.3, fontWeight: 500, maxWidth: 700, margin: "0 auto" }}>{T("subtitle")}</p>
+              <p style={{ fontSize: "clamp(16px, 2.5vw, 18px)", color: "var(--text-secondary)", letterSpacing: 0.3, fontWeight: 500, maxWidth: 700, margin: "0 auto" }}>{T("subtitle")}</p>
             </div>
 
             {/* Premium Search Bar */}
             <div style={{ position: "relative", zIndex: 10 }}>
-              <div style={{ display: "flex", gap: 14, marginBottom: 24 }}>
-                <div style={{ position: "relative", flex: 1 }}>
+              <div style={{ display: "flex", gap: 14, marginBottom: 24, flexWrap: "wrap" }}>
+                <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
                   <input
                     value={q}
                     onChange={(e) => {
@@ -323,7 +323,7 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16 }}>
+                <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">
                   {loading ? "⏳" : T("search")}
                 </button>
               </div>
@@ -347,16 +347,16 @@ export default function Home() {
 
             {!loading && items.map((it) => (
               <div key={it.id} className="result-card">
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 24, marginBottom: 18 }}>
-                  <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: 1, fontSize: 20, fontWeight: 700, color: "var(--text-primary)", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 24, marginBottom: 18, flexWrap: "wrap" }}>
+                  <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: "1 1 300px", fontSize: "clamp(16px, 2.5vw, 20px)", fontWeight: 700, color: "var(--text-primary)", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s", minWidth: 0 }}>
                     {it.title}
                   </a>
                   
-                  <div style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0 }}>
-                    <div className="badge" data-tooltip="Relevance Score" style={{ background: `linear-gradient(135deg, rgba(167, 139, 250, ${it.score * 0.3}), rgba(96, 165, 250, ${it.score * 0.2}))` }}>
+                  <div style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
+                    <div className="badge" data-tooltip="Relevance Score" style={{ background: `linear-gradient(135deg, rgba(167, 139, 250, ${it.score * 0.3}), rgba(96, 165, 250, ${it.score * 0.2}))`, whiteSpace: "nowrap" }}>
                       ⭐ {(it.score * 100).toFixed(1)}%
                     </div>
-                    <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>
+                    <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px", whiteSpace: "nowrap" }} aria-label={`Summarize article: ${it.title}`}>
                       {cardSummaries[it.id]?.loading ? "⏳" : (cardSummaries[it.id]?.text ? "✕" : "✨ Özetle")}
                     </button>
                   </div>
@@ -373,7 +373,7 @@ export default function Home() {
                 )}
 
                 {/* Premium Q&A Section */}
-                <div style={{ marginTop: 20, display: "flex", gap: 12, alignItems: "center" }}>
+                <div style={{ marginTop: 20, display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
                   <input 
                     value={cardQA[it.id]?.q || ""} 
                     onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
@@ -383,9 +383,9 @@ export default function Home() {
                       }
                     }}
                     placeholder={lang === 'tr' ? '💬 Bu makale hakkında soru sorun... (Enter ile sor)' : '💬 Ask about this article... (Press Enter)'}
-                    style={{ flex: 1, fontWeight: 500 }}
+                    style={{ flex: "1 1 200px", fontWeight: 500, minWidth: 0 }}
                   />
-                  <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px" }}>
+                  <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px", flexShrink: 0 }} aria-label={`Ask question about: ${it.title}`}>
                     {cardQA[it.id]?.loading ? "⏳" : "🤔 Sor"}
                   </button>
                 </div>
@@ -432,7 +432,7 @@ export default function Home() {
         <footer className="glass-card" style={{ marginTop: 80, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", textAlign: "center", fontSize: 14, color: "var(--text-secondary)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, marginBottom: 16 }}>
-              <Image src="/logo.png" alt="logo" width={28} height={28} className="glow" />
+              <Image src="/logo.png" alt="NextGenLAB Logo" width={28} height={28} className="glow" />
               <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>NextGenLAB Space Bioscience Explorer</span>
             </div>
             <div style={{ marginBottom: 12 }}>

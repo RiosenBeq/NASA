@@ -225,25 +225,25 @@ export default function AnalyticsPage() {
       <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
         {/* Premium Header */}
         <header className="header-sticky">
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-              <Image src="/logo.png" alt="logo" width={52} height={52} priority className="glow pulse-slow" />
-              <div>
-                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3 }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
+              <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
+              <div style={{ minWidth: 0 }}>
+                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
                   Analytics Dashboard
                 </div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500 }}>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>
                   KNOWLEDGE GRAPH INSIGHTS • {data.lastUpdated.toLocaleTimeString()}
                 </div>
               </div>
             </div>
             
-            <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", justifyContent: "flex-end", minWidth: 0 }}>
               {/* Auto-refresh toggle */}
               <button
                 onClick={() => setAutoRefresh(!autoRefresh)}
                 className={`btn-secondary ${autoRefresh ? 'active' : ''}`}
-                style={{ fontSize: 12, padding: '8px 12px' }}
+                style={{ fontSize: 12, padding: '8px 12px', whiteSpace: "nowrap" }}
               >
                 {autoRefresh ? '🔄 Auto' : '⏸️ Manual'}
               </button>
@@ -252,16 +252,16 @@ export default function AnalyticsPage() {
               <button
                 onClick={loadData}
                 className="btn-primary"
-                style={{ fontSize: 12, padding: '8px 12px' }}
+                style={{ fontSize: 12, padding: '8px 12px', whiteSpace: "nowrap" }}
                 disabled={data.loading}
               >
                 {data.loading ? '⏳' : '🔄'} Refresh
               </button>
               
-              <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <Link href="/" className="btn-secondary" style={{ fontSize: 13 }}>Home</Link>
-                <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13 }}>Guidelines</Link>
-                <Link href="/resources" className="btn-secondary" style={{ fontSize: 13 }}>Resources</Link>
+              <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Home</Link>
+                <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Guidelines</Link>
+                <Link href="/resources" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Resources</Link>
           </nav>
             </div>
         </div>
@@ -485,7 +485,7 @@ export default function AnalyticsPage() {
         <footer className="glass-card" style={{ marginTop: 80, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", textAlign: "center", fontSize: 14, color: "var(--text-secondary)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, marginBottom: 16 }}>
-              <Image src="/logo.png" alt="logo" width={28} height={28} className="glow" />
+              <Image src="/logo.png" alt="NextGenLAB Logo" width={28} height={28} className="glow" />
               <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>NextGenLAB Space Bioscience Explorer</span>
             </div>
             <div style={{ fontSize: 13, opacity: 0.7 }}>Knowledge Graph Analytics • Real-time Insights</div>

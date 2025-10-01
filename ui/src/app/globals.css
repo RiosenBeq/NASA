@@ -575,3 +575,85 @@ a:hover {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  /* Mobile Header Adjustments */
+  .header-sticky > div {
+    padding: 12px 16px !important;
+    gap: 16px !important;
+  }
+  
+  /* Mobile Navigation */
+  nav {
+    gap: 8px !important;
+  }
+  
+  /* Mobile Buttons */
+  .btn-primary, .btn-secondary {
+    font-size: 12px !important;
+    padding: 8px 12px !important;
+  }
+  
+  /* Mobile Hero Section */
+  .glass-card {
+    padding: 24px 16px !important;
+  }
+  
+  /* Mobile Search Bar */
+  input[type="text"] {
+    padding: 14px 16px !important;
+    font-size: 14px !important;
+  }
+  
+  /* Mobile Result Cards */
+  .result-card {
+    padding: 16px !important;
+  }
+  
+  /* Mobile Typography */
+  h1 {
+    font-size: clamp(24px, 6vw, 32px) !important;
+  }
+  
+  h2 {
+    font-size: clamp(20px, 5vw, 24px) !important;
+  }
+  
+  /* Mobile Select Elements */
+  select {
+    font-size: 12px !important;
+    padding: 6px 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra Small Mobile */
+  .header-sticky > div {
+    padding: 8px 12px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  /* Stack navigation vertically on very small screens */
+  nav {
+    justify-content: center !important;
+    margin-top: 8px;
+  }
+  
+  /* Mobile Search Suggestions */
+  [data-suggestions-container] {
+    position: fixed !important;
+    top: 50% !important;
+    left: 16px !important;
+    right: 16px !important;
+    transform: translateY(-50%) !important;
+    z-index: 10000 !important;
+  }
+  
+  /* Mobile Q&A Input */
+  .glass-card input {
+    font-size: 14px !important;
+    padding: 12px !important;
+  }
+}
