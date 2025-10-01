@@ -40,7 +40,6 @@ export default function AnalyticsPage() {
     sortBy: 'count'
   });
   const [selectedMetric, setSelectedMetric] = useState<'nodes' | 'edges' | 'years'>('nodes');
-  const [autoRefresh, setAutoRefresh] = useState(true);
 
   const loadData = useCallback(async () => {
     try {
@@ -67,12 +66,6 @@ export default function AnalyticsPage() {
     loadData();
   }, [loadData]);
 
-  // Auto-refresh every 30 seconds
-  useEffect(() => {
-    if (!autoRefresh) return;
-    const interval = setInterval(loadData, 30000);
-    return () => clearInterval(interval);
-  }, [autoRefresh, loadData]);
 
   // Computed metrics
   const nodeTypeEntries = useMemo<[string, number][]>(() => {
@@ -238,32 +231,11 @@ export default function AnalyticsPage() {
               </div>
             </div>
             
-            <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", justifyContent: "flex-end", minWidth: 0 }}>
-              {/* Auto-refresh toggle */}
-              <button
-                onClick={() => setAutoRefresh(!autoRefresh)}
-                className={`btn-secondary ${autoRefresh ? 'active' : ''}`}
-                style={{ fontSize: 12, padding: '8px 12px', whiteSpace: "nowrap" }}
-              >
-                {autoRefresh ? '🔄 Auto' : '⏸️ Manual'}
-              </button>
-              
-              {/* Refresh button */}
-              <button
-                onClick={loadData}
-                className="btn-primary"
-                style={{ fontSize: 12, padding: '8px 12px', whiteSpace: "nowrap" }}
-                disabled={data.loading}
-              >
-                {data.loading ? '⏳' : '🔄'} Refresh
-              </button>
-              
-              <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-                <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Home</Link>
-                <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Guidelines</Link>
-                <Link href="/resources" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Resources</Link>
+            <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
+              <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Home</Link>
+              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Guidelines</Link>
+              <Link href="/resources" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Resources</Link>
           </nav>
-            </div>
         </div>
       </header>
 
@@ -477,7 +449,7 @@ export default function AnalyticsPage() {
               </div>
             ) : (
               <LineChart data={yearEntries} color="#22d3ee" />
-            )}
+          )}
         </section>
       </main>
 

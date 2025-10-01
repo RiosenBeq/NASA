@@ -126,7 +126,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [q, api]);
+  }, [api, q]);
 
   const summarizeOne = useCallback(async (id: number) => {
     const current = cardSummaries[id];
