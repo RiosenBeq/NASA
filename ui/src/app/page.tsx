@@ -347,7 +347,7 @@ export default function Home() {
                             onClick={() => {
                               setQ(suggestion);
                               setShowSuggestions(false);
-                              search();
+                              search(suggestion);
                             }}
                             className="btn-secondary"
                             style={{ 
