@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
     const id: number = body?.id;
     const question: string = body?.question || "";
     const persona: string | null = body?.persona || null;
+    const lang: string = body?.lang || "tr";
 
     if (!question.trim()) {
       return NextResponse.json(
@@ -61,61 +62,128 @@ export async function POST(req: NextRequest) {
       }, { status: 404 });
     }
 
+    // Extract PMC ID from URL to fetch full article content
+    let pmcId = "";
+    let pmid = "";
+    
+    if (url.includes("pmc")) {
+      const pmcMatch = url.match(/PMC(\d+)/);
+      if (pmcMatch) {
+        pmcId = pmcMatch[1];
+      }
+    }
+    
+    if (url.includes("pubmed")) {
+      const pmidMatch = url.match(/pubmed\/(\d+)/);
+      if (pmidMatch) {
+        pmid = pmidMatch[1];
+      }
+    }
+
+    // Fetch article content from PubMed/PMC
+    let articleContent = "";
+    let articleAbstract = "";
+    
+    try {
+      if (pmid) {
+        // Fetch from PubMed
+        const pubmedResponse = await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=${pmid}&retmode=xml&rettype=abstract`);
+        const pubmedXml = await pubmedResponse.text();
+        
+        // Extract abstract from XML
+        const abstractMatch = pubmedXml.match(/<AbstractText[^>]*>([^<]+)<\/AbstractText>/);
+        if (abstractMatch) {
+          articleAbstract = abstractMatch[1];
+        }
+        
+        // Extract title from XML
+        const titleMatch = pubmedXml.match(/<ArticleTitle[^>]*>([^<]+)<\/ArticleTitle>/);
+        if (titleMatch) {
+          articleContent = `Title: ${titleMatch[1]}\n\nAbstract: ${articleAbstract}`;
+        }
+      } else if (pmcId) {
+        // Fetch from PMC
+        const pmcResponse = await fetch(`https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=PMC${pmcId}&retmode=xml&rettype=abstract`);
+        const pmcXml = await pmcResponse.text();
+        
+        // Extract abstract from PMC XML
+        const abstractMatch = pmcXml.match(/<abstract[^>]*>([\s\S]*?)<\/abstract>/);
+        if (abstractMatch) {
+          articleAbstract = abstractMatch[1].replace(/<[^>]*>/g, '').trim();
+        }
+        
+        articleContent = `Title: ${title}\n\nAbstract: ${articleAbstract}`;
+      }
+    } catch (fetchError) {
+      console.log("Could not fetch article content:", fetchError);
+      // Fallback to title only
+      articleContent = `Title: ${title}`;
+    }
+
     const client = new OpenAI({ apiKey });
 
     const personaContext = getPersonaContext(persona || undefined);
 
     const prompt = `You are an expert NASA bioscience research analyst with comprehensive knowledge of space biology, human spaceflight, and mission planning.
 
-PUBLICATION CONTEXT:
+ARTICLE CONTENT TO ANALYZE:
+${articleContent}
+
+PUBLICATION DETAILS:
 - Title: ${title}
 - URL: ${url}
+- PMC ID: ${pmcId || 'N/A'}
+- PMID: ${pmid || 'N/A'}
 
 USER QUESTION:
 ${question}
 
 TARGET AUDIENCE: ${personaContext}
 
-INSTRUCTIONS:
-Focus specifically on the publication "${title}" and provide a detailed answer that:
+CRITICAL INSTRUCTIONS:
+You MUST analyze the specific article content provided above and answer the user's question based on the actual research findings, methodology, and conclusions from this specific publication. Do not provide generic answers.
 
-1. **ANALYZE THE SPECIFIC PUBLICATION**
-   - What this specific study investigated
-   - Key findings from this publication
-   - Methodology used in this research
-   - Sample size and experimental conditions
+1. **ANALYZE THE SPECIFIC ARTICLE CONTENT**
+   - Extract key findings directly from the abstract/content provided
+   - Identify the specific methodology used in this study
+   - Note sample sizes, experimental conditions, and results mentioned
+   - Highlight unique aspects of this particular research
 
-2. **ANSWER THE USER'S QUESTION**
-   - Directly address what they're asking about this publication
-   - Use the publication title and context to inform your answer
-   - Be specific about findings from this particular study
+2. **ANSWER THE USER'S QUESTION BASED ON THIS ARTICLE**
+   - Use ONLY information from the article content provided above
+   - Quote specific findings, numbers, or conclusions from the article
+   - If the article doesn't contain information relevant to the question, clearly state this
+   - Be precise and cite specific details from the research
 
-3. **PROVIDE RELEVANT CONTEXT**
-   - How this specific publication fits into NASA's space biology research
-   - What makes this study unique or important
-   - Connection to current NASA missions (Artemis, Mars, ISS)
+3. **PROVIDE CONTEXT BASED ON THIS SPECIFIC STUDY**
+   - How this specific study's findings relate to NASA's space biology research
+   - What makes this particular study's approach or results unique
+   - Connection to current NASA missions based on this study's focus
 
-4. **DISCUSS IMPLICATIONS OF THIS SPECIFIC STUDY**
-   ${persona === 'scientist' ? '- What this study teaches us about research methods\n   - How to build upon these specific findings\n   - Experimental approaches used in this study' : ''}
-   ${persona === 'manager' ? '- Strategic value of this specific research\n   - Investment implications of these findings\n   - How this study supports program goals' : ''}
-   ${persona === 'architect' ? '- Mission design insights from this study\n   - Operational implications of these findings\n   - Risk factors identified in this research' : ''}
-   ${!persona ? '- Practical applications of these specific findings\n   - How this study advances space biology\n   - Mission planning insights from this research' : ''}
+4. **DISCUSS IMPLICATIONS OF THIS SPECIFIC RESEARCH**
+   ${persona === 'scientist' ? '- What this specific study teaches about research methods\n   - How to build upon these exact findings\n   - Experimental approaches used in this particular study' : ''}
+   ${persona === 'manager' ? '- Strategic value of this specific research\n   - Investment implications of these exact findings\n   - How this specific study supports program goals' : ''}
+   ${persona === 'architect' ? '- Mission design insights from this specific study\n   - Operational implications of these exact findings\n   - Risk factors identified in this particular research' : ''}
+   ${!persona ? '- Practical applications of these specific findings\n   - How this particular study advances space biology\n   - Mission planning insights from this specific research' : ''}
 
-5. **ACKNOWLEDGE STUDY LIMITATIONS**
-   - What this specific study couldn't determine
-   - Limitations of the methodology used
-   - What additional research would complement these findings
+5. **ACKNOWLEDGE THIS STUDY'S LIMITATIONS**
+   - What this specific study couldn't determine (based on the content)
+   - Limitations mentioned in the abstract or methodology
+   - What additional research would complement these specific findings
 
 FORMAT:
 - Use clear paragraphs with headers (###) where appropriate
-- Include specific examples and details
+- Quote specific findings from the article content
+- Include exact numbers, percentages, or results mentioned in the article
 - Reference the publication as [${title}](${url})
-- Maintain scientific rigor while being accessible
+- If the article doesn't contain relevant information, clearly state this
 - Length: Thorough but concise (200-400 words)
 
-LANGUAGE: Turkish (professional scientific Turkish)
+LANGUAGE: ${lang === 'en' ? 'English (professional scientific English)' : 'Turkish (professional scientific Turkish)'}
 
 TONE: Expert, evidence-based, helpful, forward-looking
+
+IMPORTANT: Base your answer ONLY on the article content provided above. If the article doesn't contain information relevant to the question, clearly state this limitation.
 
 Answer the question now:`;
 

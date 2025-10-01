@@ -178,7 +178,7 @@ export default function Home() {
       const res = await fetch(`${api}/qa`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, question, persona: persona || null }),
+        body: JSON.stringify({ id, question, persona: persona || null, lang }),
       });
       const data = await res.json();
       const ans = res.ok ? (data.answer || "") : (data?.answer || "");
@@ -187,7 +187,7 @@ export default function Home() {
       const msg = e instanceof Error ? e.message : "";
       setCardQA((p) => ({ ...p, [id]: { q: question, a: `Soru cevaplanamadı: ${msg}`, loading: false } }));
     }
-  }, [api, persona, cardQA]);
+  }, [api, persona, cardQA, lang]);
 
   useEffect(() => {
     const performInitialSearch = async () => {
