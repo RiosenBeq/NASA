@@ -40,27 +40,42 @@ export async function POST(req: NextRequest) {
     const lines = csvText.split("\n");
     const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, ""));
 
-    const idCol = headers.indexOf("id");
     const titleCol = headers.indexOf("Title");
-    const urlCol = headers.indexOf("PMC_URL");
+    const urlCol = headers.indexOf("Link");
 
-    if (idCol === -1 || titleCol === -1 || urlCol === -1) {
-      throw new Error("CSV missing required columns");
+    if (titleCol === -1 || urlCol === -1) {
+      throw new Error("CSV missing required columns: Title or Link");
     }
 
     const citations: string[] = [];
     const titles: string[] = [];
 
     for (const id of ids) {
-      const row = lines
-        .slice(1)
-        .find((line) => line.startsWith(`${id},`) || line.startsWith(`"${id}"`));
-      if (row) {
-        const cols = row.split(",").map((c) => c.trim().replace(/"/g, ""));
-        const title = cols[titleCol] || "Unknown";
-        const url = cols[urlCol] || "";
-        titles.push(title);
-        citations.push(`[${title}](${url})`);
+      // ID is 1-based index from search API
+      const rowIndex = parseInt(id) - 1;
+      if (rowIndex >= 0 && rowIndex < lines.length - 1) {
+        const row = lines[rowIndex + 1]; // +1 because we skip header
+        if (row) {
+          // Parse CSV row (Title,Link format)
+          let title = "";
+          let url = "";
+          if (row.startsWith("\"")) {
+            const endQuote = row.indexOf("\"", 1);
+            title = row.slice(1, endQuote);
+            const rest = row.slice(endQuote + 2);
+            url = rest;
+          } else {
+            const comma = row.indexOf(",");
+            title = row.slice(0, comma);
+            url = row.slice(comma + 1);
+          }
+          title = title.trim();
+          url = url.trim();
+          if (title && url) {
+            titles.push(title);
+            citations.push(`[${title}](${url})`);
+          }
+        }
       }
     }
 
