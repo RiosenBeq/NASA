@@ -22,6 +22,25 @@ export default function Home() {
   const [persona, setPersona] = useState<"scientist" | "manager" | "architect" | "">("");
   const [sectionPriority, setSectionPriority] = useState<"results" | "discussion" | "conclusion" | "">("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showImages, setShowImages] = useState<Record<number, boolean>>({});
+
+  // Rastgele görsel seçme fonksiyonu (gelecekte kullanılacak)
+  // const getRandomImage = (id: number) => {
+  //   const images = [
+  //     '/images/articles/space-lab-1.jpg',
+  //     '/images/articles/space-lab-2.jpg', 
+  //     '/images/articles/space-lab-3.jpg',
+  //     '/images/articles/space-lab-4.jpg',
+  //     '/images/articles/space-lab-5.jpg',
+  //     '/images/articles/space-lab-6.jpg',
+  //     '/images/articles/space-lab-7.jpg',
+  //     '/images/articles/space-lab-8.jpg',
+  //     '/images/articles/space-lab-9.jpg',
+  //     '/images/articles/space-lab-10.jpg'
+  //   ];
+  //   const index = id % images.length;
+  //   return images[index];
+  // };
 
   const apiEnv = process.env.NEXT_PUBLIC_API_URL;
   const api = apiEnv && apiEnv.trim().length > 0 ? apiEnv : "/api";
@@ -338,14 +357,14 @@ export default function Home() {
                         borderBottom: "1px solid rgba(167, 139, 250, 0.3)",
                         paddingBottom: 12
                       }}>
-                        🔍 Popüler Aramalar
+                        🔍 {lang === 'tr' ? 'Popüler Aramalar' : 'Popular Searches'}
                       </div>
                       
                       {/* Current Search Input */}
                       {q && (
                         <div style={{ marginBottom: 16, textAlign: "center" }}>
                           <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 }}>
-                            Yazdığınız arama:
+                            {lang === 'tr' ? 'Yazdığınız arama:' : 'Your search:'}
                           </div>
                           <button
                             onClick={() => {
@@ -360,7 +379,7 @@ export default function Home() {
                               fontWeight: 600
                             }}
                           >
-                            🔍 &ldquo;{q}&rdquo; Ara
+                            🔍 &ldquo;{q}&rdquo; {lang === 'tr' ? 'Ara' : 'Search'}
                           </button>
                         </div>
                       )}
@@ -426,7 +445,14 @@ export default function Home() {
                       ⭐ {(it.score * 100).toFixed(1)}%
                         </div>
                     <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px", whiteSpace: "nowrap" }} aria-label={`Summarize article: ${it.title}`}>
-                      {cardSummaries[it.id]?.loading ? "⏳" : (cardSummaries[it.id]?.text ? "✕" : "✨ Özetle")}
+                      {cardSummaries[it.id]?.loading ? "⏳" : (cardSummaries[it.id]?.text ? "✕" : lang === 'tr' ? "✨ Özetle" : "✨ Summarize")}
+                        </button>
+                    <button 
+                      onClick={() => setShowImages(prev => ({ ...prev, [it.id]: !prev[it.id] }))} 
+                      className="btn-secondary" 
+                      style={{ fontSize: 13, padding: "10px 20px", whiteSpace: "nowrap" }}
+                    >
+                      {showImages[it.id] ? (lang === 'tr' ? "🖼️ Gizle" : "🖼️ Hide") : (lang === 'tr' ? "🖼️ Görsel" : "🖼️ Image")}
                         </button>
                       </div>
                     </div>
@@ -434,6 +460,33 @@ export default function Home() {
                     {it.snippet && (
                   <p style={{ color: "var(--text-secondary)", fontSize: 15, lineHeight: 1.7, marginBottom: 20 }}>{it.snippet}</p>
                 )}
+
+                    {showImages[it.id] && (
+                      <div style={{ marginBottom: 20, textAlign: "center" }}>
+                        <div className="glass-card" style={{ padding: 16, background: "rgba(15, 8, 36, 0.3)" }}>
+                          <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 }}>
+                            {lang === 'tr' ? 'İlgili Görsel:' : 'Related Image:'}
+                          </div>
+                          <div style={{ 
+                            width: "100%", 
+                            height: "200px", 
+                            background: "linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(96, 165, 250, 0.2))",
+                            borderRadius: 12,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            border: "2px dashed rgba(167, 139, 250, 0.4)",
+                            fontSize: 14,
+                            color: "var(--text-secondary)"
+                          }}>
+                            🖼️ {lang === 'tr' ? 'Görsel yükleniyor...' : 'Loading image...'}
+                          </div>
+                          <div style={{ fontSize: 10, color: "var(--text-secondary)", marginTop: 8, opacity: 0.7 }}>
+                            {lang === 'tr' ? 'Görselleri /images/articles/ klasörüne ekleyebilirsiniz' : 'You can add images to /images/articles/ folder'}
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     {cardSummaries[it.id]?.text && (
                   <div className="glass-card" style={{ padding: 20, marginTop: 20, marginBottom: 20, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)" }}>
@@ -451,11 +504,11 @@ export default function Home() {
                         askQA(it.id);
                       }
                     }}
-                    placeholder={lang === 'tr' ? '💬 Bu makale hakkında soru sorun... (Enter ile sor)' : '💬 Ask about this article... (Press Enter)'}
+                    placeholder={lang === 'tr' ? '💬 Bu makale hakkında soru sorun...' : '💬 Ask about this article...'}
                     style={{ flex: "1 1 200px", fontWeight: 500, minWidth: 0 }}
                   />
                   <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px", flexShrink: 0 }} aria-label={`Ask question about: ${it.title}`}>
-                    {cardQA[it.id]?.loading ? "⏳" : "🤔 Sor"}
+                    {cardQA[it.id]?.loading ? "⏳" : lang === 'tr' ? "🤔 Sor" : "🤔 Ask"}
                         </button>
                       </div>
 
