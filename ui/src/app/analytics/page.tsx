@@ -477,7 +477,7 @@ export default function AnalyticsPage() {
               </div>
             ) : (
               <LineChart data={yearEntries} color="#22d3ee" />
-          )}
+            )}
         </section>
       </main>
 

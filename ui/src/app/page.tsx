@@ -291,26 +291,44 @@ export default function Home() {
                   
                   {/* Search Suggestions */}
                   {showSuggestions && (
-                    <div 
-                      className="glass-card" 
-                      data-suggestions-container 
-                      style={{ 
-                        position: "absolute",
-                        top: "100%",
-                        left: 0,
-                        right: 0,
-                        marginTop: 8,
-                        padding: 20,
-                        zIndex: 9999999,
-                        boxShadow: "0 25px 50px rgba(0, 0, 0, 0.6)",
-                        backgroundColor: "rgba(15, 8, 36, 0.98)",
-                        backdropFilter: "blur(25px)",
-                        border: "2px solid rgba(167, 139, 250, 0.6)",
-                        borderRadius: 12,
-                        maxHeight: "400px",
-                        overflowY: "auto"
-                      }}
-                    >
+                    <>
+                      {/* Background Overlay */}
+                      <div 
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          backgroundColor: "rgba(0, 0, 0, 0.8)",
+                          zIndex: 99999998,
+                          backdropFilter: "blur(5px)"
+                        }}
+                        onClick={() => setShowSuggestions(false)}
+                      />
+                      
+                      {/* Suggestions Modal */}
+                      <div 
+                        className="glass-card" 
+                        data-suggestions-container 
+                        style={{ 
+                          position: "fixed",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -50%)",
+                          width: "90%",
+                          maxWidth: "600px",
+                          padding: 24,
+                          zIndex: 99999999,
+                          boxShadow: "0 30px 60px rgba(0, 0, 0, 0.9)",
+                          backgroundColor: "rgba(15, 8, 36, 0.99)",
+                          backdropFilter: "blur(30px)",
+                          border: "3px solid rgba(167, 139, 250, 0.8)",
+                          borderRadius: 16,
+                          maxHeight: "500px",
+                          overflowY: "auto"
+                        }}
+                      >
                       <div style={{ 
                         fontSize: 15, 
                         fontWeight: 700, 
@@ -346,7 +364,8 @@ export default function Home() {
                           </button>
                         ))}
                       </div>
-                    </div>
+                      </div>
+                    </>
                   )}
                 </div>
                 <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">
