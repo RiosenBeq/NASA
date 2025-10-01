@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import Link from "next/link";
 import Image from "next/image";
+import Header from "../../components/Header";
 
 type KgStats = {
   node_types: Record<string, number>;
@@ -27,6 +27,9 @@ type FilterOptions = {
 export default function AnalyticsPage() {
   const apiEnv = process.env.NEXT_PUBLIC_API_URL || "";
   const api = apiEnv.trim() ? apiEnv : "";
+  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [persona, setPersona] = useState<"scientist" | "manager" | "architect" | "">("");
+  const [sectionPriority, setSectionPriority] = useState<"results" | "discussion" | "conclusion" | "">("");
   const [data, setData] = useState<AnalyticsData>({
     stats: null,
     years: null,
@@ -204,46 +207,30 @@ export default function AnalyticsPage() {
 
   return (
     <>
-      {/* Space Background */}
-      <div className="space-background" />
-      <div className="stars stars-layer-1" />
-      <div className="stars stars-layer-2" />
-      <div className="stars stars-layer-3" />
-      <div className="nebula">
-        <div className="nebula-glow-1" />
-        <div className="nebula-glow-2" />
-        <div className="nebula-glow-3" />
-      </div>
-
-      <div style={{ minHeight: "100vh", position: "relative", zIndex: 10 }}>
-        {/* Premium Header */}
-        <header className="header-sticky">
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
-              <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
-              <div style={{ minWidth: 0 }}>
-                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
-                  Analytics Dashboard
-                </div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>
-                  KNOWLEDGE GRAPH INSIGHTS • {data.lastUpdated.toLocaleTimeString()}
-                </div>
-              </div>
-            </div>
-            
-            <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-              <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Home</Link>
-              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Guidelines</Link>
-              <Link href="/resources" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Resources</Link>
-          </nav>
-        </div>
-      </header>
+      <Header 
+        lang={lang} 
+        setLang={setLang} 
+        persona={persona} 
+        setPersona={setPersona} 
+        sectionPriority={sectionPriority} 
+        setSectionPriority={setSectionPriority} 
+      />
 
         <main style={{ maxWidth: 1200, margin: "32px auto", padding: "0 24px" }}>
+          {/* Page Title */}
+          <div className="glass-card" style={{ padding: "32px 24px", marginBottom: 32, textAlign: "center" }}>
+            <h1 style={{ fontSize: "clamp(24px, 6vw, 32px)", fontWeight: 900, margin: "0 0 8px 0", color: "var(--text-primary)" }}>
+              {lang === "tr" ? "📊 Analitik Dashboard" : "📊 Analytics Dashboard"}
+            </h1>
+            <p style={{ fontSize: 16, color: "var(--text-secondary)", margin: 0 }}>
+              {lang === "tr" ? "Bilgi Grafiği İçgörüleri" : "Knowledge Graph Insights"}
+            </p>
+          </div>
+
           {data.error && (
             <div className="glass-card" style={{ marginBottom: 24, padding: 20, border: "1px solid rgba(239, 68, 68, 0.3)", color: "#FCA5A5" }}>
               ⚠️ {data.error}
-            </div>
+        </div>
           )}
 
           {/* Filter Controls */}
@@ -463,7 +450,6 @@ export default function AnalyticsPage() {
             <div style={{ fontSize: 13, opacity: 0.7 }}>Knowledge Graph Analytics • Real-time Insights</div>
           </div>
         </footer>
-    </div>
     </>
   );
 }

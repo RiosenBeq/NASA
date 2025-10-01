@@ -1,52 +1,34 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Header from "../../components/Header";
 
 export default function GuidelinesPage() {
+  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [persona, setPersona] = useState<"scientist" | "manager" | "architect" | "">("");
+  const [sectionPriority, setSectionPriority] = useState<"results" | "discussion" | "conclusion" | "">("");
   return (
     <>
-      {/* Space Background */}
-      <div className="space-background" />
-      <div className="stars stars-layer-1" />
-      <div className="stars stars-layer-2" />
-      <div className="stars stars-layer-3" />
-      <div className="nebula">
-        <div className="nebula-glow-1" />
-        <div className="nebula-glow-2" />
-        <div className="nebula-glow-3" />
-      </div>
-
-      <div style={{ minHeight: "100vh", position: "relative", zIndex: 10 }}>
-        {/* Premium Header */}
-        <header className="header-sticky">
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
-              <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
-              <div style={{ minWidth: 0 }}>
-                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
-                  Guidelines
-                </div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>HOW TO USE THE PLATFORM</div>
-              </div>
-          </div>
-            
-            <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-              <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Home</Link>
-              <Link href="/resources" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Resources</Link>
-              <Link href="/analytics" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Analytics</Link>
-          </nav>
-        </div>
-      </header>
+      <Header 
+        lang={lang} 
+        setLang={setLang} 
+        persona={persona} 
+        setPersona={setPersona} 
+        sectionPriority={sectionPriority} 
+        setSectionPriority={setSectionPriority} 
+      />
 
         <main style={{ maxWidth: 1200, margin: "32px auto", padding: "0 24px" }}>
           {/* Hero */}
           <div className="glass-card" style={{ padding: 48, marginBottom: 32, textAlign: "center" }}>
             <h1 className="text-gradient" style={{ fontSize: 42, fontWeight: 900, marginTop: 0, marginBottom: 16, lineHeight: 1.2 }}>
-              🚀 Platform Kullanım Kılavuzu
+              🚀 {lang === "tr" ? "Platform Kullanım Kılavuzu" : "Platform Usage Guidelines"}
             </h1>
             <p style={{ fontSize: 17, color: "var(--text-secondary)", maxWidth: 800, margin: "0 auto", lineHeight: 1.7 }}>
-              NASA Space Bioscience Explorer platformunu nasıl etkili kullanacağınızı öğrenin. 
-              608 yayın üzerinde semantik arama, yapay zeka destekli özetler ve bilgi grafiği görselleştirmesi.
+              {lang === "tr" 
+                ? "NASA Space Bioscience Explorer platformunu nasıl etkili kullanacağınızı öğrenin. 608 yayın üzerinde semantik arama, yapay zeka destekli özetler ve bilgi grafiği görselleştirmesi."
+                : "Learn how to effectively use the NASA Space Bioscience Explorer platform. Semantic search over 608 publications, AI-powered summaries, and knowledge graph visualization."
+              }
             </p>
           </div>
 
@@ -241,7 +223,6 @@ export default function GuidelinesPage() {
             <div style={{ fontSize: 13, opacity: 0.7 }}>Need help? Check Resources or contact support</div>
           </div>
         </footer>
-    </div>
     </>
   );
 }
