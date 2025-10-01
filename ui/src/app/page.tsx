@@ -281,9 +281,9 @@ export default function Home() {
               value={q}
                     onChange={(e) => {
                       setQ(e.target.value);
-                      setShowSuggestions(e.target.value.length === 0);
+                      setShowSuggestions(true);
                     }}
-                    onFocus={() => setShowSuggestions(q.length === 0)}
+                    onFocus={() => setShowSuggestions(true)}
               onKeyDown={(e) => e.key === "Enter" && search()}
               placeholder={T("queryPlaceholder")}
                     style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
@@ -340,6 +340,30 @@ export default function Home() {
                       }}>
                         🔍 Popüler Aramalar
                       </div>
+                      
+                      {/* Current Search Input */}
+                      {q && (
+                        <div style={{ marginBottom: 16, textAlign: "center" }}>
+                          <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 }}>
+                            Yazdığınız arama:
+                          </div>
+                          <button
+                            onClick={() => {
+                              setShowSuggestions(false);
+                              search();
+                            }}
+                            className="btn-primary"
+                            style={{
+                              fontSize: 14,
+                              padding: "10px 20px",
+                              borderRadius: 8,
+                              fontWeight: 600
+                            }}
+                          >
+                            🔍 &ldquo;{q}&rdquo; Ara
+                          </button>
+                        </div>
+                      )}
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
                         {searchSuggestions.map((suggestion, index) => (
                           <button
