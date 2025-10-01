@@ -25,8 +25,6 @@ type FilterOptions = {
 };
 
 export default function AnalyticsPage() {
-  const apiEnv = process.env.NEXT_PUBLIC_API_URL || "";
-  const api = apiEnv.trim() ? apiEnv : "";
   const [lang, setLang] = useState<"tr" | "en">("tr");
   const [persona, setPersona] = useState<"scientist" | "manager" | "architect" | "">("");
   const [sectionPriority, setSectionPriority] = useState<"results" | "discussion" | "conclusion" | "">("");
@@ -48,9 +46,9 @@ export default function AnalyticsPage() {
     try {
       setData(prev => ({ ...prev, loading: true, error: null }));
         const [s, y] = await Promise.all([
-          fetch(`/api/kg/stats`).then((r) => r.json()),
-          fetch(`/api/kg/year_counts`).then((r) => r.json()),
-        ]);
+        fetch(`/api/kg/stats`).then((r) => r.json()),
+        fetch(`/api/kg/year_counts`).then((r) => r.json()),
+      ]);
       setData({
         stats: s,
         years: y?.data || null,
@@ -62,7 +60,7 @@ export default function AnalyticsPage() {
         const msg = e instanceof Error ? e.message : "Failed to load analytics";
       setData(prev => ({ ...prev, loading: false, error: msg }));
     }
-  }, [api]);
+  }, []);
 
   useEffect(() => {
     loadData();
@@ -447,7 +445,7 @@ export default function AnalyticsPage() {
               <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>NextGenLAB Space Bioscience Explorer</span>
             </div>
             <div style={{ fontSize: 13, opacity: 0.7 }}>Knowledge Graph Analytics • Real-time Insights</div>
-          </div>
+    </div>
         </footer>
     </>
   );

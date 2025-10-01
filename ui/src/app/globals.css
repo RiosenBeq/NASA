@@ -566,6 +566,33 @@ a:hover {
   box-shadow: 0 0 20px rgba(167, 139, 250, 0.4);
 }
 
+/* Focus States for Accessibility */
+.btn-primary:focus,
+.btn-secondary:focus,
+input:focus,
+select:focus {
+  outline: 2px solid var(--nebula-purple);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.2);
+}
+
+/* Skip Link for Screen Readers */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--nebula-purple);
+  color: var(--star-white);
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
 
 .pulse-slow {
   animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;

@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Image from "next/image";
+import Header from "../components/Header";
 
 type Item = {
   id: number;
@@ -45,8 +45,8 @@ export default function Home() {
   const apiEnv = process.env.NEXT_PUBLIC_API_URL;
   const api = apiEnv && apiEnv.trim().length > 0 ? apiEnv : "/api";
 
-  // Popular search suggestions
-  const searchSuggestions = [
+  // Popular search suggestions - memoized for performance
+  const searchSuggestions = useMemo(() => [
     "microgravity plant root growth",
     "space radiation effects on DNA",
     "artificial gravity systems",
@@ -57,9 +57,9 @@ export default function Home() {
     "space medicine research",
     "bone loss in space",
     "space biotechnology"
-  ];
+  ], []);
 
-  const T = (key: string) => {
+  const T = useCallback((key: string) => {
     const tr: Record<string, string> = {
       title: "NASA Uzay Biyobilim Keşif Platformu",
       subtitle: "Yapay zeka destekli semantik arama • 608 yayın • Gerçek zamanlı özetler",
@@ -89,7 +89,7 @@ export default function Home() {
       asking: "Answering...",
     };
     return (lang === "tr" ? tr : en)[key] || key;
-  };
+  }, [lang]);
 
 
   const search = useCallback(async (query?: string) => {
@@ -216,71 +216,22 @@ export default function Home() {
 
   return (
     <>
-      {/* Uzay Arka Plan Efektleri */}
-      <div className="space-background" />
-      <div className="stars stars-layer-1" />
-      <div className="stars stars-layer-2" />
-      <div className="stars stars-layer-3" />
-      <div className="nebula">
-        <div className="nebula-glow-1" />
-        <div className="nebula-glow-2" />
-        <div className="nebula-glow-3" />
-      </div>
-
-      <div style={{ minHeight: "100vh", position: "relative", zIndex: 10 }}>
-        {/* Premium Header */}
-        <header className="header-sticky">
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
-              <div style={{ position: "relative", flexShrink: 0 }}>
-                <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
-                <div style={{ position: "absolute", inset: -8, background: "radial-gradient(circle, rgba(167, 139, 250, 0.4), transparent)", filter: "blur(12px)", zIndex: -1 }} />
-              </div>
-              <div style={{ minWidth: 0 }}>
-                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
-                  NextGenLAB
-                </div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>SPACE BIOSCIENCE EXPLORER</div>
-              </div>
-          </div>
-            
-            <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
-              {[
-                { href: "/analytics", label: "Analytics" },
-                { href: "/guidelines", label: "Guidelines" },
-                { href: "/resources", label: "Resources" },
-              ].map((link) => (
-                <Link key={link.href} href={link.href} className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
-                  {link.label}
-                </Link>
-              ))}
-          </nav>
-
-            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end", minWidth: 0 }}>
-              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500, minWidth: 60 }}>
-                <option value="tr">🇹🇷</option>
-                <option value="en">🇬🇧</option>
-            </select>
-              
-              <select value={persona} onChange={(e) => setPersona(e.target.value as "scientist" | "manager" | "architect" | "")} style={{ fontSize: 13, fontWeight: 500, minWidth: 80 }}>
-              <option value="">Persona</option>
-              <option value="scientist">Scientist</option>
-              <option value="manager">Manager</option>
-                <option value="architect">Architect</option>
-            </select>
-              
-              <select value={sectionPriority} onChange={(e) => setSectionPriority(e.target.value as "results" | "discussion" | "conclusion" | "")} style={{ fontSize: 13, fontWeight: 500, minWidth: 80 }}>
-              <option value="">Section</option>
-              <option value="results">Results</option>
-              <option value="discussion">Discussion</option>
-              <option value="conclusion">Conclusion</option>
-            </select>
-          </div>
-        </div>
-      </header>
+      {/* Skip Link for Accessibility */}
+      <a href="#main-content" className="skip-link">
+        {lang === 'tr' ? 'Ana içeriğe geç' : 'Skip to main content'}
+      </a>
+      
+      <Header 
+        lang={lang} 
+        setLang={setLang} 
+        persona={persona} 
+        setPersona={setPersona} 
+        sectionPriority={sectionPriority} 
+        setSectionPriority={setSectionPriority} 
+      />
 
         {/* Main Content */}
-        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
+        <main id="main-content" style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
           {/* Premium Hero Section */}
           <div className="glass-card" style={{ padding: "48px 24px", marginBottom: 40, position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none" }} />
@@ -297,16 +248,22 @@ export default function Home() {
               <div style={{ display: "flex", gap: 14, marginBottom: 24, flexWrap: "wrap" }}>
                 <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
             <input
+              type="text"
               value={q}
-                    onChange={(e) => {
-                      setQ(e.target.value);
-                      setShowSuggestions(true);
-                    }}
-                    onFocus={() => setShowSuggestions(true)}
+              onChange={(e) => {
+                setQ(e.target.value);
+                setShowSuggestions(true);
+              }}
+              onFocus={() => setShowSuggestions(true)}
               onKeyDown={(e) => e.key === "Enter" && search()}
               placeholder={T("queryPlaceholder")}
-                    style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
-                  />
+              aria-label={lang === 'tr' ? "Arama kutusu" : "Search box"}
+              aria-describedby="search-help"
+              style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
+            />
+            <div id="search-help" style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 8, opacity: 0.8 }}>
+              {lang === 'tr' ? "Enter tuşuna basarak arama yapabilirsiniz" : "Press Enter to search"}
+            </div>
                   
                   {/* Search Suggestions */}
                   {showSuggestions && (
@@ -411,7 +368,13 @@ export default function Home() {
                     </>
                   )}
                 </div>
-                <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">
+                <button 
+                  onClick={() => search()} 
+                  disabled={loading} 
+                  className="btn-primary" 
+                  style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} 
+                  aria-label={lang === 'tr' ? 'Yayınları ara' : 'Search publications'}
+                >
                   {loading ? "⏳" : T("search")}
             </button>
           </div>
@@ -419,8 +382,29 @@ export default function Home() {
 
 
             {error && (
-              <div className="glass-card" style={{ marginTop: 16, padding: 16, border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: 12, color: "#FCA5A5", fontSize: 14 }}>
+              <div 
+                className="glass-card" 
+                style={{ marginTop: 16, padding: 16, border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: 12, color: "#FCA5A5", fontSize: 14 }}
+                role="alert"
+                aria-live="polite"
+              >
                 ⚠️ {error}
+                <button 
+                  onClick={() => setError(null)}
+                  style={{ 
+                    marginLeft: 12, 
+                    padding: "4px 8px", 
+                    background: "rgba(239, 68, 68, 0.2)", 
+                    border: "1px solid rgba(239, 68, 68, 0.4)", 
+                    borderRadius: 4, 
+                    color: "#ef4444", 
+                    fontSize: 11, 
+                    cursor: "pointer" 
+                  }}
+                  aria-label={lang === 'tr' ? 'Hatayı kapat' : 'Close error'}
+                >
+                  ✕
+                </button>
               </div>
             )}
           </div>
@@ -428,15 +412,27 @@ export default function Home() {
           {/* Premium Results */}
           <div style={{ display: "grid", gap: 24 }}>
             {loading && (
-              Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="result-card loading-shimmer" style={{ height: 180 }} />
-              ))
-            )}
+              <div 
+                role="status"
+                aria-live="polite"
+                aria-label={lang === 'tr' ? 'Arama yapılıyor' : 'Searching'}
+              >
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="result-card loading-shimmer" style={{ height: 180 }} />
+                ))}
+            </div>
+          )}
 
             {!loading && items.map((it) => (
               <div key={it.id} className="result-card">
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 24, marginBottom: 18, flexWrap: "wrap" }}>
-                  <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: "1 1 300px", fontSize: "clamp(16px, 2.5vw, 20px)", fontWeight: 700, color: "var(--text-primary)", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s", minWidth: 0 }}>
+                  <a 
+                    href={it.url} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    style={{ flex: "1 1 300px", fontSize: "clamp(16px, 2.5vw, 20px)", fontWeight: 700, color: "var(--text-primary)", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s", minWidth: 0 }}
+                    aria-label={`${it.title} - ${lang === 'tr' ? 'Makaleyi yeni sekmede aç' : 'Open article in new tab'}`}
+                  >
                     {it.title}
                   </a>
                   
@@ -497,6 +493,7 @@ export default function Home() {
                 {/* Premium Q&A Section */}
                 <div style={{ marginTop: 20, display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
                   <input 
+                    type="text"
                     value={cardQA[it.id]?.q || ""} 
                     onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
                     onKeyDown={(e) => {
@@ -505,6 +502,7 @@ export default function Home() {
                       }
                     }}
                     placeholder={lang === 'tr' ? '💬 Bu makale hakkında soru sorun...' : '💬 Ask about this article...'}
+                    aria-label={lang === 'tr' ? 'Makale hakkında soru sor' : 'Ask question about article'}
                     style={{ flex: "1 1 200px", fontWeight: 500, minWidth: 0 }}
                   />
                   <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px", flexShrink: 0 }} aria-label={`Ask question about: ${it.title}`}>
@@ -563,7 +561,6 @@ export default function Home() {
             <div style={{ fontSize: 13, opacity: 0.7 }}>608 NASA Publications • Real-time AI Analysis • Knowledge Graph Visualization</div>
         </div>
       </footer>
-    </div>
     </>
   );
 }
