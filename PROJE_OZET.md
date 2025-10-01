@@ -19,8 +19,9 @@ Bu uygulama, NASA'nın 608 uzay biyolojisi araştırmasını akıllıca özetley
 
 2. **Yapay Zeka Özetleri**
    - Her makale için "Özetle" butonuna basın
-   - ChatGPT (GPT-4) detaylı özet oluşturur
-   - 500-800 kelime kapsamlı analiz
+   - ChatGPT (GPT-4) çok detaylı özet oluşturur
+   - 800-1200 kelime kapsamlı analiz
+   - NASA'nın istediği 9 bölümlü profesyonel format
    - Türkçe özet verir
 
 3. **Soru-Cevap**
@@ -145,11 +146,14 @@ Deploy tamamlandığında:
 
 ### **NASA Gereksinimleri:**
 - ✅ 608 yayın özetleniyor
-- ✅ AI ile detaylı özetler
+- ✅ AI ile çok detaylı özetler (800-1200 kelime)
+- ✅ 9 bölümlü kapsamlı analiz yapısı
 - ✅ Bilgi boşlukları analizi
 - ✅ Bilimsel ilerleme takibi
 - ✅ NASA kaynakları entegre
 - ✅ Persona desteği (bilim insanı/yönetici/mimar)
+- ✅ Teknik spesifikasyonlar
+- ✅ Stratejik öneriler
 
 ### **Deployment:**
 - ✅ Vercel config hazır
