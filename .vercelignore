@@ -1,0 +1,63 @@
+# Dependencies
+node_modules/
+ui/node_modules/
+
+# Build outputs
+ui/.next/
+ui/out/
+.next/
+
+# Environment
+.env
+.env.local
+.env*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+
+# Data files
+data/
+db/
+*.db
+*.sqlite
+*.csv
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backend services (not needed for UI deployment)
+backend/
+services/
+etl/
+scripts/
+
+# Docker
+docker-compose.yml
+Dockerfile
+
+# Documentation
+docs/
+*.md
+!ui/README.md
+
+# Git
+.git/
+.gitignore
+

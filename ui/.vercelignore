@@ -1,2 +1,28 @@
-# Vercel ignore file
-# These files are large but needed for runtime, so we don't ignore them
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+
+# Environment
+.env.local
+.env*.local
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Tests
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx

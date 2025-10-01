@@ -1,7 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Optimize production build
+  // Turbopack configuration
+  experimental: {
+    turbo: {
+      rules: {
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+    },
+  },
+
+  // Production optimizations
   compress: true,
   poweredByHeader: false,
   
@@ -12,13 +24,23 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'www.ncbi.nlm.nih.gov',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'raw.githubusercontent.com',
+        pathname: '/**',
       },
     ],
   },
+
+  // Environment variables that should be available on the client side
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || '',
+  },
+
+  // Output configuration for Vercel
+  output: 'standalone',
 };
 
 export default nextConfig;

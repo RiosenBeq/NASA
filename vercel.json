@@ -1,6 +1,8 @@
 {
-  "buildCommand": "cd ui && npm run build",
-  "outputDirectory": "ui/.next",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd ui && npm install && npm run build",
+  "devCommand": "cd ui && npm run dev",
+  "installCommand": "cd ui && npm install",
   "framework": "nextjs",
-  "installCommand": "cd ui && npm install"
+  "outputDirectory": "ui/.next"
 }
