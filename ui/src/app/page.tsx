@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -16,9 +16,6 @@ export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [year, setYear] = useState<string>("");
-  const [organism, setOrganism] = useState<string>("");
-  const [platform, setPlatform] = useState<string>("");
   const [lang, setLang] = useState<"tr" | "en">("tr");
   const [cardSummaries, setCardSummaries] = useState<Record<number, {text: string; loading: boolean}>>({});
   const [cardQA, setCardQA] = useState<Record<number, {q: string; a: string; loading: boolean}>>({});
@@ -34,10 +31,6 @@ export default function Home() {
       subtitle: "Yapay zeka destekli semantik arama • 608 yayın • Gerçek zamanlı özetler",
       search: "🚀 Ara",
       queryPlaceholder: "Uzay biyolojisi araştırmanızı yazın...",
-      year: "Yıl",
-      organism: "Organizma",
-      platform: "Platform",
-      clear: "Temizle",
       noResult: "Sonuç bulunamadı. Farklı anahtar kelimeler deneyin.",
       copy: "Kopyala",
       source: "Kaynak",
@@ -52,10 +45,6 @@ export default function Home() {
       subtitle: "AI-powered semantic search • 608 publications • Real-time summaries",
       search: "🚀 Search",
       queryPlaceholder: "Search space biology research...",
-      year: "Year",
-      organism: "Organism",
-      platform: "Platform",
-      clear: "Clear",
       noResult: "No results found. Try different keywords.",
       copy: "Copy",
       source: "Source",
@@ -68,10 +57,6 @@ export default function Home() {
     return (lang === "tr" ? tr : en)[key] || key;
   };
 
-  const filtersActive = useMemo(() => {
-    const tags = [year && `${year}`, organism && organism, platform && platform].filter(Boolean) as string[];
-    return tags;
-  }, [year, organism, platform]);
 
   async function search(query?: string) {
     const qq = (query ?? q).trim();
@@ -86,22 +71,6 @@ export default function Home() {
     try {
       const params = new URLSearchParams({ q: qq });
       
-      if (year) {
-        const yearNum = parseInt(year);
-        if (isNaN(yearNum) || yearNum < 1950 || yearNum > 2030) {
-          throw new Error("Geçersiz yıl formatı (1950-2030 arası olmalı)");
-        }
-        params.set("year_min", year);
-        params.set("year_max", year);
-      }
-      
-      if (organism && organism.trim()) {
-        params.set("organism", organism.trim());
-      }
-      
-      if (platform && platform.trim()) {
-        params.set("platform", platform.trim());
-      }
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
@@ -291,25 +260,6 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Premium Filters */}
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", position: "relative", zIndex: 1 }}>
-              <input value={year} onChange={(e) => setYear(e.target.value)} placeholder={T("year")} style={{ width: 130, fontWeight: 500 }} />
-              <input value={organism} onChange={(e) => setOrganism(e.target.value)} placeholder={T("organism")} style={{ width: 160, fontWeight: 500 }} />
-              <input value={platform} onChange={(e) => setPlatform(e.target.value)} placeholder={T("platform")} style={{ width: 160, fontWeight: 500 }} />
-              
-              {filtersActive.length > 0 && (
-                <>
-                  {filtersActive.map((tag) => (
-                    <span key={tag} className="badge">
-                      {tag}
-                    </span>
-                  ))}
-                  <button onClick={() => { setYear(""); setOrganism(""); setPlatform(""); }} className="btn-secondary" style={{ fontSize: 12, padding: "6px 16px" }}>
-                    {T("clear")}
-                  </button>
-                </>
-              )}
-            </div>
 
             {error && (
               <div className="glass-card" style={{ marginTop: 16, padding: 16, border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: 12, color: "#FCA5A5", fontSize: 14 }}>

@@ -2,7 +2,7 @@
 
 ## 📋 Genel Bakış
 
-NASA Space Bioscience Explorer'da **5 farklı filtre** bulunmaktadır. Bu filtreler, 608 uzay biyolojisi yayını arasında daha spesifik arama yapmanızı sağlar.
+NASA Space Bioscience Explorer'da **3 aktif filtre** bulunmaktadır. Bu filtreler, 608 uzay biyolojisi yayını arasında daha spesifik arama yapmanızı sağlar.
 
 ---
 
@@ -217,12 +217,7 @@ Sonuç: Misyon planlama odaklı, gelecek yönelimler vurgulu özet
 ### **Mevcut Durum:**
 - ✅ Ana arama kutusu çalışıyor
 - ✅ Persona ve Section filtreleri çalışıyor (özetler için)
-- ⚠️ Yıl, Organizma, Platform filtreleri UI'da var ama backend'de henüz aktif değil
-
-### **Gelecek Geliştirmeler:**
-- Yıl filtresi için CSV'ye yıl bilgisi eklenmesi
-- Organizma filtresi için makale içeriği analizi
-- Platform filtresi için makale başlığı analizi
+- ✅ Tüm aktif filtreler backend'de destekleniyor
 
 ### **Şu Anda Çalışan:**
 - ✅ Semantik arama (ana kutu)
