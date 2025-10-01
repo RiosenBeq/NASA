@@ -576,6 +576,16 @@ a:hover {
   50% { opacity: 0.7; }
 }
 
+/* Search Suggestions Container */
+[data-suggestions-container] {
+  z-index: 99999 !important;
+  position: absolute !important;
+  background: rgba(15, 8, 36, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(167, 139, 250, 0.3) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   /* Mobile Header Adjustments */
@@ -648,7 +658,7 @@ a:hover {
     left: 16px !important;
     right: 16px !important;
     transform: translateY(-50%) !important;
-    z-index: 10000 !important;
+    z-index: 100000 !important;
   }
   
   /* Mobile Q&A Input */

@@ -274,7 +274,7 @@ export default function Home() {
             </div>
 
             {/* Premium Search Bar */}
-            <div style={{ position: "relative", zIndex: 10 }}>
+            <div style={{ position: "relative", zIndex: 100 }}>
               <div style={{ display: "flex", gap: 14, marginBottom: 24, flexWrap: "wrap" }}>
                 <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
                   <input
@@ -298,8 +298,10 @@ export default function Home() {
                       right: 0, 
                       marginTop: 8, 
                       padding: 16,
-                      zIndex: 9999,
-                      boxShadow: "0 20px 40px rgba(0, 0, 0, 0.3)"
+                      zIndex: 99999,
+                      boxShadow: "0 20px 40px rgba(0, 0, 0, 0.5)",
+                      backgroundColor: "rgba(15, 8, 36, 0.95)",
+                      backdropFilter: "blur(20px)"
                     }}>
                       <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 12, color: "var(--text-secondary)" }}>
                         🔍 Popüler Aramalar
