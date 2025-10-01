@@ -23,9 +23,6 @@ export default function Header({
   const navigationLinks = [
     { href: "/", label: lang === "tr" ? "Ana Sayfa" : "Home" },
     { href: "/analytics", label: lang === "tr" ? "Analitik" : "Analytics" },
-    { href: "/scientist", label: lang === "tr" ? "Bilim İnsanı" : "Scientist" },
-    { href: "/manager", label: lang === "tr" ? "Yönetici" : "Manager" },
-    { href: "/architect", label: lang === "tr" ? "Mimar" : "Architect" },
     { href: "/guidelines", label: lang === "tr" ? "Kılavuzlar" : "Guidelines" },
     { href: "/resources", label: lang === "tr" ? "Kaynaklar" : "Resources" },
   ];
