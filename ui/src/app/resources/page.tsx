@@ -3,44 +3,174 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function ResourcesPage() {
-  return (
-    <div style={{ minHeight: "100vh", background: "radial-gradient(900px 520px at 20% -10%, rgba(124,92,255,0.22), transparent), radial-gradient(900px 520px at 100% 0%, rgba(34,197,94,0.12), transparent), linear-gradient(135deg, #0B0E2C 0%, #1B1270 60%, #4C3FE1 100%)", color: "#EAF2FF" }}>
-      <header style={{ borderBottom: "1px solid rgba(255,255,255,0.1)", position: "sticky", top: 0, backdropFilter: "saturate(120%) blur(6px)", background: "rgba(11,14,44,0.45)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "14px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <Image src="/logo.png" alt="logo" width={40} height={40} />
-            <div style={{ fontWeight: 900, letterSpacing: 0.3, fontSize: 18 }}>NextGenLAB • Resources</div>
-          </div>
-          <nav style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <Link href="/" style={{ color: "#EAF2FF", textDecoration: "none", fontSize: 14 }}>Home</Link>
-            <Link href="/guidelines" style={{ color: "#EAF2FF", textDecoration: "none", fontSize: 14 }}>Guidelines</Link>
-          </nav>
-        </div>
-      </header>
+  const resources = [
+    {
+      title: "📚 SB Publications",
+      desc: "608 açık erişimli NASA Space Biology yayın listesi",
+      url: "https://github.com/jgalazka/SB_publications/tree/main",
+      category: "Primary Source",
+      icon: "📄"
+    },
+    {
+      title: "🛰️ OSDR (Open Science Data Repository)",
+      desc: "NASA'nın uzay biyolojisi ve fiziksel bilimler verileri için birincil veri ve metadata deposu",
+      url: "https://www.nasa.gov/osdr/",
+      category: "Data Repository",
+      icon: "🗄️"
+    },
+    {
+      title: "🔬 NSLSL (NASA Space Life Sciences Lab)",
+      desc: "Ek literatür ve uzay yaşam bilimleri araştırmaları",
+      url: "https://extapps.ksc.nasa.gov/NSLSL/Search",
+      category: "Literature",
+      icon: "📖"
+    },
+    {
+      title: "📊 NASA Task Book",
+      desc: "NASA'nın Biological and Physical Sciences (BPS) Division ve Human Research Program (HRP) tarafından desteklenen araştırma projelerinin çevrimiçi veritabanı. Proje açıklamaları, yıllık ilerleme raporları, nihai raporlar ve NASA destekli çalışmalardan kaynaklanan yayınların bibliyografik listelerini içerir.",
+      url: "https://taskbook.nasaprs.com/tbp/welcome.cfm",
+      category: "Research Database",
+      icon: "📋",
+      featured: true
+    },
+    {
+      title: "🌍 PMC (PubMed Central)",
+      desc: "Biyomedikal ve yaşam bilimleri dergi literatürünün ücretsiz tam metin arşivi",
+      url: "https://www.ncbi.nlm.nih.gov/pmc/",
+      category: "Publication Archive",
+      icon: "🏛️"
+    },
+    {
+      title: "🚀 NASA Biological & Physical Sciences",
+      desc: "NASA'nın uzay biyolojisi ve fiziksel bilimler araştırmaları ana portalı",
+      url: "https://www.nasa.gov/directorates/somd/space-life-physical-sciences-research-applications/",
+      category: "NASA Portal",
+      icon: "🌌"
+    }
+  ];
 
-      <main style={{ maxWidth: 1100, margin: "24px auto", padding: 16 }}>
-        <div style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: 20, boxShadow: "0 12px 30px rgba(0,0,0,0.35)", backdropFilter: "blur(4px)" }}>
-          <h1 style={{ marginTop: 0, fontSize: 22, fontWeight: 900 }}>Resources</h1>
-          <ul style={{ margin: 0, paddingLeft: 18, lineHeight: 1.7 }}>
-            <li><a href="https://github.com/jgalazka/SB_publications/tree/main" target="_blank" rel="noreferrer" style={{ color: "#E7CFFF" }}>SB_publications</a> – 608 açık erişimli yayın listesi.</li>
-            <li><a href="https://www.nasa.gov/osdr/" target="_blank" rel="noreferrer" style={{ color: "#E7CFFF" }}>OSDR</a> – Birincil veri ve metadata.</li>
-            <li><a href="https://extapps.ksc.nasa.gov/NSLSL/Search" target="_blank" rel="noreferrer" style={{ color: "#E7CFFF" }}>NSLSL</a> – Ek literatür.</li>
-            <li>
-              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <a href="https://taskbook.nasaprs.com/tbp/welcome.cfm" target="_blank" rel="noreferrer" style={{ color: "#E7CFFF", fontWeight: 700 }}>Task Book</a>
-                <div style={{ opacity: 0.9 }}>
-                  The NASA Task Book is an online database of research projects supported by NASA’s Biological and Physical Sciences (BPS) Division and Human Research Program (HRP). Users can view project descriptions, annual progress, final reports, and bibliographical listings of publications resulting from NASA-funded studies in Space Biology, Physical Sciences, and Human Research. Visitors can also learn about the potential impact of these studies and the anticipated benefits that such research could offer to us on Earth.
+  return (
+    <>
+      {/* Space Background */}
+      <div className="space-background" />
+      <div className="stars stars-layer-1" />
+      <div className="stars stars-layer-2" />
+      <div className="stars stars-layer-3" />
+      <div className="nebula">
+        <div className="nebula-glow-1" />
+        <div className="nebula-glow-2" />
+        <div className="nebula-glow-3" />
+      </div>
+
+      <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
+        {/* Premium Header */}
+        <header className="header-sticky">
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+              <Image src="/logo.png" alt="logo" width={52} height={52} priority className="glow pulse-slow" />
+              <div>
+                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3 }}>
+                  Resources
                 </div>
-                <div>
-                  <a href="https://taskbook.nasaprs.com/tbp/welcome.cfm" target="_blank" rel="noreferrer" style={{ fontSize: 13, color: "#0B0E2C", background: "#E7CFFF", border: "none", padding: "8px 12px", borderRadius: 10, fontWeight: 800, textDecoration: "none" }}>Open Task Book</a>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500 }}>EXTERNAL LINKS & DATABASES</div>
+              </div>
+            </div>
+            
+            <nav style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <Link href="/" className="btn-secondary" style={{ fontSize: 13 }}>Home</Link>
+              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13 }}>Guidelines</Link>
+              <Link href="/analytics" className="btn-secondary" style={{ fontSize: 13 }}>Analytics</Link>
+              <Link href="/scientist" className="btn-secondary" style={{ fontSize: 13 }}>Scientist</Link>
+            </nav>
+          </div>
+        </header>
+
+        <main style={{ maxWidth: 1200, margin: "32px auto", padding: "0 24px" }}>
+          {/* Hero */}
+          <div className="glass-card" style={{ padding: 48, marginBottom: 40, textAlign: "center" }}>
+            <h1 className="text-gradient" style={{ fontSize: 42, fontWeight: 900, marginTop: 0, marginBottom: 16, lineHeight: 1.2 }}>
+              🌐 Harici Kaynaklar
+            </h1>
+            <p style={{ fontSize: 17, color: "var(--text-secondary)", maxWidth: 800, margin: "0 auto", lineHeight: 1.7 }}>
+              NASA Space Bioscience araştırmaları için güvenilir veri kaynakları, 
+              literatür veritabanları ve araştırma portalları.
+            </p>
+          </div>
+
+          {/* Resources Grid */}
+          <div style={{ display: "grid", gap: 24, marginBottom: 32 }}>
+            {resources.map((resource, index) => (
+              <div key={index} className={resource.featured ? "result-card" : "glass-card"} style={{ padding: 32, position: "relative", overflow: "hidden" }}>
+                {resource.featured && (
+                  <div style={{ position: "absolute", top: 16, right: 16 }}>
+                    <div className="badge" style={{ background: "linear-gradient(135deg, #a78bfa, #60a5fa)", color: "white", border: "none" }}>
+                      ⭐ Featured
+                    </div>
+                  </div>
+                )}
+                
+                <div style={{ display: "flex", alignItems: "start", gap: 20, marginBottom: 20 }}>
+                  <div style={{ fontSize: 48, flexShrink: 0 }}>{resource.icon}</div>
+                  <div style={{ flex: 1 }}>
+                    <div className="badge" style={{ marginBottom: 12, display: "inline-flex" }}>
+                      {resource.category}
+                    </div>
+                    <h2 style={{ fontSize: 24, fontWeight: 800, marginTop: 0, marginBottom: 12, color: "var(--text-primary)" }}>
+                      {resource.title}
+                    </h2>
+                    <p style={{ fontSize: 16, lineHeight: 1.7, color: "var(--text-secondary)", marginBottom: 20 }}>
+                      {resource.desc}
+                    </p>
+                    <a href={resource.url} target="_blank" rel="noreferrer" className="btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                      🔗 Siteyi Ziyaret Et
+                    </a>
+                  </div>
                 </div>
               </div>
-            </li>
-          </ul>
-        </div>
-      </main>
-    </div>
+            ))}
+          </div>
+
+          {/* Info Card */}
+          <div className="glass-card" style={{ padding: 32, background: "rgba(167, 139, 250, 0.08)" }}>
+            <h3 style={{ fontSize: 20, fontWeight: 700, marginTop: 0, marginBottom: 16, color: "var(--text-primary)" }}>
+              💡 Kullanım Önerisi
+            </h3>
+            <div style={{ display: "grid", gap: 12, fontSize: 15, lineHeight: 1.8, color: "var(--text-secondary)" }}>
+              <div style={{ display: "flex", gap: 12 }}>
+                <span>•</span>
+                <span><strong>SB Publications:</strong> Platform&apos;da bulunan 608 yayının tam listesi için</span>
+              </div>
+              <div style={{ display: "flex", gap: 12 }}>
+                <span>•</span>
+                <span><strong>OSDR:</strong> Ham veri ve metadata&apos;ya erişim için</span>
+              </div>
+              <div style={{ display: "flex", gap: 12 }}>
+                <span>•</span>
+                <span><strong>NSLSL:</strong> Ek literatür taraması için</span>
+              </div>
+              <div style={{ display: "flex", gap: 12 }}>
+                <span>•</span>
+                <span><strong>Task Book:</strong> Devam eden ve tamamlanmış NASA projeleri için</span>
+              </div>
+              <div style={{ display: "flex", gap: 12 }}>
+                <span>•</span>
+                <span><strong>PMC:</strong> Tam metin yayınlara erişim için</span>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer className="glass-card" style={{ marginTop: 80, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", textAlign: "center", fontSize: 14, color: "var(--text-secondary)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, marginBottom: 16 }}>
+              <Image src="/logo.png" alt="logo" width={28} height={28} className="glow" />
+              <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>NextGenLAB Space Bioscience Explorer</span>
+            </div>
+            <div style={{ fontSize: 13, opacity: 0.7 }}>All external resources are provided by NASA and affiliated organizations</div>
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }
-
-

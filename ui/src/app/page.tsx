@@ -334,8 +334,8 @@ export default function Home() {
                   </a>
                   
                   <div style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0 }}>
-                    <div className="badge" data-tooltip="Relevance Score">
-                      ⭐ {it.score.toFixed(3)}
+                    <div className="badge" data-tooltip="Relevance Score" style={{ background: `linear-gradient(135deg, rgba(167, 139, 250, ${it.score * 0.3}), rgba(96, 165, 250, ${it.score * 0.2}))` }}>
+                      ⭐ {(it.score * 100).toFixed(1)}%
                     </div>
                     <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px" }}>
                       {cardSummaries[it.id]?.loading ? "⏳" : (cardSummaries[it.id]?.text ? "✕" : "✨ Özetle")}
