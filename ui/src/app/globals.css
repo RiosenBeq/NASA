@@ -579,17 +579,18 @@ a:hover {
 /* Search Suggestions Container */
 [data-suggestions-container] {
   z-index: 999999 !important;
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  width: 90% !important;
-  max-width: 600px !important;
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  margin-top: 8px !important;
   background: rgba(15, 8, 36, 0.98) !important;
-  backdrop-filter: blur(30px) !important;
-  border: 2px solid rgba(167, 139, 250, 0.5) !important;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8) !important;
-  border-radius: 16px !important;
+  backdrop-filter: blur(25px) !important;
+  border: 2px solid rgba(167, 139, 250, 0.6) !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 12px !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
 }
 
 /* Responsive Design */
@@ -659,14 +660,14 @@ a:hover {
   
   /* Mobile Search Suggestions */
   [data-suggestions-container] {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    width: 95% !important;
-    max-width: 400px !important;
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin-top: 8px !important;
     z-index: 999999 !important;
-    padding: 20px !important;
+    padding: 16px !important;
+    max-height: 300px !important;
   }
   
   /* Mobile Q&A Input */

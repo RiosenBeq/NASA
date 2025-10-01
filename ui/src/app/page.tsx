@@ -223,7 +223,7 @@ export default function Home() {
                 </div>
                 <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>SPACE BIOSCIENCE EXPLORER</div>
               </div>
-            </div>
+          </div>
             
             <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
               {[
@@ -235,30 +235,30 @@ export default function Home() {
                   {link.label}
                 </Link>
               ))}
-            </nav>
+          </nav>
 
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end", minWidth: 0 }}>
               <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500, minWidth: 60 }}>
                 <option value="tr">🇹🇷</option>
                 <option value="en">🇬🇧</option>
-              </select>
+            </select>
               
               <select value={persona} onChange={(e) => setPersona(e.target.value as "scientist" | "manager" | "architect" | "")} style={{ fontSize: 13, fontWeight: 500, minWidth: 80 }}>
-                <option value="">Persona</option>
-                <option value="scientist">Scientist</option>
-                <option value="manager">Manager</option>
+              <option value="">Persona</option>
+              <option value="scientist">Scientist</option>
+              <option value="manager">Manager</option>
                 <option value="architect">Architect</option>
-              </select>
+            </select>
               
               <select value={sectionPriority} onChange={(e) => setSectionPriority(e.target.value as "results" | "discussion" | "conclusion" | "")} style={{ fontSize: 13, fontWeight: 500, minWidth: 80 }}>
-                <option value="">Section</option>
-                <option value="results">Results</option>
-                <option value="discussion">Discussion</option>
-                <option value="conclusion">Conclusion</option>
-              </select>
-            </div>
+              <option value="">Section</option>
+              <option value="results">Results</option>
+              <option value="discussion">Discussion</option>
+              <option value="conclusion">Conclusion</option>
+            </select>
           </div>
-        </header>
+        </div>
+      </header>
 
         {/* Main Content */}
         <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
@@ -274,69 +274,55 @@ export default function Home() {
             </div>
 
             {/* Premium Search Bar */}
-            <div style={{ position: "relative", zIndex: 100 }}>
+            <div style={{ position: "relative", zIndex: 1000 }}>
               <div style={{ display: "flex", gap: 14, marginBottom: 24, flexWrap: "wrap" }}>
                 <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
-                  <input
-                    value={q}
+            <input
+              value={q}
                     onChange={(e) => {
                       setQ(e.target.value);
                       setShowSuggestions(e.target.value.length === 0);
                     }}
                     onFocus={() => setShowSuggestions(q.length === 0)}
-                    onKeyDown={(e) => e.key === "Enter" && search()}
-                    placeholder={T("queryPlaceholder")}
+              onKeyDown={(e) => e.key === "Enter" && search()}
+              placeholder={T("queryPlaceholder")}
                     style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
                   />
                   
                   {/* Search Suggestions */}
                   {showSuggestions && (
-                    <>
-                      {/* Background Overlay */}
-                      <div 
-                        style={{
-                          position: "fixed",
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          backgroundColor: "rgba(0, 0, 0, 0.7)",
-                          zIndex: 999998,
-                          backdropFilter: "blur(5px)"
-                        }}
-                        onClick={() => setShowSuggestions(false)}
-                      />
-                      
-                      {/* Suggestions Modal */}
-                      <div 
-                        className="glass-card" 
-                        data-suggestions-container 
-                        style={{ 
-                          position: "fixed",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                          width: "90%",
-                          maxWidth: "600px",
-                          padding: 24,
-                          zIndex: 999999,
-                          boxShadow: "0 30px 60px rgba(0, 0, 0, 0.8)",
-                          backgroundColor: "rgba(15, 8, 36, 0.98)",
-                          backdropFilter: "blur(30px)",
-                          border: "2px solid rgba(167, 139, 250, 0.5)",
-                          borderRadius: 16
-                        }}
-                      >
+                    <div 
+                      className="glass-card" 
+                      data-suggestions-container 
+                      style={{ 
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        marginTop: 8,
+                        padding: 20,
+                        zIndex: 999999,
+                        boxShadow: "0 25px 50px rgba(0, 0, 0, 0.6)",
+                        backgroundColor: "rgba(15, 8, 36, 0.98)",
+                        backdropFilter: "blur(25px)",
+                        border: "2px solid rgba(167, 139, 250, 0.6)",
+                        borderRadius: 12,
+                        maxHeight: "400px",
+                        overflowY: "auto"
+                      }}
+                    >
                       <div style={{ 
-                        fontSize: 16, 
+                        fontSize: 15, 
                         fontWeight: 700, 
                         marginBottom: 16, 
                         color: "var(--nebula-purple)",
-                        textAlign: "center"
+                        textAlign: "center",
+                        borderBottom: "1px solid rgba(167, 139, 250, 0.3)",
+                        paddingBottom: 12
                       }}>
                         🔍 Popüler Aramalar
                       </div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
                         {searchSuggestions.map((suggestion, index) => (
                           <button
                             key={index}
@@ -347,34 +333,26 @@ export default function Home() {
                             }}
                             className="btn-secondary"
                             style={{ 
-                              fontSize: 13, 
-                              padding: "10px 16px", 
+                              fontSize: 12, 
+                              padding: "8px 14px", 
                               whiteSpace: "nowrap",
-                              borderRadius: 8,
-                              border: "1px solid rgba(167, 139, 250, 0.3)"
+                              borderRadius: 6,
+                              border: "1px solid rgba(167, 139, 250, 0.4)",
+                              backgroundColor: "rgba(167, 139, 250, 0.1)",
+                              transition: "all 0.2s ease"
                             }}
                           >
                             {suggestion}
                           </button>
                         ))}
                       </div>
-                      <div style={{ 
-                        textAlign: "center", 
-                        marginTop: 16, 
-                        fontSize: 12, 
-                        color: "var(--text-secondary)",
-                        opacity: 0.7
-                      }}>
-                        Bir öneri seçin veya dışarı tıklayın
-                      </div>
-                      </div>
-                    </>
+                    </div>
                   )}
                 </div>
                 <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">
                   {loading ? "⏳" : T("search")}
-                </button>
-              </div>
+            </button>
+          </div>
             </div>
 
 
@@ -403,22 +381,22 @@ export default function Home() {
                   <div style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
                     <div className="badge" data-tooltip="Relevance Score" style={{ background: `linear-gradient(135deg, rgba(167, 139, 250, ${it.score * 0.3}), rgba(96, 165, 250, ${it.score * 0.2}))`, whiteSpace: "nowrap" }}>
                       ⭐ {(it.score * 100).toFixed(1)}%
-                    </div>
+                        </div>
                     <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px", whiteSpace: "nowrap" }} aria-label={`Summarize article: ${it.title}`}>
                       {cardSummaries[it.id]?.loading ? "⏳" : (cardSummaries[it.id]?.text ? "✕" : "✨ Özetle")}
-                    </button>
-                  </div>
-                </div>
+                        </button>
+                      </div>
+                    </div>
 
-                {it.snippet && (
+                    {it.snippet && (
                   <p style={{ color: "var(--text-secondary)", fontSize: 15, lineHeight: 1.7, marginBottom: 20 }}>{it.snippet}</p>
                 )}
 
-                {cardSummaries[it.id]?.text && (
+                    {cardSummaries[it.id]?.text && (
                   <div className="glass-card" style={{ padding: 20, marginTop: 20, marginBottom: 20, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)" }}>
-                    {cardSummaries[it.id].text}
-                  </div>
-                )}
+                        {cardSummaries[it.id].text}
+                      </div>
+                    )}
 
                 {/* Premium Q&A Section */}
                 <div style={{ marginTop: 20, display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
@@ -435,15 +413,15 @@ export default function Home() {
                   />
                   <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px", flexShrink: 0 }} aria-label={`Ask question about: ${it.title}`}>
                     {cardQA[it.id]?.loading ? "⏳" : "🤔 Sor"}
-                  </button>
-                </div>
+                        </button>
+                      </div>
 
-                {cardQA[it.id]?.a && (
+                      {cardQA[it.id]?.a && (
                   <div className="glass-card" style={{ padding: 20, marginTop: 16, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)", borderLeft: "3px solid var(--nebula-purple)" }}>
                     <div style={{ fontWeight: 600, marginBottom: 10, color: "var(--nebula-purple)" }}>💡 Yanıt:</div>
                     {cardQA[it.id].a}
-                  </div>
-                )}
+                        </div>
+                      )}
 
                 {/* Premium Resource Links */}
                 <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid rgba(167, 139, 250, 0.1)", display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -462,7 +440,7 @@ export default function Home() {
                   <a href="https://taskbook.nasaprs.com/tbp/welcome.cfm" target="_blank" rel="noreferrer" className="badge">
                     📚 Task Book
                   </a>
-                </div>
+                  </div>
               </div>
             ))}
 
@@ -474,7 +452,7 @@ export default function Home() {
               </div>
             )}
           </div>
-        </main>
+      </main>
 
         {/* Premium Footer */}
         <footer className="glass-card" style={{ marginTop: 80, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
@@ -487,9 +465,9 @@ export default function Home() {
               <span style={{ opacity: 0.8 }}>🚀 Powered by</span> <span style={{ color: "var(--nebula-purple)", fontWeight: 600 }}>OpenAI GPT-4o-mini</span>
             </div>
             <div style={{ fontSize: 13, opacity: 0.7 }}>608 NASA Publications • Real-time AI Analysis • Knowledge Graph Visualization</div>
-          </div>
-        </footer>
-      </div>
+        </div>
+      </footer>
+    </div>
     </>
   );
 }
