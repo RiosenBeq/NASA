@@ -7,6 +7,11 @@ ui/.next/
 ui/out/
 .next/
 
+# Everything except ui folder
+*
+!ui/
+!ui/**
+
 # Environment
 .env
 .env.local
