@@ -66,10 +66,12 @@ export default function ScientistDashboard() {
   };
 
   const renderTrendsAnalysis = () => (
-    <div className="space-y-6">
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h3 className="text-xl font-bold text-blue-400 mb-4">📈 Research Trends Analysis</h3>
-        <p className="text-gray-300 mb-6">
+    <div style={{ display: "grid", gap: "24px" }}>
+      <div className="glass-card" style={{ padding: "32px" }}>
+        <h3 style={{ fontSize: "24px", fontWeight: 700, color: "var(--text-primary)", marginTop: 0, marginBottom: 16 }}>
+          📈 Research Trends Analysis
+        </h3>
+        <p style={{ fontSize: "15px", color: "var(--text-secondary)", marginBottom: "24px", lineHeight: 1.7 }}>
           Analyze publication trends over time to identify hot topics and research directions.
         </p>
         
