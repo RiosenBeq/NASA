@@ -47,10 +47,9 @@ export default function AnalyticsPage() {
   const loadData = useCallback(async () => {
     try {
       setData(prev => ({ ...prev, loading: true, error: null }));
-        const base = api || "";
         const [s, y] = await Promise.all([
-          fetch(`${base}/api/kg/stats`).then((r) => r.json()).catch(async () => fetch(`/api/kg/stats`).then(r=>r.json())),
-          fetch(`${base}/api/kg/year_counts`).then((r) => r.json()).catch(async () => fetch(`/api/kg/year_counts`).then(r=>r.json())),
+          fetch(`/api/kg/stats`).then((r) => r.json()),
+          fetch(`/api/kg/year_counts`).then((r) => r.json()),
         ]);
       setData({
         stats: s,
