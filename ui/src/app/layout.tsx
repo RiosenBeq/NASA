@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   creator: "NextGenLAB",
   publisher: "NextGenLAB",
   robots: "index, follow",
+  manifest: "/manifest.json",
   openGraph: {
     title: "NASA Space Bioscience Explorer",
     description: "AI-powered semantic search across 608 NASA space bioscience publications",

@@ -556,7 +556,7 @@ export default function Home() {
               <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>NextGenLAB Space Bioscience Explorer</span>
             </div>
             <div style={{ marginBottom: 12 }}>
-              <span style={{ opacity: 0.8 }}>🚀 Powered by</span> <span style={{ color: "var(--nebula-purple)", fontWeight: 600 }}>OpenAI GPT-4o-mini</span>
+              <span style={{ opacity: 0.8 }}>🚀 Advanced AI Analysis</span> <span style={{ color: "var(--nebula-purple)", fontWeight: 600 }}>Space Bioscience Research</span>
             </div>
             <div style={{ fontSize: 13, opacity: 0.7 }}>608 NASA Publications • Real-time AI Analysis • Knowledge Graph Visualization</div>
         </div>
