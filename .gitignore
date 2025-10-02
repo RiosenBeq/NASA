@@ -12,7 +12,4 @@ __pycache__/
 **/*.log
 **/.pytest_cache/
 data/parsed_texts/
-<<<<<<< HEAD
 .vercel
-=======
->>>>>>> a80f0b9602a8c5257f9137ed1896fbab3d01e8f5
