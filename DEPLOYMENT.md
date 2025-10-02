@@ -16,22 +16,36 @@
 - ✅ API Endpoints: 8/8 aktif
 - ✅ SSL: Otomatik (Vercel)
 
-## 🔄 Otomatik Deploy
+## 🔄 Deploy Yöntemleri
 
-Her `main` branch'e push yapıldığında Vercel otomatik olarak deploy eder.
+### Yöntem 1: Tek Komut ile Deploy (Önerilen)
 
 ```bash
-git add .
-git commit -m "chore: Update"
-git push origin main
-# Vercel otomatik deploy başlatır
+./deploy.sh
 ```
 
-## 🔧 Manuel Deploy (Gerekirse)
+Bu script otomatik olarak:
+1. Dependencies'leri yükler
+2. Build yapar
+3. Vercel'e deploy eder
+4. Sonuçları gösterir
+
+### Yöntem 2: Manuel Deploy
 
 ```bash
 cd ui
+npm install
+npm run build
 vercel --prod
+```
+
+### Yöntem 3: Git Push (Vercel Git Integration gerektirir)
+
+```bash
+git add .
+git commit -m "feat: Update"
+git push origin main
+# Vercel Dashboard'da Git integration aktifse otomatik deploy olur
 ```
 
 ## 📝 Environment Variables
