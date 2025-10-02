@@ -62,7 +62,8 @@ export async function POST(req: NextRequest) {
       }, { status: 404 });
     }
 
-    const client = new OpenAI({ apiKey });
+    // Configure OpenAI client with retry and timeout
+    const client = new OpenAI({ apiKey, maxRetries: 2, timeout: 20000 });
 
     const personaContext = getPersonaContext(persona || undefined);
 
@@ -121,7 +122,7 @@ TONE: Expert, evidence-based, helpful, forward-looking
 Answer the question now:`;
 
     const msg = await client.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-3.5-turbo",
       messages: [
         {
           role: "system",
@@ -145,7 +146,7 @@ Answer the question now:`;
         publication_id: id,
         publication_title: title,
         persona: persona || "general",
-        model: "gpt-4o-mini"
+        model: "gpt-3.5-turbo"
       }
     });
 
