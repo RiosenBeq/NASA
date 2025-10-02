@@ -199,7 +199,7 @@ Begin your comprehensive analysis now. Remember: This analysis will directly inf
     try {
       // First try via official SDK (with retries)
       const completion = await client.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "gpt-3.5-turbo",
         messages: [
           {
             role: "system",
@@ -225,7 +225,7 @@ Begin your comprehensive analysis now. Remember: This analysis will directly inf
             Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-4o-mini",
+            model: "gpt-3.5-turbo",
             messages: [
               { role: "system", content: "You are a helpful assistant." },
               { role: "user", content: prompt },
@@ -256,7 +256,7 @@ Begin your comprehensive analysis now. Remember: This analysis will directly inf
         persona: persona || "general",
         section_priority: section_priority || "balanced",
         publication_count: titles.length,
-    model: "gpt-4o-mini",
+        model: "gpt-3.5-turbo",
       },
     });
   } catch (error: unknown) {
