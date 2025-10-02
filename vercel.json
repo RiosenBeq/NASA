@@ -1,12 +1,8 @@
 {
-  "buildCommand": "cd ui && npm run build",
-  "devCommand": "cd ui && npm run dev",
-  "installCommand": "cd ui && npm install",
+  "version": 2,
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
   "framework": "nextjs",
-  "outputDirectory": "ui/.next",
-  "git": {
-    "deploymentEnabled": {
-      "main": true
-    }
-  }
+  "rootDirectory": "ui"
 }
