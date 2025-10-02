@@ -1,39 +1,36 @@
-# Dependencies
-node_modules/
-ui/node_modules/
-
-# Build outputs
-ui/.next/
-ui/out/
-.next/
-
-# Everything except necessary files
-*
-!ui/
-!ui/**
-!vercel.json
-!package.json
-
-# Environment
-.env
-.env.local
-.env*.local
-
-# Python
+# Python ve Backend dosyalari
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+**/.venv/
 venv/
 env/
+backend/
+services/api/
+etl/
+scripts/
 
-# Data files
+# Veritabani ve data dosyalari
 data/
 db/
 *.db
 *.sqlite
-*.csv
+
+# Build outputs (Vercel kendi build yapacak)
+.next/
+out/
+dist/
+build/
+
+# Environment dosyalari
+.env
+.env.local
+.env*.local
+
+# Dependencies (Vercel kendi install yapacak)
+node_modules/
 
 # Logs
 *.log
@@ -49,22 +46,9 @@ Thumbs.db
 *.swp
 *.swo
 
-# Backend services (not needed for UI deployment)
-backend/
-services/
-etl/
-scripts/
+# Git
+.git/
 
 # Docker
 docker-compose.yml
 Dockerfile
-
-# Documentation
-docs/
-*.md
-!ui/README.md
-
-# Git
-.git/
-.gitignore
-
