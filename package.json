@@ -1,0 +1,19 @@
+{
+  "name": "nasa-space-bioscience-explorer",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd ui && npm install && npm run build",
+    "dev": "cd ui && npm run dev",
+    "start": "cd ui && npm run start"
+  },
+  "dependencies": {
+    "next": "^15.5.3"
+  },
+  "engines": {
+    "node": ">=18.18.0",
+    "npm": ">=9.0.0"
+  }
+}
+
+

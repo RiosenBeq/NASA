@@ -1,0 +1,21 @@
+# Core
+pandas==2.2.2
+requests==2.32.3
+tqdm==4.66.4
+python-dotenv==1.0.1
+beautifulsoup4==4.12.3
+
+# NLP / NER (gecici olarak kaldirildi: scispacy)
+spacy==3.7.4
+
+# PDF parsing (GROBID client)
+urllib3==2.2.2
+
+# Database
+psycopg2-binary==2.9.9
+SQLAlchemy==2.0.34
+pgvector==0.2.5
+
+# Embeddings (optional open-source backends)
+sentence-transformers==3.0.1
+

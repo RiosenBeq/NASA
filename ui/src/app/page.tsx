@@ -1,0 +1,583 @@
+"use client";
+import { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
+import Image from "next/image";
+
+type Item = {
+  id: number;
+  title: string;
+  url: string;
+  score: number;
+  snippet?: string | null;
+};
+
+export default function Home() {
+  const [q, setQ] = useState("");
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [cardSummaries, setCardSummaries] = useState<Record<number, {text: string; loading: boolean}>>({});
+  const [cardQA, setCardQA] = useState<Record<number, {q: string; a: string; loading: boolean}>>({});
+  const [persona] = useState<"scientist" | "manager" | "architect" | "">("");
+  const [sectionPriority] = useState<"results" | "discussion" | "conclusion" | "">("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const apiEnv = process.env.NEXT_PUBLIC_API_URL;
+  const api = apiEnv && apiEnv.trim().length > 0 ? apiEnv : "/api";
+
+  // Popular search suggestions
+  const searchSuggestions = [
+    "microgravity plant root growth",
+    "space radiation effects on DNA",
+    "artificial gravity systems",
+    "closed-loop life support",
+    "space agriculture technology",
+    "crew psychological health",
+    "Mars mission preparation",
+    "space medicine research",
+    "bone loss in space",
+    "space biotechnology"
+  ];
+
+  const T = (key: string) => {
+    const tr: Record<string, string> = {
+      // Header
+      brandName: "NextGenLAB",
+      brandSubtitle: "SPACE BIOSCIENCE EXPLORER",
+      navAnalytics: "Analitik",
+      navGuidelines: "Kılavuz",
+      navResources: "Kaynaklar",
+      
+      // Hero
+      title: "NASA Uzay Biyobilim Keşif Platformu",
+      subtitle: "Yapay zeka destekli semantik arama • 608 yayın • Gerçek zamanlı özetler",
+      search: "🚀 Ara",
+      queryPlaceholder: "Uzay biyolojisi araştırmanızı yazın...",
+      
+      // Search suggestions
+      suggestionsTitle: "🔍 Popüler Aramalar",
+      currentSearchLabel: "Yazdığınız arama:",
+      searchButton: "Ara",
+      
+      // Errors & Messages
+      noResult: "Sonuç bulunamadı. Farklı anahtar kelimeler deneyin.",
+      noResultSub: "Farklı anahtar kelimeler deneyin veya filtreleri değiştirin",
+      errorPrefix: "⚠️",
+      searchEmptyError: "Lütfen bir arama sorgusu girin.",
+      searchTimeoutError: "Arama zaman aşımına uğradı.",
+      unknownError: "Bilinmeyen hata",
+      apiError: "API hatası",
+      invalidDataError: "API'den geçersiz veri formatı alındı",
+      
+      // Result actions
+      summarizeOne: "✨ Özetle",
+      hide: "✕",
+      summarizing: "⏳",
+      copy: "Kopyala",
+      source: "Kaynak",
+      askQuestion: "Soru Sor",
+      asking: "Yanıtlanıyor...",
+      askPlaceholder: "💬 Bu makale hakkında soru sorun... (Enter ile sor)",
+      askButton: "🤔 Sor",
+      answerLabel: "💡 Yanıt:",
+      
+      // Resource links
+      pmcSource: "📄 PMC Source",
+      copyLink: "📋 Copy Link",
+      osdrLink: "🛰️ OSDR",
+      nslslLink: "🔬 NSLSL",
+      taskbookLink: "📚 Task Book",
+      
+      // Footer
+      footerBrand: "NextGenLAB Space Bioscience Explorer",
+      footerPowered: "🚀 Powered by",
+      footerAI: "OpenAI GPT-4o-mini",
+      footerStats: "608 NASA Publications • Real-time AI Analysis • Knowledge Graph Visualization",
+    };
+    const en: Record<string, string> = {
+      // Header
+      brandName: "NextGenLAB",
+      brandSubtitle: "SPACE BIOSCIENCE EXPLORER",
+      navAnalytics: "Analytics",
+      navGuidelines: "Guidelines",
+      navResources: "Resources",
+      
+      // Hero
+      title: "NASA Space Bioscience Explorer",
+      subtitle: "AI-powered semantic search • 608 publications • Real-time summaries",
+      search: "🚀 Search",
+      queryPlaceholder: "Search space biology research...",
+      
+      // Search suggestions
+      suggestionsTitle: "🔍 Popular Searches",
+      currentSearchLabel: "Your search:",
+      searchButton: "Search",
+      
+      // Errors & Messages
+      noResult: "No results found. Try different keywords.",
+      noResultSub: "Try different keywords or adjust filters",
+      errorPrefix: "⚠️",
+      searchEmptyError: "Please enter a search query.",
+      searchTimeoutError: "Search timed out.",
+      unknownError: "Unknown error",
+      apiError: "API error",
+      invalidDataError: "Invalid data format from API",
+      
+      // Result actions
+      summarizeOne: "✨ Summarize",
+      hide: "✕",
+      summarizing: "⏳",
+      copy: "Copy",
+      source: "Source",
+      askQuestion: "Ask",
+      asking: "Answering...",
+      askPlaceholder: "💬 Ask about this article... (Press Enter)",
+      askButton: "🤔 Ask",
+      answerLabel: "💡 Answer:",
+      
+      // Resource links
+      pmcSource: "📄 PMC Source",
+      copyLink: "📋 Copy Link",
+      osdrLink: "🛰️ OSDR",
+      nslslLink: "🔬 NSLSL",
+      taskbookLink: "📚 Task Book",
+      
+      // Footer
+      footerBrand: "NextGenLAB Space Bioscience Explorer",
+      footerPowered: "🚀 Powered by",
+      footerAI: "OpenAI GPT-4o-mini",
+      footerStats: "608 NASA Publications • Real-time AI Analysis • Knowledge Graph Visualization",
+    };
+    return (lang === "tr" ? tr : en)[key] || key;
+  };
+
+
+  const search = useCallback(async (query?: string) => {
+    const qq = (query ?? q).trim();
+    if (!qq) {
+      setError(T("searchEmptyError"));
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const params = new URLSearchParams({ q: qq });
+      
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      
+      const res = await fetch(`${api}/search?${params.toString()}`, {
+        signal: controller.signal,
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (!res.ok) {
+        const errorText = await res.text().catch(() => 'Unknown error');
+        throw new Error(`${T("apiError")} (${res.status}): ${errorText}`);
+      }
+      
+      const data = await res.json();
+      
+      if (!Array.isArray(data)) {
+        throw new Error(T("invalidDataError"));
+      }
+      
+      setItems(data);
+    } catch (e: unknown) {
+      let msg = T("unknownError");
+      
+      if (e instanceof Error) {
+        if (e.name === 'AbortError') {
+          msg = T("searchTimeoutError");
+        } else {
+          msg = e.message;
+        }
+      }
+      
+      console.error("Search error:", e);
+      setError(msg);
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api, q]);
+
+  const summarizeOne = useCallback(async (id: number) => {
+    const current = cardSummaries[id];
+    if (current && !current.loading && current.text) {
+      setCardSummaries((p) => ({ ...p, [id]: { text: "", loading: false } }));
+      return;
+    }
+    setCardSummaries((p) => ({ ...p, [id]: { text: "", loading: true } }));
+    try {
+      const res = await fetch(`${api}/summarize`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: [id], persona: persona || null, section_priority: sectionPriority || null }),
+      });
+      const data = await res.json();
+      const text = res.ok && data.summary ? data.summary + (data.citations?.length ? "\n\n📚 Kaynaklar:\n" + data.citations.join("\n") : "") : (data?.summary || "");
+      setCardSummaries((p) => ({ ...p, [id]: { text, loading: false } }));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "";
+      setCardSummaries((p) => ({ ...p, [id]: { text: `Özetleme başarısız: ${msg}`, loading: false } }));
+    }
+  }, [api, persona, sectionPriority, cardSummaries]);
+
+  const askQA = useCallback(async (id: number) => {
+    const qa = cardQA[id] || { q: "", a: "", loading: false };
+    const question = (qa.q || "").trim();
+    if (!question) return;
+    setCardQA((p) => ({ ...p, [id]: { ...qa, loading: true } }));
+    try {
+      const res = await fetch(`${api}/qa`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, question, persona: persona || null }),
+      });
+      const data = await res.json();
+      const ans = res.ok ? (data.answer || "") : (data?.answer || "");
+      setCardQA((p) => ({ ...p, [id]: { q: question, a: ans, loading: false } }));
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "";
+      setCardQA((p) => ({ ...p, [id]: { q: question, a: `Soru cevaplanamadı: ${msg}`, loading: false } }));
+    }
+  }, [api, persona, cardQA]);
+
+  useEffect(() => {
+    const performInitialSearch = async () => {
+      try {
+        await search("microgravity plant root growth");
+      } catch (error) {
+        console.error("Initial search failed:", error);
+      }
+    };
+    performInitialSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('[data-suggestions-container]')) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
+    <>
+      {/* Uzay Arka Plan Efektleri */}
+      <div className="space-background" />
+      <div className="stars stars-layer-1" />
+      <div className="stars stars-layer-2" />
+      <div className="stars stars-layer-3" />
+      <div className="nebula">
+        <div className="nebula-glow-1" />
+        <div className="nebula-glow-2" />
+        <div className="nebula-glow-3" />
+      </div>
+
+      <div style={{ minHeight: "100vh", position: "relative", zIndex: 10 }}>
+        {/* Premium Header */}
+        <header className="header-sticky">
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
+              <div style={{ position: "relative", flexShrink: 0 }}>
+                <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
+                <div style={{ position: "absolute", inset: -8, background: "radial-gradient(circle, rgba(167, 139, 250, 0.4), transparent)", filter: "blur(12px)", zIndex: -1 }} />
+              </div>
+              <div style={{ minWidth: 0 }}>
+                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
+                  {T("brandName")}
+                </div>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>{T("brandSubtitle")}</div>
+              </div>
+          </div>
+            
+            <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+              {[
+                { href: "/analytics", labelKey: "navAnalytics" },
+                { href: "/guidelines", labelKey: "navGuidelines" },
+                { href: "/resources", labelKey: "navResources" },
+              ].map((link) => (
+                <Link key={link.href} href={link.href} className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
+                  {T(link.labelKey)}
+                </Link>
+              ))}
+          </nav>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end", minWidth: 0 }}>
+              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500, minWidth: 60 }}>
+                <option value="tr">🇹🇷</option>
+                <option value="en">🇬🇧</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+        {/* Main Content */}
+        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
+          {/* Premium Hero Section */}
+          <div className="glass-card" style={{ padding: "48px 24px", marginBottom: 40, position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none" }} />
+            
+            <div style={{ textAlign: "center", marginBottom: 32, position: "relative", zIndex: 1 }}>
+              <h1 className="text-gradient" style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 900, marginBottom: 16, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
+                {T("title")}
+              </h1>
+              <p style={{ fontSize: "clamp(16px, 2.5vw, 18px)", color: "var(--text-secondary)", letterSpacing: 0.3, fontWeight: 500, maxWidth: 700, margin: "0 auto" }}>{T("subtitle")}</p>
+            </div>
+
+            {/* Premium Search Bar */}
+            <div style={{ position: "relative", zIndex: 10000 }}>
+              <div style={{ display: "flex", gap: 14, marginBottom: 24, flexWrap: "wrap" }}>
+                <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
+            <input
+              value={q}
+                    onChange={(e) => {
+                      setQ(e.target.value);
+                      setShowSuggestions(true);
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+              onKeyDown={(e) => e.key === "Enter" && search()}
+              placeholder={T("queryPlaceholder")}
+                    style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
+                  />
+                  
+                  {/* Search Suggestions */}
+                  {showSuggestions && (
+                    <>
+                      {/* Background Overlay */}
+                      <div 
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          backgroundColor: "rgba(0, 0, 0, 0.8)",
+                          zIndex: 99999998,
+                          backdropFilter: "blur(5px)"
+                        }}
+                        onClick={() => setShowSuggestions(false)}
+                      />
+                      
+                      {/* Suggestions Modal */}
+                      <div 
+                        className="glass-card" 
+                        data-suggestions-container 
+                        style={{ 
+                          position: "fixed",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -50%)",
+                          width: "90%",
+                          maxWidth: "600px",
+                          padding: 24,
+                          zIndex: 99999999,
+                          boxShadow: "0 30px 60px rgba(0, 0, 0, 0.9)",
+                          backgroundColor: "rgba(15, 8, 36, 0.99)",
+                          backdropFilter: "blur(30px)",
+                          border: "3px solid rgba(167, 139, 250, 0.8)",
+                          borderRadius: 16,
+                          maxHeight: "500px",
+                          overflowY: "auto"
+                        }}
+                      >
+                      <div style={{ 
+                        fontSize: 15, 
+                        fontWeight: 700, 
+                        marginBottom: 16, 
+                        color: "var(--nebula-purple)",
+                        textAlign: "center",
+                        borderBottom: "1px solid rgba(167, 139, 250, 0.3)",
+                        paddingBottom: 12
+                      }}>
+                        {T("suggestionsTitle")}
+                      </div>
+                      
+                      {/* Current Search Input */}
+                      {q && (
+                        <div style={{ marginBottom: 16, textAlign: "center" }}>
+                          <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 }}>
+                            {T("currentSearchLabel")}
+                          </div>
+                          <button
+                            onClick={() => {
+                              setShowSuggestions(false);
+                              search();
+                            }}
+                            className="btn-primary"
+                            style={{
+                              fontSize: 14,
+                              padding: "10px 20px",
+                              borderRadius: 8,
+                              fontWeight: 600
+                            }}
+                          >
+                            🔍 &ldquo;{q}&rdquo; {T("searchButton")}
+                          </button>
+                        </div>
+                      )}
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
+                        {searchSuggestions.map((suggestion, index) => (
+                          <button
+                            key={index}
+                            onClick={() => {
+                              setQ(suggestion);
+                              setShowSuggestions(false);
+                              search(suggestion);
+                            }}
+                            className="btn-secondary"
+                            style={{ 
+                              fontSize: 12, 
+                              padding: "8px 14px", 
+                              whiteSpace: "nowrap",
+                              borderRadius: 6,
+                              border: "1px solid rgba(167, 139, 250, 0.4)",
+                              backgroundColor: "rgba(167, 139, 250, 0.1)",
+                              transition: "all 0.2s ease"
+                            }}
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+                <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">
+                  {loading ? "⏳" : T("search")}
+            </button>
+          </div>
+            </div>
+
+
+            {error && (
+              <div className="glass-card" style={{ marginTop: 16, padding: 16, border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: 12, color: "#FCA5A5", fontSize: 14 }}>
+                {T("errorPrefix")} {error}
+              </div>
+            )}
+          </div>
+
+          {/* Premium Results */}
+          <div style={{ display: "grid", gap: 24 }}>
+            {loading && (
+              Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="result-card loading-shimmer" style={{ height: 180 }} />
+              ))
+            )}
+
+            {!loading && items.map((it) => (
+              <div key={it.id} className="result-card">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 24, marginBottom: 18, flexWrap: "wrap" }}>
+                  <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: "1 1 300px", fontSize: "clamp(16px, 2.5vw, 20px)", fontWeight: 700, color: "var(--text-primary)", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s", minWidth: 0 }}>
+                    {it.title}
+                  </a>
+                  
+                  <div style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
+                    <div className="badge" data-tooltip="Relevance Score" style={{ background: `linear-gradient(135deg, rgba(167, 139, 250, ${it.score * 0.3}), rgba(96, 165, 250, ${it.score * 0.2}))`, whiteSpace: "nowrap" }}>
+                      ⭐ {(it.score * 100).toFixed(1)}%
+                        </div>
+                    <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px", whiteSpace: "nowrap" }} aria-label={`Summarize article: ${it.title}`}>
+                      {cardSummaries[it.id]?.loading ? T("summarizing") : (cardSummaries[it.id]?.text ? T("hide") : T("summarizeOne"))}
+                        </button>
+                      </div>
+                    </div>
+
+                    {it.snippet && (
+                  <p style={{ color: "var(--text-secondary)", fontSize: 15, lineHeight: 1.7, marginBottom: 20 }}>{it.snippet}</p>
+                )}
+
+                    {cardSummaries[it.id]?.text && (
+                  <div className="glass-card" style={{ padding: 20, marginTop: 20, marginBottom: 20, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)" }}>
+                        {cardSummaries[it.id].text}
+                      </div>
+                    )}
+
+                {/* Premium Q&A Section */}
+                <div style={{ marginTop: 20, display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+                  <input 
+                    value={cardQA[it.id]?.q || ""} 
+                    onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !cardQA[it.id]?.loading && cardQA[it.id]?.q?.trim()) {
+                        askQA(it.id);
+                      }
+                    }}
+                    placeholder={T("askPlaceholder")}
+                    style={{ flex: "1 1 200px", fontWeight: 500, minWidth: 0 }}
+                  />
+                  <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px", flexShrink: 0 }} aria-label={`Ask question about: ${it.title}`}>
+                    {cardQA[it.id]?.loading ? T("summarizing") : T("askButton")}
+                        </button>
+                      </div>
+
+                      {cardQA[it.id]?.a && (
+                  <div className="glass-card" style={{ padding: 20, marginTop: 16, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)", borderLeft: "3px solid var(--nebula-purple)" }}>
+                    <div style={{ fontWeight: 600, marginBottom: 10, color: "var(--nebula-purple)" }}>{T("answerLabel")}</div>
+                    {cardQA[it.id].a}
+                        </div>
+                      )}
+
+                {/* Premium Resource Links */}
+                <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid rgba(167, 139, 250, 0.1)", display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <a href={it.url} target="_blank" rel="noreferrer" className="badge">
+                    {T("pmcSource")}
+                  </a>
+                  <button onClick={() => navigator.clipboard.writeText(it.url)} className="badge" style={{ cursor: "pointer", background: "transparent" }}>
+                    {T("copyLink")}
+                  </button>
+                  <a href={`https://osdr.nasa.gov/bio/repo/search?q=${encodeURIComponent(it.title)}`} target="_blank" rel="noreferrer" className="badge">
+                    {T("osdrLink")}
+                  </a>
+                  <a href={`https://extapps.ksc.nasa.gov/NSLSL/Search?q=${encodeURIComponent(it.title)}`} target="_blank" rel="noreferrer" className="badge">
+                    {T("nslslLink")}
+                  </a>
+                  <a href="https://taskbook.nasaprs.com/tbp/welcome.cfm" target="_blank" rel="noreferrer" className="badge">
+                    {T("taskbookLink")}
+                  </a>
+                  </div>
+              </div>
+            ))}
+
+            {!loading && items.length === 0 && !error && (
+              <div className="glass-card" style={{ padding: 60, textAlign: "center" }}>
+                <div style={{ fontSize: 64, marginBottom: 20 }}>🌌</div>
+                <div style={{ fontSize: 20, color: "var(--text-secondary)", fontWeight: 500 }}>{T("noResult")}</div>
+                <div style={{ fontSize: 14, color: "var(--text-secondary)", marginTop: 12, opacity: 0.7 }}>{T("noResultSub")}</div>
+              </div>
+            )}
+          </div>
+      </main>
+
+        {/* Premium Footer */}
+        <footer className="glass-card" style={{ marginTop: 80, borderRadius: 0, borderLeft: 0, borderRight: 0 }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", textAlign: "center", fontSize: 14, color: "var(--text-secondary)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, marginBottom: 16 }}>
+              <Image src="/logo.png" alt="NextGenLAB Logo" width={28} height={28} className="glow" />
+              <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>{T("footerBrand")}</span>
+            </div>
+            <div style={{ marginBottom: 12 }}>
+              <span style={{ opacity: 0.8 }}>{T("footerPowered")}</span> <span style={{ color: "var(--nebula-purple)", fontWeight: 600 }}>{T("footerAI")}</span>
+            </div>
+            <div style={{ fontSize: 13, opacity: 0.7 }}>{T("footerStats")}</div>
+        </div>
+      </footer>
+    </div>
+    </>
+  );
+}
