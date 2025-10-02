@@ -1,0 +1,6 @@
+# NextGenLAB Space Bioscience Explorer
+User-agent: *
+Allow: /
+
+Sitemap: https://nasa-space-bio.vercel.app/sitemap.xml
+

@@ -5,11 +5,11 @@
 ## ✨ Features
 
 - 🔍 **Search 608 Publications**: Semantic search across NASA space bioscience research
-- 🤖 **AI-Powered Summaries**: OpenAI GPT-4o-mini generates structured summaries
+- 🤖 **AI-Powered Summaries**: Generate structured summaries with AI
 - 💬 **Q&A System**: Ask questions about specific publications
 - 🕸️ **Knowledge Graph**: Interactive visualization (3,107 nodes, 40,967 edges)
 - 📊 **Analytics Dashboard**: Trends, gaps, and consensus analysis
-- 🎯 **Multi-Persona Support**: Scientist, Manager, Mission Architect views
+- 🌍 **Multi-Language Support**: Turkish and English interface
 
 ## 🏗️ Architecture
 
