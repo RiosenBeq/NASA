@@ -29,12 +29,17 @@ export async function POST(req: NextRequest) {
       );
   }
 
-  const client = new OpenAI({ apiKey });
+  // Configure OpenAI client with retry and timeout to reduce transient failures
+  const client = new OpenAI({ apiKey, maxRetries: 2, timeout: 20000 });
 
     // Fetch publication data from GitHub CSV
     const csvUrl =
       "https://raw.githubusercontent.com/jgalazka/SB_publications/main/SB_publication_PMC.csv";
-    const csvRes = await fetch(csvUrl);
+    // Fetch CSV with a timeout protection
+    const controller = new AbortController();
+    const csvTimeout = setTimeout(() => controller.abort(), 15000);
+    const csvRes = await fetch(csvUrl, { signal: controller.signal, headers: { 'User-Agent': 'NextGenLAB-NASA-Explorer/1.0 (+summarize)' } });
+    clearTimeout(csvTimeout);
     if (!csvRes.ok) {
       throw new Error(`Failed to fetch CSV: ${csvRes.statusText}`);
     }
