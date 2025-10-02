@@ -195,23 +195,58 @@ TONE: Highly professional, evidence-based, forward-looking, strategically action
 
 Begin your comprehensive analysis now. Remember: This analysis will directly inform NASA's space biology research strategy and mission planning decisions.`;
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert NASA bioscience research analyst with deep knowledge of space biology, human spaceflight, and mission planning. You excel at synthesizing complex research findings into actionable insights for diverse stakeholders.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      temperature: 0.6,
-      max_tokens: 4000,
-    });
-
-    const summary = completion.choices[0]?.message?.content || "";
+    let summary = "";
+    try {
+      // First try via official SDK (with retries)
+      const completion = await client.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an expert NASA bioscience research analyst with deep knowledge of space biology, human spaceflight, and mission planning. You excel at synthesizing complex research findings into actionable insights for diverse stakeholders.",
+          },
+          { role: "user", content: prompt },
+        ],
+        temperature: 0.6,
+        max_tokens: 4000,
+      });
+      summary = completion.choices[0]?.message?.content || "";
+    } catch (sdkError) {
+      // Fallback to direct HTTP call for better diagnostics
+      try {
+        const ctrl = new AbortController();
+        const tm = setTimeout(() => ctrl.abort(), 20000);
+        const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          signal: ctrl.signal,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: "You are a helpful assistant." },
+              { role: "user", content: prompt },
+            ],
+            temperature: 0.6,
+            max_tokens: 4000,
+          }),
+        });
+        clearTimeout(tm);
+        if (!resp.ok) {
+          const text = await resp.text();
+          throw new Error(`OpenAI HTTP ${resp.status} ${resp.statusText}: ${text.slice(0, 300)}`);
+        }
+        const j = (await resp.json()) as any;
+        summary = j?.choices?.[0]?.message?.content || "";
+      } catch (httpError) {
+        // Re-throw with merged context
+        const msg = httpError instanceof Error ? httpError.message : String(httpError);
+        throw new Error(`OpenAI request failed: ${msg}`);
+      }
+    }
 
     return NextResponse.json({
       summary,
