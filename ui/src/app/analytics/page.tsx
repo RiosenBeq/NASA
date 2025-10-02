@@ -35,12 +35,6 @@ export default function AnalyticsPage() {
     loading: true,
     error: null
   });
-  const [filters, setFilters] = useState<FilterOptions>({
-    timeRange: 'all',
-    nodeType: 'all',
-    sortBy: 'count'
-  });
-  const [selectedMetric, setSelectedMetric] = useState<'nodes' | 'edges' | 'years'>('nodes');
 
   const T = (key: string) => {
     const tr: Record<string, string> = {
@@ -183,63 +177,21 @@ export default function AnalyticsPage() {
   // Computed metrics
   const nodeTypeEntries = useMemo<[string, number][]>(() => {
     if (!data.stats?.node_types) return [];
-    let entries = Object.entries(data.stats.node_types) as [string, number][];
-    
-    // Apply filters
-    if (filters.nodeType !== 'all') {
-      entries = entries.filter(([type]) => type === filters.nodeType);
-    }
-    
-    // Apply sorting
-    switch (filters.sortBy) {
-      case 'count':
-        entries.sort((a, b) => b[1] - a[1]);
-        break;
-      case 'name':
-        entries.sort((a, b) => a[0].localeCompare(b[0]));
-        break;
-      case 'trend':
-        // Simple trend calculation based on position
-        entries.sort((a, b) => b[1] - a[1]);
-        break;
-    }
-    
-    return entries;
-  }, [data.stats, filters]);
+    const entries = Object.entries(data.stats.node_types) as [string, number][];
+    return entries.sort((a, b) => b[1] - a[1]);
+  }, [data.stats]);
 
   const edgeRelEntries = useMemo<[string, number][]>(() => {
     if (!data.stats?.edge_relations) return [];
     const entries = Object.entries(data.stats.edge_relations) as [string, number][];
-    
-    switch (filters.sortBy) {
-      case 'count':
-        entries.sort((a, b) => b[1] - a[1]);
-        break;
-      case 'name':
-        entries.sort((a, b) => a[0].localeCompare(b[0]));
-        break;
-    }
-    
-    return entries;
-  }, [data.stats, filters]);
+    return entries.sort((a, b) => b[1] - a[1]);
+  }, [data.stats]);
 
   const yearEntries = useMemo<[string, number][]>(() => {
     if (!data.years) return [];
-    let entries = Object.entries(data.years) as [string, number][];
-    
-    // Apply time range filter
-    const currentYear = new Date().getFullYear();
-    switch (filters.timeRange) {
-      case 'recent':
-        entries = entries.filter(([year]) => parseInt(year) >= currentYear - 5);
-        break;
-      case 'decade':
-        entries = entries.filter(([year]) => parseInt(year) >= currentYear - 10);
-        break;
-    }
-    
+    const entries = Object.entries(data.years) as [string, number][];
     return entries.sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
-  }, [data.years, filters]);
+  }, [data.years]);
 
   // Additional metrics
   const totalPublications = useMemo(() => {
