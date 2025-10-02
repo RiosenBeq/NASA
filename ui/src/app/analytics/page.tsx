@@ -18,12 +18,6 @@ type AnalyticsData = {
   error: string | null;
 };
 
-type FilterOptions = {
-  timeRange: 'all' | 'recent' | 'decade';
-  nodeType: string | 'all';
-  sortBy: 'count' | 'name' | 'trend';
-};
-
 export default function AnalyticsPage() {
   const [lang, setLang] = useState<"tr" | "en">("tr");
   const apiEnv = process.env.NEXT_PUBLIC_API_URL || "";
