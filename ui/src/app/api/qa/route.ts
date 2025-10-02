@@ -93,7 +93,7 @@ Answer now:`;
     const wantsShort = lowerQ.includes('kısa') || lowerQ.includes('özetle') || 
                        lowerQ.includes('tek cümle') || lowerQ.includes('brief') || 
                        lowerQ.includes('one sentence') || lowerQ.includes('summarize');
-    const maxTokens = wantsShort ? 150 : 800;
+    const maxTokens = wantsShort ? 150 : 1200;
 
     let answer = "";
     try {
