@@ -67,59 +67,33 @@ export async function POST(req: NextRequest) {
 
     const personaContext = getPersonaContext(persona || undefined);
 
-    const prompt = `You are an expert NASA bioscience research analyst with comprehensive knowledge of space biology, human spaceflight, and mission planning.
+    const prompt = `You are an expert NASA bioscience research analyst. Answer the user's question about this specific publication.
 
-PUBLICATION CONTEXT:
-- Title: ${title}
-- URL: ${url}
+PUBLICATION:
+Title: ${title}
+URL: ${url}
 
 USER QUESTION:
 ${question}
 
-TARGET AUDIENCE: ${personaContext}
-
 INSTRUCTIONS:
-Focus specifically on the publication "${title}" and provide a detailed answer that:
+- Answer EXACTLY what the user asked - no more, no less
+- If they ask for "one sentence", give ONE sentence
+- If they ask for "brief", give a brief answer (2-3 sentences)
+- If they ask for details, then provide detailed information
+- Focus ONLY on the publication: "${title}"
+- Use information from this specific study
+- Write in Turkish (professional scientific Turkish)
+- Be direct and precise
 
-1. **ANALYZE THE SPECIFIC PUBLICATION**
-   - What this specific study investigated
-   - Key findings from this publication
-   - Methodology used in this research
-   - Sample size and experimental conditions
+Answer now:`;
 
-2. **ANSWER THE USER'S QUESTION**
-   - Directly address what they're asking about this publication
-   - Use the publication title and context to inform your answer
-   - Be specific about findings from this particular study
-
-3. **PROVIDE RELEVANT CONTEXT**
-   - How this specific publication fits into NASA's space biology research
-   - What makes this study unique or important
-   - Connection to current NASA missions (Artemis, Mars, ISS)
-
-4. **DISCUSS IMPLICATIONS OF THIS SPECIFIC STUDY**
-   ${persona === 'scientist' ? '- What this study teaches us about research methods\n   - How to build upon these specific findings\n   - Experimental approaches used in this study' : ''}
-   ${persona === 'manager' ? '- Strategic value of this specific research\n   - Investment implications of these findings\n   - How this study supports program goals' : ''}
-   ${persona === 'architect' ? '- Mission design insights from this study\n   - Operational implications of these findings\n   - Risk factors identified in this research' : ''}
-   ${!persona ? '- Practical applications of these specific findings\n   - How this study advances space biology\n   - Mission planning insights from this research' : ''}
-
-5. **ACKNOWLEDGE STUDY LIMITATIONS**
-   - What this specific study couldn't determine
-   - Limitations of the methodology used
-   - What additional research would complement these findings
-
-FORMAT:
-- Use clear paragraphs with headers (###) where appropriate
-- Include specific examples and details
-- Reference the publication as [${title}](${url})
-- Maintain scientific rigor while being accessible
-- Length: Thorough but concise (200-400 words)
-
-LANGUAGE: Turkish (professional scientific Turkish)
-
-TONE: Expert, evidence-based, helpful, forward-looking
-
-Answer the question now:`;
+    // Detect if user wants short/brief answer
+    const lowerQ = question.toLowerCase();
+    const wantsShort = lowerQ.includes('kısa') || lowerQ.includes('özetle') || 
+                       lowerQ.includes('tek cümle') || lowerQ.includes('brief') || 
+                       lowerQ.includes('one sentence') || lowerQ.includes('summarize');
+    const maxTokens = wantsShort ? 150 : 800;
 
     let answer = "";
     try {
@@ -128,15 +102,15 @@ Answer the question now:`;
         messages: [
           {
             role: "system",
-            content: "You are an expert NASA bioscience research analyst with deep knowledge of space biology, microgravity effects, radiation biology, human spaceflight physiology, and mission planning. You provide detailed, evidence-based answers to research questions."
+            content: "You are a precise NASA bioscience research analyst. Answer questions directly and concisely, following the user's requested format exactly."
           },
           {
             role: "user",
             content: prompt
           }
         ],
-        temperature: 0.5,
-        max_tokens: 1000,
+        temperature: 0.3,
+        max_tokens: maxTokens,
       });
       answer = msg.choices?.[0]?.message?.content || "Cevap oluşturulamadı.";
     } catch {
@@ -154,11 +128,11 @@ Answer the question now:`;
           body: JSON.stringify({
             model: "gpt-3.5-turbo",
             messages: [
-              { role: "system", content: "You are an expert NASA bioscience research analyst with deep knowledge of space biology, microgravity effects, radiation biology, human spaceflight physiology, and mission planning. You provide detailed, evidence-based answers to research questions." },
+              { role: "system", content: "You are a precise NASA bioscience research analyst. Answer questions directly and concisely, following the user's requested format exactly." },
               { role: "user", content: prompt },
             ],
-            temperature: 0.5,
-            max_tokens: 1000,
+            temperature: 0.3,
+            max_tokens: maxTokens,
           }),
         });
         clearTimeout(tm);
