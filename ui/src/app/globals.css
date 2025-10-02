@@ -181,6 +181,44 @@ body {
   transform: translateY(-2px);
 }
 
+/* Result Card - Special styling for search results */
+.result-card {
+  position: relative;
+  background: rgba(15, 8, 36, 0.6);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 20px;
+  padding: 28px;
+  backdrop-filter: blur(20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  word-wrap: break-word;
+  box-shadow: 
+    0 10px 40px -10px rgba(167, 139, 250, 0.2),
+    0 0 0 1px rgba(167, 139, 250, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.result-card:hover {
+  border-color: rgba(167, 139, 250, 0.3);
+  box-shadow: 
+    0 30px 70px -20px rgba(139, 92, 246, 0.3),
+    0 0 0 1px rgba(167, 139, 250, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 30px rgba(167, 139, 250, 0.05);
+  transform: translateY(-2px);
+}
+
+.result-card * {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+.result-card input,
+.result-card button {
+  box-sizing: border-box;
+}
+
 /* Premium Button Styles */
 .btn-primary {
   position: relative;
