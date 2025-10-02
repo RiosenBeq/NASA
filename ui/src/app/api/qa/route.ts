@@ -121,23 +121,58 @@ TONE: Expert, evidence-based, helpful, forward-looking
 
 Answer the question now:`;
 
-    const msg = await client.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert NASA bioscience research analyst with deep knowledge of space biology, microgravity effects, radiation biology, human spaceflight physiology, and mission planning. You provide detailed, evidence-based answers to research questions."
-        },
-        {
-          role: "user",
-          content: prompt
+    let answer = "";
+    try {
+      const msg = await client.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: "You are an expert NASA bioscience research analyst with deep knowledge of space biology, microgravity effects, radiation biology, human spaceflight physiology, and mission planning. You provide detailed, evidence-based answers to research questions."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        temperature: 0.5,
+        max_tokens: 1000,
+      });
+      answer = msg.choices?.[0]?.message?.content || "Cevap oluşturulamadı.";
+    } catch {
+      // HTTP fallback if SDK fails
+      try {
+        const ctrl = new AbortController();
+        const tm = setTimeout(() => ctrl.abort(), 20000);
+        const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+          method: "POST",
+          signal: ctrl.signal,
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify({
+            model: "gpt-3.5-turbo",
+            messages: [
+              { role: "system", content: "You are an expert NASA bioscience research analyst with deep knowledge of space biology, microgravity effects, radiation biology, human spaceflight physiology, and mission planning. You provide detailed, evidence-based answers to research questions." },
+              { role: "user", content: prompt },
+            ],
+            temperature: 0.5,
+            max_tokens: 1000,
+          }),
+        });
+        clearTimeout(tm);
+        if (!resp.ok) {
+          const text = await resp.text();
+          throw new Error(`OpenAI HTTP ${resp.status} ${resp.statusText}: ${text.slice(0, 300)}`);
         }
-      ],
-      temperature: 0.5,
-      max_tokens: 1000,
-    });
-
-    const answer = msg.choices?.[0]?.message?.content || "Cevap oluşturulamadı.";
+        const j = (await resp.json()) as { choices?: Array<{ message?: { content?: string } }> };
+        answer = j?.choices?.[0]?.message?.content || "Cevap oluşturulamadı.";
+      } catch (httpError) {
+        const msg = httpError instanceof Error ? httpError.message : String(httpError);
+        throw new Error(`OpenAI request failed: ${msg}`);
+      }
+    }
 
     return NextResponse.json({
       answer: answer + `\n\n---\n\n### 📚 Kaynak\n[${title}](${url})\n\n### 🔗 İlgili NASA Kaynakları\n- [OSDR Dataset Ara](https://osdr.nasa.gov/bio/repo/search?q=${encodeURIComponent(title)})\n- [Task Book Projeleri](https://taskbook.nasaprs.com/tbp/welcome.cfm)\n- [NSLSL Literatür](https://extapps.ksc.nasa.gov/NSLSL/Search?q=${encodeURIComponent(title)})`,
