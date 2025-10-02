@@ -212,7 +212,7 @@ Begin your comprehensive analysis now. Remember: This analysis will directly inf
         max_tokens: 4000,
       });
       summary = completion.choices[0]?.message?.content || "";
-    } catch (sdkError) {
+    } catch {
       // Fallback to direct HTTP call for better diagnostics
       try {
         const ctrl = new AbortController();
@@ -239,7 +239,7 @@ Begin your comprehensive analysis now. Remember: This analysis will directly inf
           const text = await resp.text();
           throw new Error(`OpenAI HTTP ${resp.status} ${resp.statusText}: ${text.slice(0, 300)}`);
         }
-        const j = (await resp.json()) as any;
+        const j = (await resp.json()) as { choices?: Array<{ message?: { content?: string } }> };
         summary = j?.choices?.[0]?.message?.content || "";
       } catch (httpError) {
         // Re-throw with merged context
