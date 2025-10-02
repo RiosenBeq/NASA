@@ -77,14 +77,13 @@ USER QUESTION:
 ${question}
 
 INSTRUCTIONS:
-- Answer EXACTLY what the user asked - no more, no less
-- If they ask for "one sentence", give ONE sentence
-- If they ask for "brief", give a brief answer (2-3 sentences)
-- If they ask for details, then provide detailed information
+- Answer EXACTLY what the user asked
+- If they ask for "one sentence" (tek cümle) or "brief" (kısa/özetle), give 1-2 sentences ONLY
+- If they ask for methodology, details, or explanations, provide a thorough answer (3-5 paragraphs)
 - Focus ONLY on the publication: "${title}"
-- Use information from this specific study
+- Use specific information from this study
 - Write in Turkish (professional scientific Turkish)
-- Be direct and precise
+- Be direct, precise, and informative
 
 Answer now:`;
 
