@@ -187,13 +187,6 @@ export default function AnalyticsPage() {
     return entries.sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
   }, [data.years]);
 
-  // Additional metrics
-  const totalPublications = useMemo(() => {
-    return yearEntries.reduce((sum, [, count]) => sum + count, 0);
-  }, [yearEntries]);
-
-  // Total publications should be 608
-  const totalPapers = 608;
 
 
   return (
