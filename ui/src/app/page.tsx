@@ -48,6 +48,7 @@ export default function Home() {
       navAnalytics: "Analitik",
       navGuidelines: "Kılavuz",
       navResources: "Kaynaklar",
+      navFAQ: "SSS",
       
       // Hero
       title: "NASA Uzay Biyobilim Keşif Platformu",
@@ -102,6 +103,7 @@ export default function Home() {
       navAnalytics: "Analytics",
       navGuidelines: "Guidelines",
       navResources: "Resources",
+      navFAQ: "FAQ",
       
       // Hero
       title: "NASA Space Bioscience Explorer",
@@ -311,6 +313,7 @@ export default function Home() {
                 { href: "/analytics", labelKey: "navAnalytics" },
                 { href: "/guidelines", labelKey: "navGuidelines" },
                 { href: "/resources", labelKey: "navResources" },
+                { href: "/faq", labelKey: "navFAQ" },
               ].map((link) => (
                 <Link key={link.href} href={link.href} className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
                   {T(link.labelKey)}
@@ -348,116 +351,11 @@ export default function Home() {
               value={q}
                     onChange={(e) => {
                       setQ(e.target.value);
-                      setShowSuggestions(true);
                     }}
-                    onFocus={() => setShowSuggestions(true)}
               onKeyDown={(e) => e.key === "Enter" && search()}
               placeholder={T("queryPlaceholder")}
                     style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
                   />
-                  
-                  {/* Search Suggestions */}
-                  {showSuggestions && (
-                    <>
-                      {/* Background Overlay */}
-                      <div 
-                        style={{
-                          position: "fixed",
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          bottom: 0,
-                          backgroundColor: "rgba(0, 0, 0, 0.8)",
-                          zIndex: 99999998,
-                          backdropFilter: "blur(5px)"
-                        }}
-                        onClick={() => setShowSuggestions(false)}
-                      />
-                      
-                      {/* Suggestions Modal */}
-                      <div 
-                        className="glass-card" 
-                        data-suggestions-container 
-                        style={{ 
-                          position: "fixed",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                          width: "90%",
-                          maxWidth: "600px",
-                          padding: 24,
-                          zIndex: 99999999,
-                          boxShadow: "0 30px 60px rgba(0, 0, 0, 0.9)",
-                          backgroundColor: "rgba(15, 8, 36, 0.99)",
-                          backdropFilter: "blur(30px)",
-                          border: "3px solid rgba(167, 139, 250, 0.8)",
-                          borderRadius: 16,
-                          maxHeight: "500px",
-                          overflowY: "auto"
-                        }}
-                      >
-                      <div style={{ 
-                        fontSize: 15, 
-                        fontWeight: 700, 
-                        marginBottom: 16, 
-                        color: "var(--nebula-purple)",
-                        textAlign: "center",
-                        borderBottom: "1px solid rgba(167, 139, 250, 0.3)",
-                        paddingBottom: 12
-                      }}>
-                        {T("suggestionsTitle")}
-                      </div>
-                      
-                      {/* Current Search Input */}
-                      {q && (
-                        <div style={{ marginBottom: 16, textAlign: "center" }}>
-                          <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 8 }}>
-                            {T("currentSearchLabel")}
-                          </div>
-                          <button
-                            onClick={() => {
-                              setShowSuggestions(false);
-                              search();
-                            }}
-                            className="btn-primary"
-                            style={{
-                              fontSize: 14,
-                              padding: "10px 20px",
-                              borderRadius: 8,
-                              fontWeight: 600
-                            }}
-                          >
-                            🔍 &ldquo;{q}&rdquo; {T("searchButton")}
-                          </button>
-                        </div>
-                      )}
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
-                        {searchSuggestions.map((suggestion, index) => (
-                          <button
-                            key={index}
-                            onClick={() => {
-                              setQ(suggestion);
-                              setShowSuggestions(false);
-                              search(suggestion);
-                            }}
-                            className="btn-secondary"
-                            style={{ 
-                              fontSize: 12, 
-                              padding: "8px 14px", 
-                              whiteSpace: "nowrap",
-                              borderRadius: 6,
-                              border: "1px solid rgba(167, 139, 250, 0.4)",
-                              backgroundColor: "rgba(167, 139, 250, 0.1)",
-                              transition: "all 0.2s ease"
-                            }}
-                          >
-                            {suggestion}
-                          </button>
-                        ))}
-                      </div>
-                      </div>
-                    </>
-                  )}
                 </div>
                 <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">
                   {loading ? "⏳" : T("search")}
@@ -570,9 +468,6 @@ export default function Home() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, marginBottom: 16 }}>
               <Image src="/logo.png" alt="NextGenLAB Logo" width={28} height={28} className="glow" />
               <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>{T("footerBrand")}</span>
-            </div>
-            <div style={{ marginBottom: 12 }}>
-              <span style={{ opacity: 0.8 }}>{T("footerPowered")}</span> <span style={{ color: "var(--nebula-purple)", fontWeight: 600 }}>{T("footerAI")}</span>
             </div>
             <div style={{ fontSize: 13, opacity: 0.7 }}>{T("footerStats")}</div>
         </div>
