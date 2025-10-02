@@ -65,8 +65,6 @@ export async function POST(req: NextRequest) {
     // Configure OpenAI client with retry and timeout
     const client = new OpenAI({ apiKey, maxRetries: 2, timeout: 20000 });
 
-    const personaContext = getPersonaContext(persona || undefined);
-
     const prompt = `You are an expert NASA bioscience research analyst. Answer the user's question about this specific publication.
 
 PUBLICATION:
@@ -167,18 +165,5 @@ Answer now:`;
       },
       { status: 500 }
     );
-  }
-}
-
-function getPersonaContext(persona?: string): string {
-  switch (persona) {
-    case "scientist":
-      return "Research scientist seeking detailed technical insights, methodology analysis, and hypothesis generation opportunities.";
-    case "manager":
-      return "Program manager evaluating research impact, investment priorities, and strategic alignment with NASA goals.";
-    case "architect":
-      return "Mission architect planning safe lunar/Mars missions, focusing on operational constraints and risk mitigation.";
-    default:
-      return "General stakeholder seeking comprehensive understanding of space bioscience research and its implications.";
   }
 }

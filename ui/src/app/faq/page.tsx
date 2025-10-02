@@ -23,11 +23,11 @@ export default function FAQPage() {
       },
       {
         question: "Yapay zeka özelliklerini nasıl kullanabilirim?",
-        answer: "İki temel AI özelliğimiz var:\n\n1. **Özetle**: Bir veya birden fazla makaleyi seçip 'Özetle' butonuna tıklayarak kapsamlı bir özet alabilirsiniz.\n\n2. **Soru-Cevap**: Makale kartlarında soru kutusuna sorunuzu yazıp Enter'a basarak o makale hakkında spesifik sorular sorabilirsiniz. 'Tek cümleyle özetle' veya 'kısaca açıkla' gibi talimatlar verebilirsiniz."
+        answer: "Platformumuz yapay zeka ile güçlendirilmiştir ve iki temel özellik sunar:\n\n1. **Özetle**: Bir veya birden fazla makaleyi seçip 'Özetle' butonuna tıklayarak yapay zeka destekli kapsamlı özetler alabilirsiniz. AI, makaleleri analiz ederek ana bulguları, metodolojileri ve sonuçları sizin için özetler.\n\n2. **Soru-Cevap**: Makale kartlarında soru kutusuna sorunuzu yazıp Enter'a basarak yapay zeka ile o makale hakkında konuşabilirsiniz. 'Tek cümleyle özetle' veya 'kısaca açıkla' gibi talimatlar verebilirsiniz ve AI buna göre cevap verir."
       },
       {
         question: "Soru-cevap özelliği nasıl çalışır?",
-        answer: "Soru-cevap sistemi, seçtiğiniz makaleye özel olarak çalışır. Sorunuzu yazdığınızda, yapay zeka o makalenin başlığını ve içeriğini analiz ederek size spesifik bir cevap verir. 'Kısa', 'özetle' veya 'tek cümle' gibi ifadeler kullanırsanız kısa cevap, detaylı sorular sorarsanız kapsamlı açıklama alırsınız."
+        answer: "Soru-cevap sistemimiz yapay zeka tabanlıdır ve seçtiğiniz makaleye özel olarak çalışır. Sorunuzu yazdığınızda, AI o makalenin başlığını ve içeriğini anlayarak size anlaşılır ve bilgilendirici bir cevap verir. İstediğiniz cevap uzunluğunu belirtebilirsiniz:\n\n- 'Kısa', 'özetle', 'tek cümle' → Kısa ve öz cevap\n- Detaylı soru → Kapsamlı ve derinlemesine açıklama\n\nYapay zeka, bilimsel içeriği herkesin anlayabileceği bir dille sunar."
       },
       {
         question: "Knowledge Graph nedir?",
@@ -58,16 +58,12 @@ export default function FAQPage() {
         answer: "Tüm yayın verileri NASA'nın resmi kaynaklarından ve PubMed Central (PMC) veritabanından alınmaktadır. Yayın yılları PubMed E-utilities API kullanılarak otomatik olarak güncellenir."
       },
       {
-        question: "Hangi teknolojiler kullanılıyor?",
-        answer: "Platform şu teknolojilerle geliştirilmiştir:\n- **Frontend**: Next.js 15, React 19, TypeScript\n- **AI**: OpenAI GPT-3.5-turbo\n- **Search**: Semantik arama, pgvector\n- **Deployment**: Vercel\n- **Data**: PubMed Central, NASA OSDR"
+        question: "Yapay zeka nasıl kullanılıyor?",
+        answer: "Platform, yapay zeka teknolojisini bilimsel makaleleri anlaşılır hale getirmek için kullanır. AI sistemi:\n\n- Makaleleri okuyup ana bulguları çıkarır\n- Sorularınızı anlayıp ilgili bilgileri bulur\n- Karmaşık bilimsel kavramları basit dille açıklar\n- Birden fazla makaleyi karşılaştırarak kapsamlı özetler oluşturur\n\nYapay zeka, sizin araştırma asistanınız gibi çalışarak zaman kazandırır ve bilimsel içeriği daha erişilebilir kılar."
       },
       {
         question: "Özetle özelliği ne kadar makaleyi destekler?",
-        answer: "Tek seferde birden fazla makaleyi seçerek toplu özet alabilirsiniz. Sistem, seçtiğiniz makaleleri analiz ederek kapsamlı bir karşılaştırmalı özet oluşturur."
-      },
-      {
-        question: "API erişimi mevcut mu?",
-        answer: "Şu anda public API erişimi sunulmamaktadır. Platform, web arayüzü üzerinden kullanılmak üzere tasarlanmıştır."
+        answer: "Tek seferde istediğiniz kadar makaleyi seçerek toplu özet alabilirsiniz. Yapay zeka sistemi, seçtiğiniz tüm makaleleri analiz ederek kapsamlı bir karşılaştırmalı özet oluşturur. Bu sayede birden fazla çalışmayı tek seferde gözden geçirebilir ve aralarındaki bağlantıları görebilirsiniz."
       }
     ],
     en: [
@@ -85,11 +81,11 @@ export default function FAQPage() {
       },
       {
         question: "How can I use AI features?",
-        answer: "We have two main AI features:\n\n1. **Summarize**: Select one or more articles and click the 'Summarize' button to get a comprehensive summary.\n\n2. **Q&A**: Type your question in the question box on article cards and press Enter to ask specific questions about that article. You can give instructions like 'summarize in one sentence' or 'briefly explain'."
+        answer: "Our platform is powered by artificial intelligence and offers two main features:\n\n1. **Summarize**: Select one or more articles and click 'Summarize' to get AI-powered comprehensive summaries. The AI analyzes articles and extracts key findings, methodologies, and results for you.\n\n2. **Q&A**: Type your question in the question box on article cards and press Enter to chat with AI about that article. You can give instructions like 'summarize in one sentence' or 'briefly explain', and the AI responds accordingly."
       },
       {
         question: "How does the Q&A feature work?",
-        answer: "The Q&A system works specifically for the article you select. When you type your question, the AI analyzes that article's title and content to give you a specific answer. If you use terms like 'brief', 'summarize', or 'one sentence', you get a short answer; for detailed questions, you get comprehensive explanations."
+        answer: "Our Q&A system is AI-powered and works specifically for the article you select. When you type your question, AI understands that article's title and content to give you clear and informative answers. You can specify your preferred answer length:\n\n- 'Brief', 'summarize', 'one sentence' → Short and concise answer\n- Detailed question → Comprehensive and in-depth explanation\n\nArtificial intelligence presents scientific content in language everyone can understand."
       },
       {
         question: "What is the Knowledge Graph?",
@@ -120,16 +116,12 @@ export default function FAQPage() {
         answer: "All publication data is sourced from NASA's official resources and the PubMed Central (PMC) database. Publication years are automatically updated using the PubMed E-utilities API."
       },
       {
-        question: "What technologies are used?",
-        answer: "The platform is built with:\n- **Frontend**: Next.js 15, React 19, TypeScript\n- **AI**: OpenAI GPT-3.5-turbo\n- **Search**: Semantic search, pgvector\n- **Deployment**: Vercel\n- **Data**: PubMed Central, NASA OSDR"
+        question: "How is artificial intelligence used?",
+        answer: "The platform uses artificial intelligence technology to make scientific articles more accessible. The AI system:\n\n- Reads articles and extracts key findings\n- Understands your questions and finds relevant information\n- Explains complex scientific concepts in simple language\n- Creates comprehensive summaries by comparing multiple articles\n\nArtificial intelligence works like your research assistant, saving you time and making scientific content more accessible."
       },
       {
         question: "How many articles does the Summarize feature support?",
-        answer: "You can select multiple articles at once to get a batch summary. The system analyzes your selected articles and creates a comprehensive comparative summary."
-      },
-      {
-        question: "Is API access available?",
-        answer: "Public API access is not currently available. The platform is designed to be used through the web interface."
+        answer: "You can select as many articles as you want at once to get a batch summary. The AI system analyzes all your selected articles and creates a comprehensive comparative summary. This way, you can review multiple studies at once and see the connections between them."
       }
     ]
   };
@@ -145,32 +137,32 @@ export default function FAQPage() {
 
         {/* Header */}
         <header className="glass-card" style={{ position: "sticky", top: 0, zIndex: 1000, borderRadius: 0, marginBottom: 0 }}>
-          <div style={{ maxWidth: 1400, margin: "0 auto", padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, flexWrap: "wrap" }}>
-            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none" }}>
-              <Image src="/logo.png" alt="NextGenLAB Logo" width={32} height={32} className="glow" />
-              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
+          <div style={{ maxWidth: 1400, margin: "0 auto", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none", minWidth: 0, flex: "1 1 auto" }}>
+              <Image src="/logo.png" alt="NextGenLAB Logo" width={28} height={28} className="glow" style={{ flexShrink: 0 }} />
+              <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+                <div className="text-gradient" style={{ fontWeight: 900, fontSize: "clamp(14px, 3vw, 22px)", letterSpacing: 0.3, overflow: "hidden", textOverflow: "ellipsis" }}>
                   {pageTitle}
                 </div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>{pageSubtitle}</div>
+                <div style={{ fontSize: "clamp(9px, 1.8vw, 11px)", color: "var(--text-secondary)", letterSpacing: "clamp(0.5px, 0.3vw, 2px)", fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis" }}>{pageSubtitle}</div>
               </div>
             </Link>
 
-            <nav style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
-              <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
+            <nav style={{ display: "flex", alignItems: "center", gap: "clamp(8px, 2vw, 16px)", flexWrap: "wrap", justifyContent: "flex-end" }}>
+              <Link href="/" className="btn-secondary" style={{ fontSize: "clamp(11px, 2vw, 13px)", padding: "8px 12px", whiteSpace: "nowrap" }}>
                 {lang === "tr" ? "Ana Sayfa" : "Home"}
               </Link>
-              <Link href="/analytics" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
+              <Link href="/analytics" className="btn-secondary" style={{ fontSize: "clamp(11px, 2vw, 13px)", padding: "8px 12px", whiteSpace: "nowrap" }}>
                 {lang === "tr" ? "Analitik" : "Analytics"}
               </Link>
-              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
+              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: "clamp(11px, 2vw, 13px)", padding: "8px 12px", whiteSpace: "nowrap" }}>
                 {lang === "tr" ? "Kılavuz" : "Guidelines"}
               </Link>
-              <Link href="/resources" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
+              <Link href="/resources" className="btn-secondary" style={{ fontSize: "clamp(11px, 2vw, 13px)", padding: "8px 12px", whiteSpace: "nowrap" }}>
                 {lang === "tr" ? "Kaynaklar" : "Resources"}
               </Link>
 
-              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500, minWidth: 60 }}>
+              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: "clamp(11px, 2vw, 13px)", fontWeight: 500, minWidth: 60, padding: "6px" }}>
                 <option value="tr">🇹🇷</option>
                 <option value="en">🇬🇧</option>
               </select>
@@ -179,12 +171,12 @@ export default function FAQPage() {
         </header>
 
         {/* Main Content */}
-        <main style={{ maxWidth: 1000, margin: "0 auto", padding: "48px 24px" }}>
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h1 className="text-gradient" style={{ fontSize: 42, fontWeight: 900, marginBottom: 16 }}>
+        <main style={{ maxWidth: 1000, margin: "0 auto", padding: "clamp(24px, 5vw, 48px) clamp(16px, 3vw, 24px)" }}>
+          <div style={{ textAlign: "center", marginBottom: "clamp(32px, 5vw, 48px)" }}>
+            <h1 className="text-gradient" style={{ fontSize: "clamp(28px, 6vw, 42px)", fontWeight: 900, marginBottom: 16, lineHeight: 1.2 }}>
               {lang === "tr" ? "❓ Sıkça Sorulan Sorular" : "❓ Frequently Asked Questions"}
             </h1>
-            <p style={{ fontSize: 16, color: "var(--text-secondary)", maxWidth: 600, margin: "0 auto" }}>
+            <p style={{ fontSize: "clamp(14px, 2.5vw, 16px)", color: "var(--text-secondary)", maxWidth: 600, margin: "0 auto", padding: "0 16px", lineHeight: 1.6 }}>
               {lang === "tr" 
                 ? "Platform hakkında merak ettiğiniz her şey. Sorunuza cevap bulamadıysanız, lütfen bizimle iletişime geçin."
                 : "Everything you need to know about the platform. If you can't find an answer, please contact us."}
@@ -204,21 +196,23 @@ export default function FAQPage() {
                 }}
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
               >
-                <div style={{ padding: "24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+                <div style={{ padding: "clamp(16px, 3vw, 24px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(12px, 2vw, 16px)" }}>
                   <h3 style={{ 
-                    fontSize: 18, 
+                    fontSize: "clamp(15px, 2.8vw, 18px)", 
                     fontWeight: 700, 
                     color: "var(--text-primary)", 
                     margin: 0,
-                    flex: 1
+                    flex: 1,
+                    lineHeight: 1.4
                   }}>
                     {faq.question}
                   </h3>
                   <div style={{ 
-                    fontSize: 24, 
+                    fontSize: "clamp(18px, 3vw, 24px)", 
                     color: "var(--nebula-purple)",
                     transition: "transform 0.3s ease",
-                    transform: openIndex === index ? "rotate(180deg)" : "rotate(0deg)"
+                    transform: openIndex === index ? "rotate(180deg)" : "rotate(0deg)",
+                    flexShrink: 0
                   }}>
                     ▼
                   </div>
@@ -226,12 +220,12 @@ export default function FAQPage() {
 
                 {openIndex === index && (
                   <div style={{ 
-                    padding: "0 24px 24px 24px",
+                    padding: "0 clamp(16px, 3vw, 24px) clamp(16px, 3vw, 24px) clamp(16px, 3vw, 24px)",
                     borderTop: "1px solid rgba(167, 139, 250, 0.2)",
-                    paddingTop: 16
+                    paddingTop: "clamp(12px, 2vw, 16px)"
                   }}>
                     <p style={{ 
-                      fontSize: 15, 
+                      fontSize: "clamp(13px, 2.5vw, 15px)", 
                       lineHeight: 1.7, 
                       color: "var(--text-secondary)",
                       margin: 0,
@@ -246,20 +240,20 @@ export default function FAQPage() {
           </div>
 
           {/* Contact Section */}
-          <div className="glass-card" style={{ marginTop: 48, padding: 32, textAlign: "center" }}>
-            <h2 className="text-gradient" style={{ fontSize: 24, fontWeight: 700, marginBottom: 16 }}>
+          <div className="glass-card" style={{ marginTop: "clamp(32px, 5vw, 48px)", padding: "clamp(20px, 4vw, 32px)", textAlign: "center" }}>
+            <h2 className="text-gradient" style={{ fontSize: "clamp(20px, 4vw, 24px)", fontWeight: 700, marginBottom: "clamp(12px, 2vw, 16px)", lineHeight: 1.3 }}>
               {lang === "tr" ? "Başka Sorularınız mı Var?" : "Have More Questions?"}
             </h2>
-            <p style={{ fontSize: 15, color: "var(--text-secondary)", marginBottom: 24 }}>
+            <p style={{ fontSize: "clamp(13px, 2.5vw, 15px)", color: "var(--text-secondary)", marginBottom: "clamp(16px, 3vw, 24px)", lineHeight: 1.6, padding: "0 16px" }}>
               {lang === "tr" 
                 ? "Cevabını bulamadığınız sorular için bizimle iletişime geçebilirsiniz."
                 : "Feel free to contact us if you have any questions that aren't answered here."}
             </p>
-            <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-              <Link href="/" className="btn-primary" style={{ fontSize: 14 }}>
+            <div style={{ display: "flex", gap: "clamp(12px, 2vw, 16px)", justifyContent: "center", flexWrap: "wrap", padding: "0 16px" }}>
+              <Link href="/" className="btn-primary" style={{ fontSize: "clamp(12px, 2.2vw, 14px)", padding: "clamp(10px, 2vw, 12px) clamp(16px, 3vw, 20px)" }}>
                 {lang === "tr" ? "🏠 Ana Sayfaya Dön" : "🏠 Back to Home"}
               </Link>
-              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 14 }}>
+              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: "clamp(12px, 2.2vw, 14px)", padding: "clamp(10px, 2vw, 12px) clamp(16px, 3vw, 20px)" }}>
                 {lang === "tr" ? "📖 Kullanım Kılavuzu" : "📖 User Guide"}
               </Link>
             </div>
@@ -267,13 +261,13 @@ export default function FAQPage() {
         </main>
 
         {/* Footer */}
-        <footer style={{ borderTop: "1px solid rgba(167, 139, 250, 0.2)", marginTop: 80 }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", textAlign: "center", fontSize: 14, color: "var(--text-secondary)" }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 14, marginBottom: 16 }}>
+        <footer style={{ borderTop: "1px solid rgba(167, 139, 250, 0.2)", marginTop: "clamp(48px, 8vw, 80px)" }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(24px, 4vw, 32px) clamp(16px, 3vw, 24px)", textAlign: "center", fontSize: "clamp(12px, 2vw, 14px)", color: "var(--text-secondary)" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "clamp(10px, 2vw, 14px)", marginBottom: "clamp(12px, 2vw, 16px)", flexWrap: "wrap" }}>
               <Image src="/logo.png" alt="NextGenLAB Logo" width={28} height={28} className="glow" />
-              <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>NextGenLAB Space Bioscience Explorer</span>
+              <span className="text-gradient" style={{ fontWeight: 700, fontSize: "clamp(14px, 2.5vw, 16px)" }}>NextGenLAB Space Bioscience Explorer</span>
             </div>
-            <div style={{ fontSize: 13, opacity: 0.7 }}>608 NASA Publications • Real-time AI Analysis • Knowledge Graph Visualization</div>
+            <div style={{ fontSize: "clamp(11px, 2vw, 13px)", opacity: 0.7, lineHeight: 1.6, padding: "0 16px" }}>608 NASA Publications • Real-time AI Analysis • Knowledge Graph Visualization</div>
           </div>
         </footer>
       </div>

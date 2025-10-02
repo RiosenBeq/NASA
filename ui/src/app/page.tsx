@@ -19,26 +19,8 @@ export default function Home() {
   const [lang, setLang] = useState<"tr" | "en">("tr");
   const [cardSummaries, setCardSummaries] = useState<Record<number, {text: string; loading: boolean}>>({});
   const [cardQA, setCardQA] = useState<Record<number, {q: string; a: string; loading: boolean}>>({});
-  const [persona] = useState<"scientist" | "manager" | "architect" | "">("");
-  const [sectionPriority] = useState<"results" | "discussion" | "conclusion" | "">("");
-  const [showSuggestions, setShowSuggestions] = useState(false);
-
   const apiEnv = process.env.NEXT_PUBLIC_API_URL;
   const api = apiEnv && apiEnv.trim().length > 0 ? apiEnv : "/api";
-
-  // Popular search suggestions
-  const searchSuggestions = [
-    "microgravity plant root growth",
-    "space radiation effects on DNA",
-    "artificial gravity systems",
-    "closed-loop life support",
-    "space agriculture technology",
-    "crew psychological health",
-    "Mars mission preparation",
-    "space medicine research",
-    "bone loss in space",
-    "space biotechnology"
-  ];
 
   const T = (key: string) => {
     const tr: Record<string, string> = {
@@ -222,7 +204,7 @@ export default function Home() {
       const res = await fetch(`${api}/summarize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: [id], persona: persona || null, section_priority: sectionPriority || null }),
+        body: JSON.stringify({ ids: [id] }),
       });
       const data = await res.json();
       const text = res.ok && data.summary ? data.summary + (data.citations?.length ? "\n\n📚 Kaynaklar:\n" + data.citations.join("\n") : "") : (data?.summary || "");
@@ -231,7 +213,8 @@ export default function Home() {
       const msg = e instanceof Error ? e.message : "";
       setCardSummaries((p) => ({ ...p, [id]: { text: `Özetleme başarısız: ${msg}`, loading: false } }));
     }
-  }, [api, persona, sectionPriority, cardSummaries]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api]);
 
   const askQA = useCallback(async (id: number) => {
     const qa = cardQA[id] || { q: "", a: "", loading: false };
@@ -242,7 +225,7 @@ export default function Home() {
       const res = await fetch(`${api}/qa`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, question, persona: persona || null }),
+        body: JSON.stringify({ id, question }),
       });
       const data = await res.json();
       const ans = res.ok ? (data.answer || "") : (data?.answer || "");
@@ -251,7 +234,8 @@ export default function Home() {
       const msg = e instanceof Error ? e.message : "";
       setCardQA((p) => ({ ...p, [id]: { q: question, a: `Soru cevaplanamadı: ${msg}`, loading: false } }));
     }
-  }, [api, persona, cardQA]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [api]);
 
   useEffect(() => {
     const performInitialSearch = async () => {
@@ -263,19 +247,6 @@ export default function Home() {
     };
     performInitialSearch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Close suggestions when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest('[data-suggestions-container]')) {
-        setShowSuggestions(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   return (
