@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function GuidelinesPage() {
-  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [lang, setLang] = useState<"tr" | "en">("en");
   
   const T = (key: string) => {
     const tr: Record<string, string> = {

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function ResourcesPage() {
-  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [lang, setLang] = useState<"tr" | "en">("en");
   
   const T = (key: string) => {
     const tr: Record<string, string> = {
@@ -57,13 +57,6 @@ export default function ResourcesPage() {
         icon: "🗄️"
       },
       {
-        title: "🔬 NSLSL (NASA Space Life Sciences Lab)",
-        desc: "Ek literatür ve uzay yaşam bilimleri araştırmaları",
-        url: "https://extapps.ksc.nasa.gov/NSLSL/Search",
-        category: "Literature",
-        icon: "📖"
-      },
-      {
         title: "📊 NASA Task Book",
         desc: "NASA'nın Biological and Physical Sciences (BPS) Division ve Human Research Program (HRP) tarafından desteklenen araştırma projelerinin çevrimiçi veritabanı. Proje açıklamaları, yıllık ilerleme raporları, nihai raporlar ve NASA destekli çalışmalardan kaynaklanan yayınların bibliyografik listelerini içerir.",
         url: "https://taskbook.nasaprs.com/tbp/welcome.cfm",
@@ -102,13 +95,6 @@ export default function ResourcesPage() {
         icon: "🗄️"
       },
       {
-        title: "🔬 NSLSL (NASA Space Life Sciences Lab)",
-        desc: "Additional literature and space life sciences research",
-        url: "https://extapps.ksc.nasa.gov/NSLSL/Search",
-        category: "Literature",
-        icon: "📖"
-      },
-      {
         title: "📊 NASA Task Book",
         desc: "Online database of research projects supported by NASA's Biological and Physical Sciences (BPS) Division and Human Research Program (HRP). Includes project descriptions, annual progress reports, final reports, and bibliographic lists of publications from NASA-funded studies.",
         url: "https://taskbook.nasaprs.com/tbp/welcome.cfm",
@@ -137,14 +123,12 @@ export default function ResourcesPage() {
     tr: [
       { label: "SB Publications:", desc: "Platform'da bulunan 608 yayının tam listesi için" },
       { label: "OSDR:", desc: "Ham veri ve metadata'ya erişim için" },
-      { label: "NSLSL:", desc: "Ek literatür taraması için" },
       { label: "Task Book:", desc: "Devam eden ve tamamlanmış NASA projeleri için" },
       { label: "PMC:", desc: "Tam metin yayınlara erişim için" }
     ],
     en: [
       { label: "SB Publications:", desc: "For the complete list of 608 publications on the platform" },
       { label: "OSDR:", desc: "For access to raw data and metadata" },
-      { label: "NSLSL:", desc: "For additional literature search" },
       { label: "Task Book:", desc: "For ongoing and completed NASA projects" },
       { label: "PMC:", desc: "For full-text publication access" }
     ]

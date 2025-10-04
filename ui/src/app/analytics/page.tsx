@@ -19,7 +19,7 @@ type AnalyticsData = {
 };
 
 export default function AnalyticsPage() {
-  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [lang, setLang] = useState<"tr" | "en">("en");
   const apiEnv = process.env.NEXT_PUBLIC_API_URL || "";
   const api = apiEnv.trim() ? apiEnv : "";
   const [data, setData] = useState<AnalyticsData>({

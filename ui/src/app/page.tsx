@@ -16,7 +16,7 @@ export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [lang, setLang] = useState<"tr" | "en">("en");
   const [cardSummaries, setCardSummaries] = useState<Record<number, {text: string; loading: boolean}>>({});
   const [cardQA, setCardQA] = useState<Record<number, {q: string; a: string; loading: boolean}>>({});
   const [showSuggestions, setShowSuggestions] = useState(false);

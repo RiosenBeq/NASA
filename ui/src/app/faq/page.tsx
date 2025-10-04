@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function FAQPage() {
-  const [lang, setLang] = useState<"tr" | "en">("tr");
+  const [lang, setLang] = useState<"tr" | "en">("en");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const faqData = {
