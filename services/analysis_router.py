@@ -4,15 +4,35 @@ Provides advanced analytics endpoints for research insights.
 """
 
 import logging
-from typing import Dict, List, Any, Optional, Tuple
-from collections import defaultdict, Counter
-import numpy as np
-from datetime import datetime, timedelta
+import os
+import sys
+from typing import Dict, List, Any, Optional
+from collections import defaultdict
+from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, Field
 
-from api.main import get_db_connection
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'api'))
+
+try:
+    from main import get_db_connection
+except ImportError:
+    # Fallback: try direct psycopg2 connection
+    import psycopg2
+    from contextlib import contextmanager
+    
+    @contextmanager
+    def get_db_connection():
+        """Fallback database connection."""
+        db_url = os.getenv("DATABASE_URL", "postgres://localhost:5432/nasa")
+        conn = psycopg2.connect(db_url)
+        try:
+            yield conn
+            conn.commit()
+        finally:
+            conn.close()
 
 logger = logging.getLogger(__name__)
 

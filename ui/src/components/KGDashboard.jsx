@@ -10,7 +10,8 @@ export default function KGDashboard() {
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
-    const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+    const apiEnv = process.env.NEXT_PUBLIC_API_URL || "";
+    const api = apiEnv.trim() ? apiEnv : "";
     async function load() {
       try {
         // Prefer static served KG JSONs from backend
