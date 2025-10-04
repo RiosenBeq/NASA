@@ -331,7 +331,12 @@ export default function Home() {
       const res = await fetch(`${api}/qa`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, question, persona: null }),
+        body: JSON.stringify({ 
+          id, 
+          question, 
+          persona: null,
+          language: lang // Send current language to API
+        }),
         signal: controller.signal
       });
       
@@ -389,9 +394,9 @@ export default function Home() {
         <div className="nebula-glow-3" />
       </div>
 
-      <div style={{ minHeight: "100vh", position: "relative", zIndex: 10 }}>
+      <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
         {/* Premium Header */}
-        <header className="header-sticky">
+        <header className="header-sticky" style={{ zIndex: 100 }}>
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
               <div style={{ position: "relative", flexShrink: 0 }}>
@@ -429,9 +434,9 @@ export default function Home() {
       </header>
 
         {/* Main Content */}
-        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
+        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", position: "relative", zIndex: 2 }}>
           {/* Premium Hero Section */}
-          <div className="glass-card" style={{ padding: "48px 24px", marginBottom: 40, position: "relative", overflow: "visible" }}>
+          <div className="glass-card" style={{ padding: "48px 24px 80px 24px", marginBottom: 40, position: "relative", overflow: "visible" }}>
             <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
             
             <div style={{ textAlign: "center", marginBottom: 32, position: "relative", zIndex: 1 }}>
@@ -442,11 +447,11 @@ export default function Home() {
             </div>
 
             {/* Premium Search Bar with Smart Suggestions */}
-            <div style={{ position: "relative", zIndex: 99999 }}>
+            <div style={{ position: "relative", zIndex: 999999 }}>
               <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap", position: "relative" }}>
                 <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
-                  <input
-                    value={q}
+            <input
+              value={q}
                     onChange={(e) => {
                       setQ(e.target.value);
                       setShowSuggestions(true);
@@ -460,43 +465,55 @@ export default function Home() {
                       }
                       if (e.key === "Escape") setShowSuggestions(false);
                     }}
-                    placeholder={T("queryPlaceholder")}
+              placeholder={T("queryPlaceholder")}
                     style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500, position: "relative", zIndex: 1 }}
                   />
                   
-                  {/* Smart Suggestions Dropdown - Fixed positioning */}
+                  {/* Smart Suggestions Dropdown - MAXIMUM VISIBILITY & PROMINENCE */}
                   {showSuggestions && smartSuggestions.length > 0 && (
                     <div 
                       onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking suggestions
                       style={{ 
-                        position: "absolute", 
-                        top: "calc(100% + 4px)", 
-                        left: 0, 
-                        right: 0, 
-                        background: "rgba(15, 8, 36, 0.98)",
-                        backdropFilter: "blur(30px)",
-                        border: "2px solid rgba(167, 139, 250, 0.5)",
-                        borderRadius: "16px",
-                        padding: "8px 0",
-                        maxHeight: 400,
+                        position: "absolute",
+                        top: "calc(100% + 8px)",
+                        left: 0,
+                        right: 0,
+                        background: "rgba(10, 5, 30, 0.99)",
+                        backdropFilter: "blur(40px)",
+                        WebkitBackdropFilter: "blur(40px)",
+                        border: "3px solid rgba(167, 139, 250, 0.8)",
+                        borderRadius: "20px",
+                        padding: "12px 0",
+                        maxHeight: 450,
                         overflowY: "auto",
-                        boxShadow: "0 20px 60px rgba(167, 139, 250, 0.6), 0 8px 24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
-                        zIndex: 999999,
-                        animation: "slideDown 0.3s ease-out",
-                        WebkitBackdropFilter: "blur(30px)"
+                        boxShadow: `
+                          0 0 2px 1px rgba(167, 139, 250, 0.5),
+                          0 0 30px 5px rgba(167, 139, 250, 0.9), 
+                          0 25px 70px rgba(167, 139, 250, 0.8), 
+                          0 10px 30px rgba(0, 0, 0, 0.9), 
+                          inset 0 2px 0 rgba(255, 255, 255, 0.2),
+                          inset 0 0 20px rgba(167, 139, 250, 0.1),
+                          0 0 120px rgba(167, 139, 250, 0.6)
+                        `,
+                        zIndex: 2147483647,  // Maximum z-index value
+                        animation: "slideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                        outline: "1px solid rgba(255, 255, 255, 0.1)",
+                        outlineOffset: "-1px"
                       }}
                     >
                       <div style={{ 
-                        padding: "12px 20px", 
-                        fontSize: 11, 
-                        color: "var(--nebula-purple)", 
-                        fontWeight: 700, 
-                        letterSpacing: 1.5, 
+                        padding: "16px 24px 12px", 
+                        fontSize: 12, 
+                        color: "rgba(167, 139, 250, 1)", 
+                        fontWeight: 800, 
+                        letterSpacing: 2, 
                         textTransform: "uppercase",
-                        borderBottom: "1px solid rgba(167, 139, 250, 0.15)",
-                        marginBottom: 4
+                        borderBottom: "2px solid rgba(167, 139, 250, 0.3)",
+                        marginBottom: 8,
+                        textShadow: "0 0 20px rgba(167, 139, 250, 0.8), 0 0 10px rgba(167, 139, 250, 0.5)",
+                        background: "linear-gradient(90deg, rgba(167, 139, 250, 0.1), transparent)"
                       }}>
-                        {T("smartSearchLabel")}
+                        ✨ {T("smartSearchLabel")}
                       </div>
                       {smartSuggestions.map((suggestion, idx) => (
                         <button
@@ -510,32 +527,38 @@ export default function Home() {
                           style={{
                             width: "100%",
                             textAlign: "left",
-                            padding: "14px 20px",
+                            padding: "16px 24px",
                             background: "transparent",
                             border: "none",
                             color: "var(--text-primary)",
-                            fontSize: 14,
+                            fontSize: 15,
                             cursor: "pointer",
-                            transition: "all 0.15s ease",
+                            transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
                             display: "flex",
                             alignItems: "center",
                             gap: 12,
-                            fontWeight: 500
+                            fontWeight: 500,
+                            borderBottom: idx < smartSuggestions.length - 1 ? "1px solid rgba(167, 139, 250, 0.15)" : "none",
+                            position: "relative"
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = "rgba(167, 139, 250, 0.15)";
-                            e.currentTarget.style.paddingLeft = "28px";
+                            e.currentTarget.style.background = "linear-gradient(90deg, rgba(167, 139, 250, 0.25), rgba(167, 139, 250, 0.1))";
+                            e.currentTarget.style.paddingLeft = "36px";
+                            e.currentTarget.style.borderLeft = "4px solid rgba(167, 139, 250, 0.8)";
+                            e.currentTarget.style.boxShadow = "inset 0 0 20px rgba(167, 139, 250, 0.2)";
                             e.currentTarget.style.transform = "translateX(4px)";
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.background = "transparent";
-                            e.currentTarget.style.paddingLeft = "20px";
+                            e.currentTarget.style.paddingLeft = "24px";
+                            e.currentTarget.style.borderLeft = "none";
+                            e.currentTarget.style.boxShadow = "none";
                             e.currentTarget.style.transform = "translateX(0)";
                           }}
                         >
-                          <span style={{ opacity: 0.6, fontSize: 16 }}>🔍</span>
-                          <span style={{ flex: 1, lineHeight: 1.4 }}>{suggestion}</span>
-                          <span style={{ opacity: 0.3, fontSize: 12 }}>↵</span>
+                          <span style={{ opacity: 0.8, fontSize: 17 }}>🔍</span>
+                          <span style={{ flex: 1, lineHeight: 1.5 }}>{suggestion}</span>
+                          <span style={{ opacity: 0.5, fontSize: 14 }}>↵</span>
                         </button>
                       ))}
                     </div>
@@ -543,8 +566,8 @@ export default function Home() {
                 </div>
                 <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">
                   {loading ? "⏳" : T("search")}
-                </button>
-              </div>
+            </button>
+          </div>
               
               {/* Language Indicator */}
               {q.length > 0 && (
@@ -605,16 +628,16 @@ export default function Home() {
                     <span>{lang === "tr" ? "Bu makale hakkında soru sorun" : "Ask about this article"}</span>
                   </div>
                   <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
-                    <input 
-                      value={cardQA[it.id]?.q || ""} 
-                      onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !cardQA[it.id]?.loading && cardQA[it.id]?.q?.trim()) {
+                  <input 
+                    value={cardQA[it.id]?.q || ""} 
+                    onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !cardQA[it.id]?.loading && cardQA[it.id]?.q?.trim()) {
                           e.preventDefault();
-                          askQA(it.id);
-                        }
-                      }}
-                      placeholder={T("askPlaceholder")}
+                        askQA(it.id);
+                      }
+                    }}
+                    placeholder={T("askPlaceholder")}
                       disabled={cardQA[it.id]?.loading}
                       style={{ 
                         flex: "1 1 200px", 
@@ -658,9 +681,9 @@ export default function Home() {
                           <span>{T("askButton")}</span>
                         </>
                       )}
-                    </button>
+                        </button>
                   </div>
-                </div>
+                      </div>
 
                       {cardQA[it.id]?.a && (
                   <div className="glass-card" style={{ padding: 20, marginTop: 16, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)", borderLeft: "3px solid var(--nebula-purple)" }}>

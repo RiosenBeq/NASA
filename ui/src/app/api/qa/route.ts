@@ -10,6 +10,7 @@ export async function POST(req: NextRequest) {
     const id: number = body?.id;
     const question: string = body?.question || "";
     const persona: string | null = body?.persona || null;
+    const language: string = body?.language || "tr"; // Get language from request
 
     if (!question.trim()) {
       return NextResponse.json(
@@ -147,16 +148,17 @@ ${question}
 
 CRITICAL INSTRUCTIONS:
 - Answer ONLY based on the article content provided above
-- If you don't have enough information from the article, say "Bu makale içeriğinde bu bilgi bulunamadı"
+- If you don't have enough information from the article, say "${language === 'en' ? 'This information is not found in the article content' : 'Bu makale içeriğinde bu bilgi bulunamadı'}"
 - DO NOT make up information or guess
 - Be factually accurate and cite specific findings from the article when possible
-- If asked for "one sentence" (tek cümle) or "brief" (kısa/özetle), give 1-2 sentences ONLY
+- If asked for "one sentence" (tek cümle/brief) or "brief" (kısa/özetle), give 1-2 sentences ONLY
 - If asked for methodology, details, or explanations, provide a thorough answer with specific details from the Methods/Results sections
-- Write in Turkish (professional scientific Turkish) unless the question is in English
+- IMPORTANT: Write your answer in ${language === 'en' ? 'ENGLISH' : 'TURKISH (professional scientific Turkish)'}
 - Quote specific data, measurements, or findings when available
 - If the abstract doesn't contain the answer, clearly state that
+- Language preference: ${language === 'en' ? 'Answer must be in English' : 'Cevap Türkçe olmalı'}
 
-Answer the question now based ONLY on the provided article content:`;
+Answer the question now in ${language === 'en' ? 'ENGLISH' : 'TURKISH'} based ONLY on the provided article content:`;
 
     // Detect if user wants short/brief answer
     const lowerQ = question.toLowerCase();
