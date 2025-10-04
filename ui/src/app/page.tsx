@@ -19,8 +19,79 @@ export default function Home() {
   const [lang, setLang] = useState<"tr" | "en">("tr");
   const [cardSummaries, setCardSummaries] = useState<Record<number, {text: string; loading: boolean}>>({});
   const [cardQA, setCardQA] = useState<Record<number, {q: string; a: string; loading: boolean}>>({});
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [smartSuggestions, setSmartSuggestions] = useState<string[]>([]);
   const apiEnv = process.env.NEXT_PUBLIC_API_URL;
   const api = apiEnv && apiEnv.trim().length > 0 ? apiEnv : "/api";
+
+  // Detect language from text
+  const detectLanguage = (text: string): "tr" | "en" => {
+    const turkishChars = /[çğıöşü]/i;
+    const turkishWords = /(ve|veya|ile|için|ancak|çünkü|nasıl|nedir|neden|etki|üzerinde|uzay)/i;
+    return (turkishChars.test(text) || turkishWords.test(text)) ? "tr" : "en";
+  };
+
+  // Smart search suggestions based on context
+  const generateSmartSuggestions = useCallback((query: string) => {
+    const allSuggestions = {
+      tr: [
+        "mikrogravite bitki kök büyümesi",
+        "uzay radyasyonu DNA hasarı",
+        "kemik kaybı uzun süreli uzay uçuşu",
+        "ISS protein kristalleşmesi",
+        "astronot immün sistem değişiklikleri",
+        "mars yolculuğu sağlık riskleri",
+        "mikrobiyal davranış uzayda",
+        "bitki yetiştirme uzay istasyonunda",
+        "kasların atrofisi mikrogravitede",
+        "uzay ortamında gen ekspresyonu"
+      ],
+      en: [
+        "microgravity plant root growth",
+        "space radiation DNA damage",
+        "bone loss long duration spaceflight",
+        "ISS protein crystallization",
+        "astronaut immune system changes",
+        "mars mission health risks",
+        "microbial behavior in space",
+        "plant cultivation space station",
+        "muscle atrophy microgravity",
+        "gene expression space environment"
+      ]
+    };
+
+    if (!query.trim()) {
+      return allSuggestions[lang].slice(0, 5);
+    }
+
+    const detectedLang = detectLanguage(query);
+    const queryLower = query.toLowerCase();
+    const suggestions = allSuggestions[detectedLang];
+    
+    // Filter suggestions that match query
+    const filtered = suggestions.filter(s => 
+      s.toLowerCase().includes(queryLower) || 
+      queryLower.split(" ").some(word => word.length > 2 && s.toLowerCase().includes(word))
+    );
+
+    // If no matches, return top suggestions
+    return filtered.length > 0 ? filtered.slice(0, 5) : suggestions.slice(0, 5);
+  }, [lang]);
+
+  // Update suggestions when query or lang changes
+  useEffect(() => {
+    setSmartSuggestions(generateSmartSuggestions(q));
+  }, [q, generateSmartSuggestions]);
+
+  // Auto-detect language when user types
+  useEffect(() => {
+    if (q.length > 3) {
+      const detectedLang = detectLanguage(q);
+      if (detectedLang !== lang) {
+        setLang(detectedLang);
+      }
+    }
+  }, [q, lang]);
 
   const T = (key: string) => {
     const tr: Record<string, string> = {
@@ -39,7 +110,8 @@ export default function Home() {
       queryPlaceholder: "Uzay biyolojisi araştırmanızı yazın...",
       
       // Search suggestions
-      suggestionsTitle: "🔍 Popüler Aramalar",
+      suggestionsTitle: "🧠 Akıllı Aramalar",
+      smartSearchLabel: "Önerilen aramalar:",
       currentSearchLabel: "Yazdığınız arama:",
       searchButton: "Ara",
       
@@ -94,7 +166,8 @@ export default function Home() {
       queryPlaceholder: "Search space biology research...",
       
       // Search suggestions
-      suggestionsTitle: "🔍 Popular Searches",
+      suggestionsTitle: "🧠 Smart Searches",
+      smartSearchLabel: "Suggested searches:",
       currentSearchLabel: "Your search:",
       searchButton: "Search",
       
@@ -219,23 +292,52 @@ export default function Home() {
   const askQA = useCallback(async (id: number) => {
     const qa = cardQA[id] || { q: "", a: "", loading: false };
     const question = (qa.q || "").trim();
-    if (!question) return;
-    setCardQA((p) => ({ ...p, [id]: { ...qa, loading: true } }));
+    
+    if (!question) {
+      setCardQA((p) => ({ ...p, [id]: { ...qa, a: lang === "tr" ? "⚠️ Lütfen bir soru yazın." : "⚠️ Please enter a question.", loading: false } }));
+      return;
+    }
+    
+    setCardQA((p) => ({ ...p, [id]: { ...qa, loading: true, a: "" } }));
+    
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+      
       const res = await fetch(`${api}/qa`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, question }),
+        body: JSON.stringify({ id, question, persona: null }),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
+      
+      if (!res.ok) {
+        const errorText = await res.text().catch(() => 'Unknown error');
+        throw new Error(`API Error (${res.status}): ${errorText}`);
+      }
+      
       const data = await res.json();
-      const ans = res.ok ? (data.answer || "") : (data?.answer || "");
+      const ans = data.answer || (lang === "tr" ? "Yanıt alınamadı." : "No answer received.");
+      
       setCardQA((p) => ({ ...p, [id]: { q: question, a: ans, loading: false } }));
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      setCardQA((p) => ({ ...p, [id]: { q: question, a: `Soru cevaplanamadı: ${msg}`, loading: false } }));
+      let errorMsg = lang === "tr" ? "Soru cevaplanamadı" : "Failed to answer question";
+      
+      if (e instanceof Error) {
+        if (e.name === 'AbortError') {
+          errorMsg = lang === "tr" ? "⏱️ İstek zaman aşımına uğradı. Lütfen tekrar deneyin." : "⏱️ Request timed out. Please try again.";
+        } else {
+          errorMsg = `${lang === "tr" ? "Hata" : "Error"}: ${e.message}`;
+        }
+      }
+      
+      console.error("QA error:", e);
+      setCardQA((p) => ({ ...p, [id]: { q: question, a: `❌ ${errorMsg}`, loading: false } }));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api]);
+  }, [api, lang]);
 
   useEffect(() => {
     const performInitialSearch = async () => {
@@ -314,24 +416,99 @@ export default function Home() {
               <p style={{ fontSize: "clamp(16px, 2.5vw, 18px)", color: "var(--text-secondary)", letterSpacing: 0.3, fontWeight: 500, maxWidth: 700, margin: "0 auto" }}>{T("subtitle")}</p>
             </div>
 
-            {/* Premium Search Bar */}
+            {/* Premium Search Bar with Smart Suggestions */}
             <div style={{ position: "relative", zIndex: 10000 }}>
-              <div style={{ display: "flex", gap: 14, marginBottom: 24, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap" }}>
                 <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
-            <input
-              value={q}
+                  <input
+                    value={q}
                     onChange={(e) => {
                       setQ(e.target.value);
+                      setShowSuggestions(true);
                     }}
-              onKeyDown={(e) => e.key === "Enter" && search()}
-              placeholder={T("queryPlaceholder")}
+                    onFocus={() => setShowSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        setShowSuggestions(false);
+                        search();
+                      }
+                      if (e.key === "Escape") setShowSuggestions(false);
+                    }}
+                    placeholder={T("queryPlaceholder")}
                     style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
                   />
+                  
+                  {/* Smart Suggestions Dropdown */}
+                  {showSuggestions && smartSuggestions.length > 0 && (
+                    <div 
+                      className="glass-card"
+                      style={{ 
+                        position: "absolute", 
+                        top: "calc(100% + 8px)", 
+                        left: 0, 
+                        right: 0, 
+                        padding: "12px 0",
+                        maxHeight: 300,
+                        overflowY: "auto",
+                        boxShadow: "0 8px 32px rgba(167, 139, 250, 0.3)",
+                        border: "1px solid rgba(167, 139, 250, 0.3)",
+                        zIndex: 10001
+                      }}
+                    >
+                      <div style={{ padding: "8px 20px", fontSize: 11, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>
+                        {T("smartSearchLabel")}
+                      </div>
+                      {smartSuggestions.map((suggestion, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => {
+                            setQ(suggestion);
+                            setShowSuggestions(false);
+                            search(suggestion);
+                          }}
+                          style={{
+                            width: "100%",
+                            textAlign: "left",
+                            padding: "12px 20px",
+                            background: "transparent",
+                            border: "none",
+                            color: "var(--text-primary)",
+                            fontSize: 14,
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 12
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "rgba(167, 139, 250, 0.1)";
+                            e.currentTarget.style.paddingLeft = "24px";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "transparent";
+                            e.currentTarget.style.paddingLeft = "20px";
+                          }}
+                        >
+                          <span style={{ opacity: 0.5 }}>🔍</span>
+                          <span>{suggestion}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">
                   {loading ? "⏳" : T("search")}
-            </button>
-          </div>
+                </button>
+              </div>
+              
+              {/* Language Indicator */}
+              {q.length > 0 && (
+                <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
+                  <span>🌐 {lang === "tr" ? "Türkçe" : "English"} {T("currentSearchLabel")}</span>
+                  <span style={{ fontWeight: 600, color: "var(--nebula-purple)" }}>{q}</span>
+                </div>
+              )}
             </div>
 
 
@@ -377,23 +554,69 @@ export default function Home() {
                       </div>
                     )}
 
-                {/* Premium Q&A Section */}
-                <div style={{ marginTop: 20, display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
-                  <input 
-                    value={cardQA[it.id]?.q || ""} 
-                    onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !cardQA[it.id]?.loading && cardQA[it.id]?.q?.trim()) {
-                        askQA(it.id);
-                      }
-                    }}
-                    placeholder={T("askPlaceholder")}
-                    style={{ flex: "1 1 200px", fontWeight: 500, minWidth: 0 }}
-                  />
-                  <button onClick={() => askQA(it.id)} disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} className="btn-primary" style={{ fontSize: 13, padding: "12px 24px", flexShrink: 0 }} aria-label={`Ask question about: ${it.title}`}>
-                    {cardQA[it.id]?.loading ? T("summarizing") : T("askButton")}
-                        </button>
-                      </div>
+                {/* Enhanced Q&A Section */}
+                <div style={{ marginTop: 20, padding: 20, background: "rgba(167, 139, 250, 0.05)", borderRadius: 12, border: "1px solid rgba(167, 139, 250, 0.1)" }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: "var(--nebula-purple)", display: "flex", alignItems: "center", gap: 8 }}>
+                    <span>💬</span>
+                    <span>{lang === "tr" ? "Bu makale hakkında soru sorun" : "Ask about this article"}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
+                    <input 
+                      value={cardQA[it.id]?.q || ""} 
+                      onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !cardQA[it.id]?.loading && cardQA[it.id]?.q?.trim()) {
+                          e.preventDefault();
+                          askQA(it.id);
+                        }
+                      }}
+                      placeholder={T("askPlaceholder")}
+                      disabled={cardQA[it.id]?.loading}
+                      style={{ 
+                        flex: "1 1 200px", 
+                        fontWeight: 500, 
+                        minWidth: 0,
+                        opacity: cardQA[it.id]?.loading ? 0.6 : 1,
+                        cursor: cardQA[it.id]?.loading ? "not-allowed" : "text"
+                      }}
+                    />
+                    <button 
+                      onClick={() => askQA(it.id)} 
+                      disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} 
+                      className="btn-primary" 
+                      style={{ 
+                        fontSize: 13, 
+                        padding: "12px 24px", 
+                        flexShrink: 0,
+                        minWidth: 120,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8
+                      }} 
+                      aria-label={`Ask question about: ${it.title}`}
+                    >
+                      {cardQA[it.id]?.loading ? (
+                        <>
+                          <span className="loading-spinner" style={{ 
+                            width: 14, 
+                            height: 14, 
+                            border: "2px solid rgba(255,255,255,0.3)", 
+                            borderTopColor: "white", 
+                            borderRadius: "50%", 
+                            animation: "spin 1s linear infinite" 
+                          }}/>
+                          <span>{T("asking")}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>🤔</span>
+                          <span>{T("askButton")}</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
 
                       {cardQA[it.id]?.a && (
                   <div className="glass-card" style={{ padding: 20, marginTop: 16, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)", borderLeft: "3px solid var(--nebula-purple)" }}>
