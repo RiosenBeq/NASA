@@ -13,6 +13,7 @@ export default function GuidelinesPage() {
       navHome: "Ana Sayfa",
       navResources: "Kaynaklar",
       navAnalytics: "Analitik",
+      navFAQ: "SSS",
       heroTitle: "🚀 Platform Kullanım Kılavuzu",
       heroDesc: "NASA Space Bioscience Explorer platformunu nasıl etkili kullanacağınızı öğrenin. 608 yayın üzerinde semantik arama, yapay zeka destekli özetler ve bilgi grafiği görselleştirmesi.",
       purposeTitle: "🎯 Platform Amacı",
@@ -53,6 +54,7 @@ export default function GuidelinesPage() {
       navHome: "Home",
       navResources: "Resources",
       navAnalytics: "Analytics",
+      navFAQ: "FAQ",
       heroTitle: "🚀 Platform Usage Guide",
       heroDesc: "Learn how to effectively use the NASA Space Bioscience Explorer platform. Semantic search, AI-powered summaries, and knowledge graph visualization across 608 publications.",
       purposeTitle: "🎯 Platform Purpose",
@@ -148,7 +150,7 @@ export default function GuidelinesPage() {
         {/* Premium Header */}
         <header className="header-sticky">
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px", textDecoration: "none", cursor: "pointer" }}>
               <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
               <div style={{ minWidth: 0 }}>
                 <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
@@ -156,12 +158,13 @@ export default function GuidelinesPage() {
                 </div>
                 <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>{T("pageSubtitle")}</div>
               </div>
-          </div>
+          </Link>
             
             <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
               <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navHome")}</Link>
               <Link href="/resources" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navResources")}</Link>
               <Link href="/analytics" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navAnalytics")}</Link>
+              <Link href="/faq" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navFAQ")}</Link>
               <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500, minWidth: 60 }}>
                 <option value="tr">🇹🇷</option>
                 <option value="en">🇬🇧</option>

@@ -398,7 +398,7 @@ export default function Home() {
         {/* Premium Header */}
         <header className="header-sticky" style={{ zIndex: 100 }}>
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px", textDecoration: "none", cursor: "pointer" }}>
               <div style={{ position: "relative", flexShrink: 0 }}>
                 <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
                 <div style={{ position: "absolute", inset: -8, background: "radial-gradient(circle, rgba(167, 139, 250, 0.4), transparent)", filter: "blur(12px)", zIndex: -1 }} />
@@ -409,7 +409,7 @@ export default function Home() {
                 </div>
                 <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>{T("brandSubtitle")}</div>
               </div>
-          </div>
+          </Link>
             
             <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
               {[

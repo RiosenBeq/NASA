@@ -38,6 +38,7 @@ export default function AnalyticsPage() {
       navHome: "Ana Sayfa",
       navGuidelines: "Kılavuz",
       navResources: "Kaynaklar",
+      navFAQ: "SSS",
       
       // Filters
       filtersTitle: "🔍 Filtreler & Kontroller",
@@ -92,6 +93,7 @@ export default function AnalyticsPage() {
       navHome: "Home",
       navGuidelines: "Guidelines",
       navResources: "Resources",
+      navFAQ: "FAQ",
       
       // Filters
       filtersTitle: "🔍 Filters & Controls",
@@ -206,7 +208,7 @@ export default function AnalyticsPage() {
         {/* Premium Header */}
         <header className="header-sticky">
           <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px" }}>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px", textDecoration: "none", cursor: "pointer" }}>
               <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
               <div style={{ minWidth: 0 }}>
                 <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
@@ -216,12 +218,13 @@ export default function AnalyticsPage() {
                   {T("pageSubtitle")} • {data.lastUpdated.toLocaleTimeString()}
                 </div>
               </div>
-            </div>
+            </Link>
             
             <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
               <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navHome")}</Link>
               <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navGuidelines")}</Link>
               <Link href="/resources" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navResources")}</Link>
+              <Link href="/faq" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navFAQ")}</Link>
               <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500, minWidth: 60 }}>
                 <option value="tr">🇹🇷</option>
                 <option value="en">🇬🇧</option>
