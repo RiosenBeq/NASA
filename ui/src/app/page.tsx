@@ -324,7 +324,9 @@ export default function Home() {
     
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 90000); // 90s timeout for article fetching
+      
+      console.log(`[Frontend] Sending QA request for article ID ${id}`);
       
       const res = await fetch(`${api}/qa`, {
         method: "POST",
@@ -429,8 +431,8 @@ export default function Home() {
         {/* Main Content */}
         <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px" }}>
           {/* Premium Hero Section */}
-          <div className="glass-card" style={{ padding: "48px 24px", marginBottom: 40, position: "relative", overflow: "hidden" }}>
-            <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none" }} />
+          <div className="glass-card" style={{ padding: "48px 24px", marginBottom: 40, position: "relative", overflow: "visible" }}>
+            <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
             
             <div style={{ textAlign: "center", marginBottom: 32, position: "relative", zIndex: 1 }}>
               <h1 className="text-gradient" style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 900, marginBottom: 16, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
@@ -440,7 +442,7 @@ export default function Home() {
             </div>
 
             {/* Premium Search Bar with Smart Suggestions */}
-            <div style={{ position: "relative", zIndex: 1000 }}>
+            <div style={{ position: "relative", zIndex: 99999 }}>
               <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap", position: "relative" }}>
                 <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
                   <input
@@ -471,16 +473,17 @@ export default function Home() {
                         top: "calc(100% + 4px)", 
                         left: 0, 
                         right: 0, 
-                        background: "rgba(15, 8, 36, 0.95)",
-                        backdropFilter: "blur(20px)",
-                        border: "1px solid rgba(167, 139, 250, 0.3)",
+                        background: "rgba(15, 8, 36, 0.98)",
+                        backdropFilter: "blur(30px)",
+                        border: "2px solid rgba(167, 139, 250, 0.5)",
                         borderRadius: "16px",
                         padding: "8px 0",
                         maxHeight: 400,
                         overflowY: "auto",
-                        boxShadow: "0 12px 48px rgba(167, 139, 250, 0.4), 0 4px 16px rgba(0, 0, 0, 0.5)",
+                        boxShadow: "0 20px 60px rgba(167, 139, 250, 0.6), 0 8px 24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
                         zIndex: 999999,
-                        animation: "fadeIn 0.2s ease-out"
+                        animation: "slideDown 0.3s ease-out",
+                        WebkitBackdropFilter: "blur(30px)"
                       }}
                     >
                       <div style={{ 
