@@ -290,15 +290,37 @@ export default function Home() {
   }, [api]);
 
   const askQA = useCallback(async (id: number) => {
-    const qa = cardQA[id] || { q: "", a: "", loading: false };
-    const question = (qa.q || "").trim();
+    // Get current state to ensure we have the latest question
+    const currentQA = cardQA[id];
+    const question = currentQA?.q?.trim() || "";
     
-    if (!question) {
-      setCardQA((p) => ({ ...p, [id]: { ...qa, a: lang === "tr" ? "⚠️ Lütfen bir soru yazın." : "⚠️ Please enter a question.", loading: false } }));
+    // Debug log
+    console.log(`[askQA] ID: ${id}, Question: "${question}", Length: ${question.length}`);
+    
+    if (!question || question.length === 0) {
+      console.log("[askQA] Empty question detected");
+      setCardQA((p) => ({ 
+        ...p, 
+        [id]: { 
+          q: currentQA?.q || "", 
+          a: lang === "tr" ? "⚠️ Lütfen bir soru yazın." : "⚠️ Please enter a question.", 
+          loading: false 
+        } 
+      }));
       return;
     }
     
-    setCardQA((p) => ({ ...p, [id]: { ...qa, loading: true, a: "" } }));
+    console.log("[askQA] Sending question to API:", question);
+    
+    // Clear previous answer and set loading
+    setCardQA((p) => ({ 
+      ...p, 
+      [id]: { 
+        q: question, 
+        a: "", 
+        loading: true 
+      } 
+    }));
     
     try {
       const controller = new AbortController();
@@ -321,6 +343,8 @@ export default function Home() {
       const data = await res.json();
       const ans = data.answer || (lang === "tr" ? "Yanıt alınamadı." : "No answer received.");
       
+      console.log("[askQA] Received answer, length:", ans.length);
+      
       setCardQA((p) => ({ ...p, [id]: { q: question, a: ans, loading: false } }));
     } catch (e: unknown) {
       let errorMsg = lang === "tr" ? "Soru cevaplanamadı" : "Failed to answer question";
@@ -333,11 +357,10 @@ export default function Home() {
         }
       }
       
-      console.error("QA error:", e);
+      console.error("[askQA] Error:", e);
       setCardQA((p) => ({ ...p, [id]: { q: question, a: `❌ ${errorMsg}`, loading: false } }));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api, lang]);
+  }, [api, lang, cardQA]);
 
   useEffect(() => {
     const performInitialSearch = async () => {
@@ -417,8 +440,8 @@ export default function Home() {
             </div>
 
             {/* Premium Search Bar with Smart Suggestions */}
-            <div style={{ position: "relative", zIndex: 10000 }}>
-              <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap" }}>
+            <div style={{ position: "relative", zIndex: 1000 }}>
+              <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap", position: "relative" }}>
                 <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
                   <input
                     value={q}
@@ -427,7 +450,7 @@ export default function Home() {
                       setShowSuggestions(true);
                     }}
                     onFocus={() => setShowSuggestions(true)}
-                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                    onBlur={() => setTimeout(() => setShowSuggestions(false), 300)}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         setShowSuggestions(false);
@@ -436,62 +459,80 @@ export default function Home() {
                       if (e.key === "Escape") setShowSuggestions(false);
                     }}
                     placeholder={T("queryPlaceholder")}
-                    style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500 }}
+                    style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500, position: "relative", zIndex: 1 }}
                   />
                   
-                  {/* Smart Suggestions Dropdown */}
+                  {/* Smart Suggestions Dropdown - Fixed positioning */}
                   {showSuggestions && smartSuggestions.length > 0 && (
                     <div 
-                      className="glass-card"
+                      onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking suggestions
                       style={{ 
                         position: "absolute", 
-                        top: "calc(100% + 8px)", 
+                        top: "calc(100% + 4px)", 
                         left: 0, 
                         right: 0, 
-                        padding: "12px 0",
-                        maxHeight: 300,
-                        overflowY: "auto",
-                        boxShadow: "0 8px 32px rgba(167, 139, 250, 0.3)",
+                        background: "rgba(15, 8, 36, 0.95)",
+                        backdropFilter: "blur(20px)",
                         border: "1px solid rgba(167, 139, 250, 0.3)",
-                        zIndex: 10001
+                        borderRadius: "16px",
+                        padding: "8px 0",
+                        maxHeight: 400,
+                        overflowY: "auto",
+                        boxShadow: "0 12px 48px rgba(167, 139, 250, 0.4), 0 4px 16px rgba(0, 0, 0, 0.5)",
+                        zIndex: 999999,
+                        animation: "fadeIn 0.2s ease-out"
                       }}
                     >
-                      <div style={{ padding: "8px 20px", fontSize: 11, color: "var(--text-secondary)", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>
+                      <div style={{ 
+                        padding: "12px 20px", 
+                        fontSize: 11, 
+                        color: "var(--nebula-purple)", 
+                        fontWeight: 700, 
+                        letterSpacing: 1.5, 
+                        textTransform: "uppercase",
+                        borderBottom: "1px solid rgba(167, 139, 250, 0.15)",
+                        marginBottom: 4
+                      }}>
                         {T("smartSearchLabel")}
                       </div>
                       {smartSuggestions.map((suggestion, idx) => (
                         <button
                           key={idx}
-                          onClick={() => {
+                          onMouseDown={(e) => {
+                            e.preventDefault();
                             setQ(suggestion);
                             setShowSuggestions(false);
-                            search(suggestion);
+                            setTimeout(() => search(suggestion), 100);
                           }}
                           style={{
                             width: "100%",
                             textAlign: "left",
-                            padding: "12px 20px",
+                            padding: "14px 20px",
                             background: "transparent",
                             border: "none",
                             color: "var(--text-primary)",
                             fontSize: 14,
                             cursor: "pointer",
-                            transition: "all 0.2s",
+                            transition: "all 0.15s ease",
                             display: "flex",
                             alignItems: "center",
-                            gap: 12
+                            gap: 12,
+                            fontWeight: 500
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = "rgba(167, 139, 250, 0.1)";
-                            e.currentTarget.style.paddingLeft = "24px";
+                            e.currentTarget.style.background = "rgba(167, 139, 250, 0.15)";
+                            e.currentTarget.style.paddingLeft = "28px";
+                            e.currentTarget.style.transform = "translateX(4px)";
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.background = "transparent";
                             e.currentTarget.style.paddingLeft = "20px";
+                            e.currentTarget.style.transform = "translateX(0)";
                           }}
                         >
-                          <span style={{ opacity: 0.5 }}>🔍</span>
-                          <span>{suggestion}</span>
+                          <span style={{ opacity: 0.6, fontSize: 16 }}>🔍</span>
+                          <span style={{ flex: 1, lineHeight: 1.4 }}>{suggestion}</span>
+                          <span style={{ opacity: 0.3, fontSize: 12 }}>↵</span>
                         </button>
                       ))}
                     </div>
