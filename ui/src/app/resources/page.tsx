@@ -5,51 +5,151 @@ import Link from "next/link";
 
 export default function ResourcesPage() {
   const [lang, setLang] = useState<"tr" | "en">("tr");
-  const resources = [
-    {
-      title: "📚 SB Publications",
-      desc: "608 açık erişimli NASA Space Biology yayın listesi",
-      url: "https://github.com/jgalazka/SB_publications/tree/main",
-      category: "Primary Source",
-      icon: "📄"
-    },
-    {
-      title: "🛰️ OSDR (Open Science Data Repository)",
-      desc: "NASA'nın uzay biyolojisi ve fiziksel bilimler verileri için birincil veri ve metadata deposu",
-      url: "https://www.nasa.gov/osdr/",
-      category: "Data Repository",
-      icon: "🗄️"
-    },
-    {
-      title: "🔬 NSLSL (NASA Space Life Sciences Lab)",
-      desc: "Ek literatür ve uzay yaşam bilimleri araştırmaları",
-      url: "https://extapps.ksc.nasa.gov/NSLSL/Search",
-      category: "Literature",
-      icon: "📖"
-    },
-    {
-      title: "📊 NASA Task Book",
-      desc: "NASA'nın Biological and Physical Sciences (BPS) Division ve Human Research Program (HRP) tarafından desteklenen araştırma projelerinin çevrimiçi veritabanı. Proje açıklamaları, yıllık ilerleme raporları, nihai raporlar ve NASA destekli çalışmalardan kaynaklanan yayınların bibliyografik listelerini içerir.",
-      url: "https://taskbook.nasaprs.com/tbp/welcome.cfm",
-      category: "Research Database",
-      icon: "📋",
-      featured: true
-    },
-    {
-      title: "🌍 PMC (PubMed Central)",
-      desc: "Biyomedikal ve yaşam bilimleri dergi literatürünün ücretsiz tam metin arşivi",
-      url: "https://www.ncbi.nlm.nih.gov/pmc/",
-      category: "Publication Archive",
-      icon: "🏛️"
-    },
-    {
-      title: "🚀 NASA Biological & Physical Sciences",
-      desc: "NASA'nın uzay biyolojisi ve fiziksel bilimler araştırmaları ana portalı",
-      url: "https://www.nasa.gov/directorates/somd/space-life-physical-sciences-research-applications/",
-      category: "NASA Portal",
-      icon: "🌌"
-    }
-  ];
+  
+  const T = (key: string) => {
+    const tr: Record<string, string> = {
+      pageTitle: "Kaynaklar",
+      pageSubtitle: "HARICI LİNKLER & VERİTABANLARI",
+      navHome: "Ana Sayfa",
+      navGuidelines: "Kılavuz",
+      navAnalytics: "Analitik",
+      heroTitle: "🌐 Harici Kaynaklar",
+      heroDesc: "NASA Space Bioscience araştırmaları için güvenilir veri kaynakları, literatür veritabanları ve araştırma portalları.",
+      featured: "⭐ Öne Çıkan",
+      visitSite: "🔗 Siteyi Ziyaret Et",
+      usageTitle: "💡 Kullanım Önerisi",
+      footerNote: "Tüm harici kaynaklar NASA ve bağlı kuruluşlar tarafından sağlanmaktadır"
+    };
+    
+    const en: Record<string, string> = {
+      pageTitle: "Resources",
+      pageSubtitle: "EXTERNAL LINKS & DATABASES",
+      navHome: "Home",
+      navGuidelines: "Guidelines",
+      navAnalytics: "Analytics",
+      heroTitle: "🌐 External Resources",
+      heroDesc: "Trusted data sources, literature databases, and research portals for NASA Space Bioscience research.",
+      featured: "⭐ Featured",
+      visitSite: "🔗 Visit Site",
+      usageTitle: "💡 Usage Tips",
+      footerNote: "All external resources are provided by NASA and affiliated organizations"
+    };
+    
+    return (lang === "tr" ? tr : en)[key] || key;
+  };
+
+  const resources = {
+    tr: [
+      {
+        title: "📚 SB Publications",
+        desc: "608 açık erişimli NASA Space Biology yayın listesi",
+        url: "https://github.com/jgalazka/SB_publications/tree/main",
+        category: "Primary Source",
+        icon: "📄"
+      },
+      {
+        title: "🛰️ OSDR (Open Science Data Repository)",
+        desc: "NASA'nın uzay biyolojisi ve fiziksel bilimler verileri için birincil veri ve metadata deposu",
+        url: "https://www.nasa.gov/osdr/",
+        category: "Data Repository",
+        icon: "🗄️"
+      },
+      {
+        title: "🔬 NSLSL (NASA Space Life Sciences Lab)",
+        desc: "Ek literatür ve uzay yaşam bilimleri araştırmaları",
+        url: "https://extapps.ksc.nasa.gov/NSLSL/Search",
+        category: "Literature",
+        icon: "📖"
+      },
+      {
+        title: "📊 NASA Task Book",
+        desc: "NASA'nın Biological and Physical Sciences (BPS) Division ve Human Research Program (HRP) tarafından desteklenen araştırma projelerinin çevrimiçi veritabanı. Proje açıklamaları, yıllık ilerleme raporları, nihai raporlar ve NASA destekli çalışmalardan kaynaklanan yayınların bibliyografik listelerini içerir.",
+        url: "https://taskbook.nasaprs.com/tbp/welcome.cfm",
+        category: "Research Database",
+        icon: "📋",
+        featured: true
+      },
+      {
+        title: "🌍 PMC (PubMed Central)",
+        desc: "Biyomedikal ve yaşam bilimleri dergi literatürünün ücretsiz tam metin arşivi",
+        url: "https://www.ncbi.nlm.nih.gov/pmc/",
+        category: "Publication Archive",
+        icon: "🏛️"
+      },
+      {
+        title: "🚀 NASA Biological & Physical Sciences",
+        desc: "NASA'nın uzay biyolojisi ve fiziksel bilimler araştırmaları ana portalı",
+        url: "https://www.nasa.gov/directorates/somd/space-life-physical-sciences-research-applications/",
+        category: "NASA Portal",
+        icon: "🌌"
+      }
+    ],
+    en: [
+      {
+        title: "📚 SB Publications",
+        desc: "608 open-access NASA Space Biology publication list",
+        url: "https://github.com/jgalazka/SB_publications/tree/main",
+        category: "Primary Source",
+        icon: "📄"
+      },
+      {
+        title: "🛰️ OSDR (Open Science Data Repository)",
+        desc: "NASA's primary repository for space biology and physical sciences data and metadata",
+        url: "https://www.nasa.gov/osdr/",
+        category: "Data Repository",
+        icon: "🗄️"
+      },
+      {
+        title: "🔬 NSLSL (NASA Space Life Sciences Lab)",
+        desc: "Additional literature and space life sciences research",
+        url: "https://extapps.ksc.nasa.gov/NSLSL/Search",
+        category: "Literature",
+        icon: "📖"
+      },
+      {
+        title: "📊 NASA Task Book",
+        desc: "Online database of research projects supported by NASA's Biological and Physical Sciences (BPS) Division and Human Research Program (HRP). Includes project descriptions, annual progress reports, final reports, and bibliographic lists of publications from NASA-funded studies.",
+        url: "https://taskbook.nasaprs.com/tbp/welcome.cfm",
+        category: "Research Database",
+        icon: "📋",
+        featured: true
+      },
+      {
+        title: "🌍 PMC (PubMed Central)",
+        desc: "Free full-text archive of biomedical and life sciences journal literature",
+        url: "https://www.ncbi.nlm.nih.gov/pmc/",
+        category: "Publication Archive",
+        icon: "🏛️"
+      },
+      {
+        title: "🚀 NASA Biological & Physical Sciences",
+        desc: "Main portal for NASA space biology and physical sciences research",
+        url: "https://www.nasa.gov/directorates/somd/space-life-physical-sciences-research-applications/",
+        category: "NASA Portal",
+        icon: "🌌"
+      }
+    ]
+  };
+
+  const usageTips = {
+    tr: [
+      { label: "SB Publications:", desc: "Platform'da bulunan 608 yayının tam listesi için" },
+      { label: "OSDR:", desc: "Ham veri ve metadata'ya erişim için" },
+      { label: "NSLSL:", desc: "Ek literatür taraması için" },
+      { label: "Task Book:", desc: "Devam eden ve tamamlanmış NASA projeleri için" },
+      { label: "PMC:", desc: "Tam metin yayınlara erişim için" }
+    ],
+    en: [
+      { label: "SB Publications:", desc: "For the complete list of 608 publications on the platform" },
+      { label: "OSDR:", desc: "For access to raw data and metadata" },
+      { label: "NSLSL:", desc: "For additional literature search" },
+      { label: "Task Book:", desc: "For ongoing and completed NASA projects" },
+      { label: "PMC:", desc: "For full-text publication access" }
+    ]
+  };
+
+  const currentResources = resources[lang];
+  const currentTips = usageTips[lang];
 
   return (
     <>
@@ -72,16 +172,16 @@ export default function ResourcesPage() {
               <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
               <div style={{ minWidth: 0 }}>
                 <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
-                  Resources
+                  {T("pageTitle")}
                 </div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>EXTERNAL LINKS & DATABASES</div>
+                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>{T("pageSubtitle")}</div>
               </div>
             </div>
             
             <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-              <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Home</Link>
-              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Guidelines</Link>
-              <Link href="/analytics" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>Analytics</Link>
+              <Link href="/" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navHome")}</Link>
+              <Link href="/guidelines" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navGuidelines")}</Link>
+              <Link href="/analytics" className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>{T("navAnalytics")}</Link>
               <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500, minWidth: 60 }}>
                 <option value="tr">🇹🇷</option>
                 <option value="en">🇬🇧</option>
@@ -94,22 +194,21 @@ export default function ResourcesPage() {
           {/* Hero */}
           <div className="glass-card" style={{ padding: 48, marginBottom: 40, textAlign: "center" }}>
             <h1 className="text-gradient" style={{ fontSize: 42, fontWeight: 900, marginTop: 0, marginBottom: 16, lineHeight: 1.2 }}>
-              🌐 Harici Kaynaklar
+              {T("heroTitle")}
             </h1>
             <p style={{ fontSize: 17, color: "var(--text-secondary)", maxWidth: 800, margin: "0 auto", lineHeight: 1.7 }}>
-              NASA Space Bioscience araştırmaları için güvenilir veri kaynakları, 
-              literatür veritabanları ve araştırma portalları.
+              {T("heroDesc")}
             </p>
           </div>
 
           {/* Resources Grid */}
           <div style={{ display: "grid", gap: 24, marginBottom: 32 }}>
-            {resources.map((resource, index) => (
+            {currentResources.map((resource, index) => (
               <div key={index} className={resource.featured ? "result-card" : "glass-card"} style={{ padding: 32, position: "relative", overflow: "hidden" }}>
                 {resource.featured && (
                   <div style={{ position: "absolute", top: 16, right: 16 }}>
                     <div className="badge" style={{ background: "linear-gradient(135deg, #a78bfa, #60a5fa)", color: "white", border: "none" }}>
-                      ⭐ Featured
+                      {T("featured")}
                     </div>
                   </div>
                 )}
@@ -127,7 +226,7 @@ export default function ResourcesPage() {
                       {resource.desc}
                     </p>
                     <a href={resource.url} target="_blank" rel="noreferrer" className="btn-primary" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                      🔗 Siteyi Ziyaret Et
+                      {T("visitSite")}
                     </a>
                   </div>
                 </div>
@@ -138,29 +237,15 @@ export default function ResourcesPage() {
           {/* Info Card */}
           <div className="glass-card" style={{ padding: 32, background: "rgba(167, 139, 250, 0.08)" }}>
             <h3 style={{ fontSize: 20, fontWeight: 700, marginTop: 0, marginBottom: 16, color: "var(--text-primary)" }}>
-              💡 Kullanım Önerisi
+              {T("usageTitle")}
             </h3>
             <div style={{ display: "grid", gap: 12, fontSize: 15, lineHeight: 1.8, color: "var(--text-secondary)" }}>
-              <div style={{ display: "flex", gap: 12 }}>
-                <span>•</span>
-                <span><strong>SB Publications:</strong> Platform&apos;da bulunan 608 yayının tam listesi için</span>
-              </div>
-              <div style={{ display: "flex", gap: 12 }}>
-                <span>•</span>
-                <span><strong>OSDR:</strong> Ham veri ve metadata&apos;ya erişim için</span>
-              </div>
-              <div style={{ display: "flex", gap: 12 }}>
-                <span>•</span>
-                <span><strong>NSLSL:</strong> Ek literatür taraması için</span>
-              </div>
-              <div style={{ display: "flex", gap: 12 }}>
-                <span>•</span>
-                <span><strong>Task Book:</strong> Devam eden ve tamamlanmış NASA projeleri için</span>
-              </div>
-              <div style={{ display: "flex", gap: 12 }}>
-                <span>•</span>
-                <span><strong>PMC:</strong> Tam metin yayınlara erişim için</span>
-              </div>
+              {currentTips.map((tip, i) => (
+                <div key={i} style={{ display: "flex", gap: 12 }}>
+                  <span>•</span>
+                  <span><strong>{tip.label}</strong> {tip.desc}</span>
+                </div>
+              ))}
             </div>
           </div>
         </main>
@@ -172,7 +257,7 @@ export default function ResourcesPage() {
               <Image src="/logo.png" alt="NextGenLAB Logo" width={28} height={28} className="glow" />
               <span className="text-gradient" style={{ fontWeight: 700, fontSize: 16 }}>NextGenLAB Space Bioscience Explorer</span>
             </div>
-            <div style={{ fontSize: 13, opacity: 0.7 }}>All external resources are provided by NASA and affiliated organizations</div>
+            <div style={{ fontSize: 13, opacity: 0.7 }}>{T("footerNote")}</div>
           </div>
         </footer>
       </div>
