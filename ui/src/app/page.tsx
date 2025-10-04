@@ -434,9 +434,9 @@ export default function Home() {
       </header>
 
         {/* Main Content */}
-        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", position: "relative", zIndex: 2 }}>
+        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", position: "relative" }}>
           {/* Premium Hero Section */}
-          <div className="glass-card" style={{ padding: "48px 24px 80px 24px", marginBottom: 40, position: "relative", overflow: "visible" }}>
+          <div className="glass-card" style={{ padding: "48px 24px 80px 24px", marginBottom: 40, position: "relative", overflow: "visible", zIndex: 1000 }}>
             <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
             
             <div style={{ textAlign: "center", marginBottom: 32, position: "relative", zIndex: 1 }}>
@@ -447,9 +447,9 @@ export default function Home() {
             </div>
 
             {/* Premium Search Bar with Smart Suggestions */}
-            <div style={{ position: "relative", zIndex: 999999 }}>
-              <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap", position: "relative" }}>
-                <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0 }}>
+            <div style={{ position: "relative", zIndex: 9999999, isolation: "isolate" }}>
+              <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap", position: "relative", zIndex: 9999999 }}>
+                <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0, zIndex: 9999999 }}>
             <input
               value={q}
                     onChange={(e) => {
@@ -469,7 +469,7 @@ export default function Home() {
                     style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500, position: "relative", zIndex: 1 }}
                   />
                   
-                  {/* Smart Suggestions Dropdown - MAXIMUM VISIBILITY & PROMINENCE */}
+                  {/* Smart Suggestions Dropdown - ABSOLUTE MAXIMUM VISIBILITY */}
                   {showSuggestions && smartSuggestions.length > 0 && (
                     <div 
                       onMouseDown={(e) => e.preventDefault()} // Prevent blur when clicking suggestions
@@ -478,27 +478,29 @@ export default function Home() {
                         top: "calc(100% + 8px)",
                         left: 0,
                         right: 0,
-                        background: "rgba(10, 5, 30, 0.99)",
+                        background: "rgba(5, 2, 20, 1)",  // Fully opaque
                         backdropFilter: "blur(40px)",
                         WebkitBackdropFilter: "blur(40px)",
-                        border: "3px solid rgba(167, 139, 250, 0.8)",
+                        border: "3px solid rgba(167, 139, 250, 0.9)",
                         borderRadius: "20px",
                         padding: "12px 0",
                         maxHeight: 450,
                         overflowY: "auto",
                         boxShadow: `
-                          0 0 2px 1px rgba(167, 139, 250, 0.5),
-                          0 0 30px 5px rgba(167, 139, 250, 0.9), 
-                          0 25px 70px rgba(167, 139, 250, 0.8), 
-                          0 10px 30px rgba(0, 0, 0, 0.9), 
-                          inset 0 2px 0 rgba(255, 255, 255, 0.2),
-                          inset 0 0 20px rgba(167, 139, 250, 0.1),
-                          0 0 120px rgba(167, 139, 250, 0.6)
+                          0 0 3px 2px rgba(167, 139, 250, 0.7),
+                          0 0 40px 8px rgba(167, 139, 250, 1), 
+                          0 30px 80px rgba(167, 139, 250, 0.9), 
+                          0 15px 40px rgba(0, 0, 0, 1), 
+                          inset 0 3px 0 rgba(255, 255, 255, 0.25),
+                          inset 0 0 30px rgba(167, 139, 250, 0.15),
+                          0 0 150px rgba(167, 139, 250, 0.8)
                         `,
                         zIndex: 2147483647,  // Maximum z-index value
                         animation: "slideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                        outline: "1px solid rgba(255, 255, 255, 0.1)",
-                        outlineOffset: "-1px"
+                        outline: "2px solid rgba(255, 255, 255, 0.15)",
+                        outlineOffset: "-2px",
+                        isolation: "isolate",
+                        willChange: "transform"
                       }}
                     >
                       <div style={{ 
@@ -587,7 +589,7 @@ export default function Home() {
           </div>
 
           {/* Premium Results */}
-          <div style={{ display: "grid", gap: 24 }}>
+          <div style={{ display: "grid", gap: 24, position: "relative", zIndex: 1 }}>
             {loading && (
               Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="result-card loading-shimmer" style={{ height: 180 }} />
@@ -595,7 +597,7 @@ export default function Home() {
             )}
 
             {!loading && items.map((it) => (
-              <div key={it.id} className="result-card">
+              <div key={it.id} className="result-card" style={{ position: "relative", zIndex: 1 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 24, marginBottom: 18, flexWrap: "wrap" }}>
                   <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: "1 1 300px", fontSize: "clamp(16px, 2.5vw, 20px)", fontWeight: 700, color: "var(--text-primary)", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s", minWidth: 0 }}>
                     {it.title}
