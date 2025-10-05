@@ -281,7 +281,7 @@ export default function AnalyticsPage() {
         </section>
 
           {/* Charts Section */}
-          <section style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 32 }}>
+          <section style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24, marginBottom: 32 }}>
             <div className="glass-card" style={{ padding: 28 }}>
               <div style={{ marginBottom: 20 }}>
                 <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "var(--text-primary)" }}>
@@ -292,7 +292,7 @@ export default function AnalyticsPage() {
                 <div className="loading-shimmer" style={{ height: 240, borderRadius: 12 }} />
               ) : nodeTypeEntries.length === 0 ? (
                 <div style={{ height: 240, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
-                  No data available
+                  {T("noData")}
                 </div>
               ) : (
                 <PieChart data={nodeTypeEntries} colors={["#a78bfa", "#60a5fa", "#22d3ee", "#f472b6", "#fbbf24", "#34d399"]} />
@@ -309,7 +309,7 @@ export default function AnalyticsPage() {
                 <div className="loading-shimmer" style={{ height: 240, borderRadius: 12 }} />
               ) : edgeRelEntries.length === 0 ? (
                 <div style={{ height: 240, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
-                  No data available
+                  {T("noData")}
                 </div>
               ) : (
                 <BarChart data={edgeRelEntries} color="#a78bfa" />
@@ -328,7 +328,7 @@ export default function AnalyticsPage() {
               <div className="loading-shimmer" style={{ height: 300, borderRadius: 12 }} />
             ) : yearEntries.length === 0 ? (
               <div style={{ height: 300, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-secondary)" }}>
-                No timeline data available
+                {T("noTimelineData")}
               </div>
             ) : (
               <LineChart data={yearEntries} color="#22d3ee" />
@@ -371,20 +371,20 @@ function PieChart({ data, colors }: { data: [string, number][]; colors: string[]
   });
   
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 32 }}>
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ filter: "drop-shadow(0 4px 20px rgba(167, 139, 250, 0.3))" }}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 24 }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ filter: "drop-shadow(0 4px 20px rgba(167, 139, 250, 0.3))", maxWidth: "100%" }}>
         {slices.map((s, i) => (
           <path key={i} d={s.d} fill={s.color} opacity={0.85} style={{ transition: "opacity 0.3s" }} />
         ))}
       </svg>
-      <div style={{ display: "grid", gap: 10 }}>
+      <div style={{ display: "grid", gap: 10, width: "100%" }}>
         {data.map(([k, v], i) => (
-          <div key={k} className="badge" style={{ justifyContent: "space-between", minWidth: 200 }}>
+          <div key={k} className="badge" style={{ justifyContent: "space-between", minWidth: "auto", width: "100%" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ width: 14, height: 14, background: colors[i % colors.length], display: "inline-block", borderRadius: 4, boxShadow: `0 0 10px ${colors[i % colors.length]}` }} />
-              <span>{k}</span>
+              <span style={{ width: 14, height: 14, background: colors[i % colors.length], display: "inline-block", borderRadius: 4, boxShadow: `0 0 10px ${colors[i % colors.length]}`, flexShrink: 0 }} />
+              <span style={{ fontSize: "clamp(11px, 2vw, 13px)" }}>{k}</span>
             </div>
-            <span style={{ fontWeight: 700 }}>{v} ({slices[i].percent}%)</span>
+            <span style={{ fontWeight: 700, fontSize: "clamp(11px, 2vw, 13px)", whiteSpace: "nowrap" }}>{v} ({slices[i].percent}%)</span>
           </div>
         ))}
       </div>
@@ -400,52 +400,54 @@ function BarChart({ data, color }: { data: [string, number][]; color: string }) 
   const barW = (width - padding * 2) / data.length;
   
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
-      <defs>
-        <linearGradient id="barGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.9 }} />
-          <stop offset="100%" style={{ stopColor: color, stopOpacity: 0.5 }} />
-        </linearGradient>
-      </defs>
-      {data.map(([k, v], i) => {
-        const h = (v / maxVal) * (height - padding * 2 - 20);
-        const x = padding + i * barW;
-        const y = height - padding - h - 20;
-        return (
-          <g key={k}>
-            <rect 
-              x={x + 6} 
-              y={y} 
-              width={Math.max(8, barW - 12)} 
-              height={h} 
-              fill="url(#barGradient)" 
-              rx={8}
-              style={{ filter: `drop-shadow(0 4px 12px ${color}40)` }}
-            />
-            <text 
-              x={x + barW / 2} 
-              y={height - 6} 
-              fill="var(--text-secondary)" 
-              fontSize={11} 
-              textAnchor="middle" 
-              fontWeight={500}
-            >
-              {k}
-            </text>
-            <text 
-              x={x + barW / 2} 
-              y={y - 6} 
-              fill="var(--text-primary)" 
-              fontSize={12} 
-              textAnchor="middle" 
-              fontWeight={700}
-            >
-              {v}
-            </text>
-          </g>
-        );
-      })}
-    </svg>
+    <div style={{ width: "100%", overflowX: "auto" }}>
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ minWidth: 300, maxWidth: "100%", height: "auto" }}>
+        <defs>
+          <linearGradient id="barGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.9 }} />
+            <stop offset="100%" style={{ stopColor: color, stopOpacity: 0.5 }} />
+          </linearGradient>
+        </defs>
+        {data.map(([k, v], i) => {
+          const h = (v / maxVal) * (height - padding * 2 - 20);
+          const x = padding + i * barW;
+          const y = height - padding - h - 20;
+          return (
+            <g key={k}>
+              <rect 
+                x={x + 6} 
+                y={y} 
+                width={Math.max(8, barW - 12)} 
+                height={h} 
+                fill="url(#barGradient)" 
+                rx={8}
+                style={{ filter: `drop-shadow(0 4px 12px ${color}40)` }}
+              />
+              <text 
+                x={x + barW / 2} 
+                y={height - 6} 
+                fill="var(--text-secondary)" 
+                fontSize={11} 
+                textAnchor="middle" 
+                fontWeight={500}
+              >
+                {k}
+              </text>
+              <text 
+                x={x + barW / 2} 
+                y={y - 6} 
+                fill="var(--text-primary)" 
+                fontSize={12} 
+                textAnchor="middle" 
+                fontWeight={700}
+              >
+                {v}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
   );
 }
 
@@ -465,7 +467,8 @@ function LineChart({ data, color }: { data: [string, number][]; color: string })
   const areaPoints = `${padding},${height - padding} ` + points + ` ${xScale(xMax)},${height - padding}`;
   
   return (
-    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <div style={{ width: "100%", overflowX: "auto" }}>
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ minWidth: 600, maxWidth: "100%", height: "auto" }}>
       <defs>
         <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" style={{ stopColor: color, stopOpacity: 0.3 }} />
@@ -536,6 +539,7 @@ function LineChart({ data, color }: { data: [string, number][]; color: string })
           </text>
         </g>
       ))}
-    </svg>
+      </svg>
+    </div>
   );
 }
