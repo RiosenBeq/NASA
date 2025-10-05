@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
         : "You are an expert NASA bioscience research analyst with deep knowledge of space biology, human spaceflight, and mission planning. You excel at synthesizing complex research findings into actionable insights for diverse stakeholders. WRITE ALL RESPONSES IN ENGLISH.";
       
       const completion = await client.chat.completions.create({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         messages: [
           {
             role: "system",
@@ -117,8 +117,8 @@ export async function POST(req: NextRequest) {
           },
           { role: "user", content: prompt },
         ],
-        temperature: 0.6,
-        max_tokens: 4000,
+        temperature: 0.7,
+        max_tokens: 8000,
       });
       summary = completion.choices[0]?.message?.content || "";
     } catch {
@@ -138,13 +138,13 @@ export async function POST(req: NextRequest) {
             Authorization: `Bearer ${apiKey}`,
           },
           body: JSON.stringify({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o-mini",
             messages: [
               { role: "system", content: systemMessage },
               { role: "user", content: prompt },
             ],
-            temperature: 0.6,
-            max_tokens: 4000,
+            temperature: 0.7,
+            max_tokens: 8000,
           }),
         });
         clearTimeout(tm);
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest) {
         persona: persona || "general",
         section_priority: section_priority || "balanced",
         publication_count: titles.length,
-        model: "gpt-3.5-turbo",
+        model: "gpt-4o-mini",
         language: language || "en",
       },
     });
@@ -201,40 +201,48 @@ ANALİZ EDİLECEK YAYINLAR:
 ${publicationsList}
 
 KRİTİK GEREKSINIMLER:
-NASA'nın Uzay Biyobilim Araştırma Mücadelesi kılavuzlarını takip ederek çok özet bir analiz oluşturun. Kısa ve uygulanabilir tutun.
+NASA'nın Uzay Biyobilim Araştırma Mücadelesi kılavuzlarını takip ederek kapsamlı ve detaylı bir analiz oluşturun. Netliği ve uygulanabilirliği korurken derinlemesine içgörüler sağlayın.
 
 ANALİZİNİZİ ŞU ŞEKİLDE YAPILANDIRIN:
 
 ## 🚀 YÖNETİCİ ÖZETİ
-Şunları kapsayan 1-2 cümlelik genel bakış:
-- Araştırma kapsamı ve ana bulgular
+Şunları kapsayan kapsamlı 3-5 cümlelik genel bakış:
+- Araştırma kapsamı, hedefler ve ana bulgular
 - NASA'nın uzay keşif hedefleriyle doğrudan ilgisi
+- Genel önem ve potansiyel etki
 
 ## 🔬 TEMEL BULGULAR
-Her yayın için:
-- **Metodoloji**: Kısa deneysel yaklaşım
-- **Sonuçlar**: Yalnızca ana bulgular
-- **Sınırlamalar**: Ana çalışma kısıtlamaları
+Her yayın için detaylı analiz:
+- **Arka Plan ve Bağlam**: Araştırma motivasyonu ve önceki çalışmalar
+- **Metodoloji**: Detaylı deneysel yaklaşım ve kullanılan teknikler
+- **Sonuçlar**: Spesifik veri noktaları ve gözlemlerle kapsamlı bulgular
+- **Önem**: Bu bulguların uzay biyolojisi için önemi
+- **Sınırlamalar**: Çalışma kısıtlamaları ve daha fazla araştırma gerektiren alanlar
 
 ## 🌌 NASA ETKİSİ
-- **Uzay Biyolojisi İlerlemesi**: Bu, uzay biyolojisini nasıl ilerletiyor
-- **Görev Uygulamaları**: Ay/Mars görevleri için doğrudan uygulamalar
+- **Uzay Biyolojisi İlerlemesi**: Uzay biyolojisi anlayışını nasıl ilerlettiğinin detaylı açıklaması
+- **Görev Uygulamaları**: Örneklerle Ay/Mars görevleri için spesifik uygulamalar
+- **Teknoloji Geliştirme**: Yeni teknolojiler veya karşı önlemler için sonuçlar
+- **Mürettebat Sağlığı ve Güvenliği**: Astronot refahıyla doğrudan ilgisi
 
 ## 🔍 ARAŞTIRMA BOŞLUKLARI
-- **Kritik Sorular**: En önemli cevaplanmamış sorular
-- **Sonraki Adımlar**: Gerekli takip araştırması
+- **Kritik Sorular**: En önemli cevaplanmamış soruların detaylı tartışması
+- **Bilgi Sınırlamaları**: Hala anlamadığımız şeyler ve bunun önemi
+- **Sonraki Adımlar**: Gerekçeleriyle takip araştırması için spesifik öneriler
+- **Kaynak İhtiyaçları**: Boşlukları gidermek için gereken kaynaklar veya yetenekler
 
 ## 💡 STRATEJİK UYGULANABİLİR İÇGÖRÜLER
 ${getPersonaInsightsTurkish(persona)}
 
 FORMATLAMA GEREKSİNİMLERİ:
 - Emoji'li net bölüm başlıkları kullanın (## 🚀)
-- Özet madde işaretleri kullanın (bölüm başına maks. 2-3)
-- Yalnızca temel veri noktalarını dahil edin
-- Kısa örnekler verin
-- Bilimsel titizliği korurken erişilebilir olun
-- Uzunluk: Çok özet ve odaklı (maksimum 150-250 kelime)
-- Yalnızca kritik önerileri dahil edin
+- Uygun yerlerde detaylı madde işaretleri ve alt madde işaretleri kullanın (bölüm başına 4-6 nokta)
+- Spesifik veri noktaları, istatistikler ve nicel sonuçlar dahil edin
+- Somut örnekler ve vaka çalışmaları sağlayın
+- Farklı kitleler için erişilebilir olurken bilimsel titizliği koruyun
+- Uzunluk: Kapsamlı ve eksiksiz (toplam 600-1000 kelime)
+- Destekleyici gerekçelerle detaylı öneriler dahil edin
+- Vurgu için markdown formatı kullanın (anahtar terimler için **kalın**)
 
 TON: Son derece profesyonel, kanıta dayalı, ileriye dönük, stratejik olarak uygulanabilir, bilimsel olarak titiz
 
@@ -253,40 +261,48 @@ PUBLICATIONS TO ANALYZE:
 ${publicationsList}
 
 CRITICAL REQUIREMENTS:
-Create a very concise summary following NASA's Space Bioscience Research Challenge guidelines. Keep it brief and actionable.
+Create a comprehensive and detailed analysis following NASA's Space Bioscience Research Challenge guidelines. Provide thorough insights while maintaining clarity and actionability.
 
 STRUCTURE YOUR ANALYSIS AS FOLLOWS:
 
 ## 🚀 EXECUTIVE SUMMARY
-Provide a 1-2 sentence overview covering:
-- Research scope and key findings
+Provide a comprehensive 3-5 sentence overview covering:
+- Research scope, objectives, and key findings
 - Direct relevance to NASA's space exploration goals
+- Overall significance and potential impact
 
 ## 🔬 KEY FINDINGS
-For each publication, provide:
-- **Methodology**: Brief experimental approach
-- **Results**: Key findings only
-- **Limitations**: Main study constraints
+For each publication, provide detailed analysis:
+- **Background & Context**: Research motivation and previous work
+- **Methodology**: Detailed experimental approach and techniques used
+- **Results**: Comprehensive findings with specific data points and observations
+- **Significance**: Why these findings matter for space biology
+- **Limitations**: Study constraints and areas requiring further investigation
 
 ## 🌌 NASA IMPACT
-- **Space Biology Advancement**: How this advances space biology
-- **Mission Applications**: Direct applications for Moon/Mars missions
+- **Space Biology Advancement**: Detailed explanation of how this advances space biology understanding
+- **Mission Applications**: Specific applications for Moon/Mars missions with examples
+- **Technology Development**: Implications for new technologies or countermeasures
+- **Crew Health & Safety**: Direct relevance to astronaut wellbeing
 
 ## 🔍 RESEARCH GAPS
-- **Critical Questions**: Most important unanswered questions
-- **Next Steps**: Essential follow-up research needed
+- **Critical Questions**: Detailed discussion of the most important unanswered questions
+- **Knowledge Limitations**: What we still don't understand and why it matters
+- **Next Steps**: Specific recommendations for follow-up research with rationale
+- **Resource Needs**: What resources or capabilities are needed to address gaps
 
 ## 💡 STRATEGIC ACTIONABLE INSIGHTS
 ${getPersonaInsightsEnglish(persona)}
 
 FORMATTING REQUIREMENTS:
 - Use clear section headers with emojis (## 🚀)
-- Use concise bullet points (max 2-3 per section)
-- Include only essential data points
-- Provide brief examples
-- Maintain scientific rigor while being accessible
-- Length: Very concise and focused (150-250 words maximum)
-- Include only critical recommendations
+- Use detailed bullet points and sub-bullets where appropriate (4-6 points per section)
+- Include specific data points, statistics, and quantitative results
+- Provide concrete examples and case studies
+- Maintain scientific rigor while being accessible to diverse audiences
+- Length: Comprehensive and thorough (600-1000 words total)
+- Include detailed recommendations with supporting rationale
+- Use markdown formatting for emphasis (**bold** for key terms)
 
 TONE: Highly professional, evidence-based, forward-looking, strategically actionable, scientifically rigorous
 
@@ -299,24 +315,35 @@ function getPersonaInsightsTurkish(persona: string | undefined): string {
   switch (persona) {
     case 'scientist':
       return `**Araştırma Bilimcileri İçin:**
-- Gelecek deneylerde test edilecek spesifik hipotezler
-- Önerilen deneysel protokoller ve metodolojiler
-- Diğer araştırma gruplarıyla potansiyel işbirlikleri`;
+- **Test Edilebilir Hipotezler**: Net değişkenler ve beklenen sonuçlarla gelecek deneyler için spesifik, uygulanabilir hipotezler
+- **Deneysel Protokoller**: Metodolojiler, kontroller ve doğrulama yaklaşımları için detaylı öneriler
+- **İşbirliği Fırsatları**: Tamamlayıcı araştırma gruplarını ve potansiyel disiplinler arası ortaklıkları belirleme
+- **Veri Gereksinimleri**: Bulguları güçlendirecek ek veriler veya ölçümler
+- **Yayın Stratejisi**: Sonuçları bilimsel etkiyi maksimize edecek şekilde iletme önerileri`;
     case 'manager':
       return `**Program Yöneticileri İçin:**
-- Yatırım öncelikleri ve finansman önerileri
-- Araştırma portföyü optimizasyon stratejileri
-- Farklı araştırma alanlarında kaynak tahsisi`;
+- **Yatırım Öncelikleri**: Beklenen yatırım getirisi ve zaman çizelgesi ile detaylı finansman önerileri
+- **Portföy Dengesi**: Keşifsel ve uygulamalı araştırmayı dengeleme konusunda stratejik rehberlik
+- **Kaynak Tahsisi**: Araştırma alanlarında spesifik bütçe ve personel önerileri
+- **Risk Değerlendirmesi**: Yüksek riskli/yüksek ödüllü fırsatların belirlenmesi ve azaltma stratejileri
+- **Performans Metrikleri**: İlerleme ve başarıyı izlemek için ana göstergeler
+- **Paydaş İletişimi**: Bulguları destek ve katılımı maksimize edecek şekilde sunma`;
     case 'architect':
       return `**Görev Mimarları İçin:**
-- Görev tasarımı etkileri ve kısıtlamaları
-- Teknoloji geliştirme gereksinimleri
-- Mürettebat güvenliği ve sağlık hususları`;
+- **Görev Tasarım Kısıtlamaları**: Uzay aracı/habitat tasarımı için spesifik operasyonel sınırlamalar ve gereksinimler
+- **Teknoloji Hazırlığı**: Gerekli teknolojilerin ve mevcut TRL seviyelerinin değerlendirmesi
+- **Mürettebat Sağlık Sistemleri**: Yaşam desteği, tıbbi ve izleme sistemleri için detaylı öneriler
+- **Zaman Çizelgesi Sonuçları**: Bulguların görev süresi ve planlamasını nasıl etkilediği
+- **Risk Azaltma**: Gerekli karşı önlemler ve yedek sistemler
+- **Test Gereksinimleri**: Uçuş uygulamasından önce gereken yer tabanlı doğrulama`;
     default:
       return `**Tüm Paydaşlar İçin:**
-- Görev planlama hususları ve kısıtlamaları
-- Teknoloji geliştirme öncelikleri
-- Risk faktörleri ve azaltma stratejileri`;
+- **Stratejik Öncelikler**: Acil dikkat ve uzun vadeli yatırım gerektiren ana alanlar
+- **Çapraz Fonksiyonel Etki**: Bulguların farklı görev yönlerini nasıl etkilediği (mürettebat, donanım, operasyonlar)
+- **Risk Yönetimi**: Spesifik azaltma yaklaşımlarıyla kapsamlı risk değerlendirmesi
+- **Teknoloji Geliştirme**: Geliştirme veya iyileştirme gerektiren kritik yetenekler
+- **Karar Noktaları**: Gerekli ana kararlar ve önerilen zaman çizelgeleri
+- **Başarı Metrikleri**: Görev hedeflerine doğru ilerlemeyi nasıl ölçeceğiz ve değerlendireceğiz`;
   }
 }
 
@@ -324,24 +351,35 @@ function getPersonaInsightsEnglish(persona: string | undefined): string {
   switch (persona) {
     case 'scientist':
       return `**For Research Scientists:**
-- Specific hypotheses to test in future experiments
-- Recommended experimental protocols and methodologies
-- Potential collaborations with other research groups`;
+- **Testable Hypotheses**: Specific, actionable hypotheses for future experiments with clear variables and expected outcomes
+- **Experimental Protocols**: Detailed recommendations for methodologies, controls, and validation approaches
+- **Collaboration Opportunities**: Identify complementary research groups and potential interdisciplinary partnerships
+- **Data Requirements**: What additional data or measurements would strengthen findings
+- **Publication Strategy**: Recommendations for communicating results to maximize scientific impact`;
     case 'manager':
       return `**For Program Managers:**
-- Investment priorities and funding recommendations
-- Research portfolio optimization strategies
-- Resource allocation across different research areas`;
+- **Investment Priorities**: Detailed funding recommendations with expected ROI and timeline
+- **Portfolio Balance**: Strategic guidance on balancing exploratory vs. applied research
+- **Resource Allocation**: Specific budget and personnel recommendations across research areas
+- **Risk Assessment**: Identification of high-risk/high-reward opportunities and mitigation strategies
+- **Performance Metrics**: Key indicators to track progress and success
+- **Stakeholder Communication**: How to present findings to maximize support and engagement`;
     case 'architect':
       return `**For Mission Architects:**
-- Mission design implications and constraints
-- Technology development requirements
-- Crew safety and health considerations`;
+- **Mission Design Constraints**: Specific operational limitations and requirements for spacecraft/habitat design
+- **Technology Readiness**: Assessment of required technologies and their current TRL levels
+- **Crew Health Systems**: Detailed recommendations for life support, medical, and monitoring systems
+- **Timeline Implications**: How findings affect mission duration and scheduling
+- **Risk Mitigation**: Specific countermeasures and backup systems needed
+- **Testing Requirements**: Ground-based validation needed before flight implementation`;
     default:
       return `**For All Stakeholders:**
-- Mission planning considerations and constraints
-- Technology development priorities
-- Risk factors and mitigation strategies`;
+- **Strategic Priorities**: Key areas requiring immediate attention and long-term investment
+- **Cross-Functional Impact**: How findings affect different mission aspects (crew, hardware, operations)
+- **Risk Management**: Comprehensive assessment of risks with specific mitigation approaches
+- **Technology Development**: Critical capabilities requiring development or improvement
+- **Decision Points**: Key decisions needed and recommended timelines
+- **Success Metrics**: How to measure and evaluate progress toward mission goals`;
   }
 }
 
