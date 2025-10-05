@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Configure OpenAI client with retry and timeout to reduce transient failures
-  const client = new OpenAI({ apiKey, maxRetries: 2, timeout: 20000 });
+  const client = new OpenAI({ apiKey, maxRetries: 2, timeout: 60000 });
 
     // Fetch publication data from GitHub CSV
     const csvUrl =
@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
           { role: "user", content: prompt },
         ],
         temperature: 0.7,
-        max_tokens: 8000,
+        max_tokens: 2000,
       });
       summary = completion.choices[0]?.message?.content || "";
     } catch {
@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
           : "You are an expert NASA bioscience research analyst. Write all responses in English.";
         
         const ctrl = new AbortController();
-        const tm = setTimeout(() => ctrl.abort(), 20000);
+        const tm = setTimeout(() => ctrl.abort(), 60000);
         const resp = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           signal: ctrl.signal,
@@ -144,7 +144,7 @@ export async function POST(req: NextRequest) {
               { role: "user", content: prompt },
             ],
             temperature: 0.7,
-            max_tokens: 8000,
+            max_tokens: 2000,
           }),
         });
         clearTimeout(tm);
@@ -236,12 +236,12 @@ ${getPersonaInsightsTurkish(persona)}
 
 FORMATLAMA GEREKSİNİMLERİ:
 - Emoji'li net bölüm başlıkları kullanın (## 🚀)
-- Uygun yerlerde detaylı madde işaretleri ve alt madde işaretleri kullanın (bölüm başına 4-6 nokta)
+- Uygun yerlerde madde işaretleri kullanın (bölüm başına 3-4 nokta)
 - Spesifik veri noktaları, istatistikler ve nicel sonuçlar dahil edin
 - Somut örnekler ve vaka çalışmaları sağlayın
 - Farklı kitleler için erişilebilir olurken bilimsel titizliği koruyun
-- Uzunluk: Kapsamlı ve eksiksiz (toplam 600-1000 kelime)
-- Destekleyici gerekçelerle detaylı öneriler dahil edin
+- Uzunluk: Öz ve anlaşılır (toplam 300-400 kelime)
+- Destekleyici gerekçelerle öneriler dahil edin
 - Vurgu için markdown formatı kullanın (anahtar terimler için **kalın**)
 
 TON: Son derece profesyonel, kanıta dayalı, ileriye dönük, stratejik olarak uygulanabilir, bilimsel olarak titiz
@@ -296,12 +296,12 @@ ${getPersonaInsightsEnglish(persona)}
 
 FORMATTING REQUIREMENTS:
 - Use clear section headers with emojis (## 🚀)
-- Use detailed bullet points and sub-bullets where appropriate (4-6 points per section)
+- Use bullet points where appropriate (3-4 points per section)
 - Include specific data points, statistics, and quantitative results
 - Provide concrete examples and case studies
 - Maintain scientific rigor while being accessible to diverse audiences
-- Length: Comprehensive and thorough (600-1000 words total)
-- Include detailed recommendations with supporting rationale
+- Length: Concise and clear (300-400 words total)
+- Include recommendations with supporting rationale
 - Use markdown formatting for emphasis (**bold** for key terms)
 
 TONE: Highly professional, evidence-based, forward-looking, strategically actionable, scientifically rigorous

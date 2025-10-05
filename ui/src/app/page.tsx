@@ -276,7 +276,7 @@ export default function Home() {
     
     // Create abort controller for timeout
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+    const timeout = setTimeout(() => controller.abort(), 90000); // 90 second timeout
     
     try {
       const res = await fetch(`${api}/summarize`, {
