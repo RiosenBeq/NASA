@@ -95,33 +95,48 @@ export async function POST(req: NextRequest) {
               .replace(/<[^>]+>/g, ' ')
               .replace(/\s+/g, ' ')
               .trim()
-              .substring(0, 3000); // Limit to 3000 chars
+              .substring(0, 8000); // Increased to 8000 chars for full abstract
           }
 
-          // Extract key sections (methods, results, conclusions)
-          const methodsMatch = xmlText.match(/<sec[^>]*>[\s\S]*?<title>(?:Methods?|Materials? and Methods?|Methodology)<\/title>[\s\S]*?<\/sec>/i);
-          const resultsMatch = xmlText.match(/<sec[^>]*>[\s\S]*?<title>(?:Results?|Findings)<\/title>[\s\S]*?<\/sec>/i);
-          const conclusionsMatch = xmlText.match(/<sec[^>]*>[\s\S]*?<title>(?:Conclusions?|Discussion)<\/title>[\s\S]*?<\/sec>/i);
+          // Extract ALL key sections with much higher limits
+          const introMatch = xmlText.match(/<sec[^>]*>[\s\S]*?<title>(?:Introduction|Background)<\/title>[\s\S]*?<\/sec>/i);
+          const methodsMatch = xmlText.match(/<sec[^>]*>[\s\S]*?<title>(?:Methods?|Materials? and Methods?|Methodology|Experimental Procedures?)<\/title>[\s\S]*?<\/sec>/i);
+          const resultsMatch = xmlText.match(/<sec[^>]*>[\s\S]*?<title>(?:Results?|Findings|Observations?)<\/title>[\s\S]*?<\/sec>/i);
+          const discussionMatch = xmlText.match(/<sec[^>]*>[\s\S]*?<title>(?:Discussion|Interpretation)<\/title>[\s\S]*?<\/sec>/i);
+          const conclusionsMatch = xmlText.match(/<sec[^>]*>[\s\S]*?<title>(?:Conclusions?|Summary|Concluding Remarks?)<\/title>[\s\S]*?<\/sec>/i);
 
           const sections = [];
+          
+          if (introMatch) {
+            const intro = introMatch[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 3000);
+            sections.push(`**INTRODUCTION:**\n${intro}`);
+          }
+          
           if (methodsMatch) {
-            const methods = methodsMatch[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 800);
-            sections.push(`**Methods:** ${methods}`);
+            const methods = methodsMatch[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 4000);
+            sections.push(`**METHODS:**\n${methods}`);
           }
+          
           if (resultsMatch) {
-            const results = resultsMatch[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 1000);
-            sections.push(`**Results:** ${results}`);
+            const results = resultsMatch[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 5000);
+            sections.push(`**RESULTS:**\n${results}`);
           }
+          
+          if (discussionMatch) {
+            const discussion = discussionMatch[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 4000);
+            sections.push(`**DISCUSSION:**\n${discussion}`);
+          }
+          
           if (conclusionsMatch) {
-            const conclusions = conclusionsMatch[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 800);
-            sections.push(`**Conclusions:** ${conclusions}`);
+            const conclusions = conclusionsMatch[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 3000);
+            sections.push(`**CONCLUSIONS:**\n${conclusions}`);
           }
 
           if (sections.length > 0) {
             articleDetails = "\n\n" + sections.join("\n\n");
           }
 
-          console.log(`[QA] Successfully fetched article content. Abstract length: ${abstract.length}, Sections: ${sections.length}`);
+          console.log(`[QA] Successfully fetched FULL article content from PMC. Abstract: ${abstract.length} chars, Sections: ${sections.length}`);
         }
       } catch (fetchError) {
         console.error(`[QA] Failed to fetch article content:`, fetchError);
@@ -132,42 +147,48 @@ export async function POST(req: NextRequest) {
     // Configure OpenAI client with retry and timeout
     const client = new OpenAI({ apiKey, maxRetries: 2, timeout: 30000 });
 
-    const prompt = `You are an expert NASA bioscience research analyst with deep knowledge of space biology research. Answer the user's question about this specific publication based on the provided article content.
+    const prompt = `You are an expert NASA bioscience research analyst with deep knowledge of space biology research. You have been provided with the FULL TEXT CONTENT from the research article (not just a summary). Answer the user's question based on this comprehensive article content.
 
-PUBLICATION DETAILS:
+📄 FULL ARTICLE CONTENT FROM PMC DATABASE:
+
 Title: ${title}
 URL: ${url}
 PMC ID: ${pmcId || 'Not available'}
 
-${abstract ? `ABSTRACT:
-${abstract}` : ''}
+${abstract ? `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ABSTRACT (FULL TEXT):
+${abstract}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━` : ''}
 ${articleDetails || ''}
 
-USER QUESTION:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 USER QUESTION:
 ${question}
 
-CRITICAL INSTRUCTIONS:
-- Answer based on the article content provided above (title, abstract, methods, results, conclusions)
-- Use any relevant information from the title, abstract, or sections to answer the question
-- If the article content contains ANY relevant information, provide an answer based on it
-- Even if the information is limited, provide what you can find from the abstract or sections
-- ONLY say "${language === 'en' ? 'This specific information is not found in the available article content' : 'Bu spesifik bilgi mevcut makale içeriğinde bulunamadı'}" if the question asks for something completely unrelated to the article topic
-- Be helpful and informative - make reasonable inferences from the available abstract and sections
-- If asked for "one sentence" (tek cümle/brief) or "brief" (kısa/özetle), give 1-2 sentences ONLY
-- If asked for methodology, details, or explanations, provide a thorough answer with specific details from the Methods/Results sections
-- IMPORTANT: Write your answer in ${language === 'en' ? 'ENGLISH' : 'TURKISH (professional scientific Turkish)'}
-- Quote specific data, measurements, or findings when available
-- If full details aren't in the abstract, explain based on what's available and note that more details would be in the full paper
-- Language preference: ${language === 'en' ? 'Answer must be in English' : 'Cevap Türkçe olmalı'}
+📋 CRITICAL INSTRUCTIONS FOR ANSWERING:
+✅ You have the FULL ARTICLE TEXT above (Abstract + Introduction + Methods + Results + Discussion + Conclusions)
+✅ This is NOT just a summary - this is comprehensive content directly from the published paper
+✅ Use ALL sections (Introduction, Methods, Results, Discussion, Conclusions) to answer thoroughly
+✅ Provide detailed, specific answers with data, measurements, and findings from the article
+✅ Quote specific numbers, percentages, statistical results, and experimental details
+✅ Reference specific sections when answering (e.g., "According to the Methods section..." or "The Results show that...")
+✅ If methodology is asked, provide detailed experimental procedures from Methods section
+✅ If results are asked, provide specific findings with data from Results section
+✅ If asked for "one sentence" (tek cümle) or "brief" (kısa), give 1-2 sentences ONLY
+✅ Otherwise, provide comprehensive, detailed answers using all available information
+✅ IMPORTANT: Write your answer in ${language === 'en' ? 'ENGLISH' : 'TURKISH (professional scientific Turkish)'}
+✅ Be as detailed as the full article content allows
+✅ ONLY say "${language === 'en' ? 'This specific information is not found in the article' : 'Bu spesifik bilgi makalede bulunamadı'}" if the question is completely unrelated to the article topic
 
-Answer the question now in ${language === 'en' ? 'ENGLISH' : 'TURKISH'} based on the provided article content. Be helpful and use all available information:`;
+🎯 Your task: Provide a comprehensive, detailed, accurate answer in ${language === 'en' ? 'ENGLISH' : 'TURKISH'} using the FULL ARTICLE CONTENT provided above:`;
 
     // Detect if user wants short/brief answer
     const lowerQ = question.toLowerCase();
     const wantsShort = lowerQ.includes('kısa') || lowerQ.includes('özetle') || 
                        lowerQ.includes('tek cümle') || lowerQ.includes('brief') || 
                        lowerQ.includes('one sentence') || lowerQ.includes('summarize');
-    const maxTokens = wantsShort ? 200 : 2000; // Increased for detailed answers
+    const maxTokens = wantsShort ? 200 : 3000; // Increased to 3000 for comprehensive answers from full article
 
     let answer = "";
     try {
@@ -178,7 +199,7 @@ Answer the question now in ${language === 'en' ? 'ENGLISH' : 'TURKISH'} based on
         messages: [
           {
             role: "system",
-            content: `You are a helpful NASA bioscience research analyst with expertise in space biology. You provide accurate, evidence-based answers from the article content provided (title, abstract, methods, results, conclusions). You are helpful and informative, making reasonable inferences from available information. Only refuse to answer if the question is completely unrelated to the article topic. Answer in ${language === 'en' ? 'English' : 'Turkish'}.`
+            content: `You are a NASA bioscience research analyst with expertise in space biology. You have been provided with FULL TEXT CONTENT from a research article (Abstract, Introduction, Methods, Results, Discussion, Conclusions). Provide detailed, comprehensive, accurate answers using ALL sections of the article. Quote specific data, measurements, and findings. Reference specific sections when answering. Be thorough and detailed. Answer in ${language === 'en' ? 'English' : 'Turkish'}.`
           },
           {
             role: "user",
@@ -206,7 +227,7 @@ Answer the question now in ${language === 'en' ? 'ENGLISH' : 'TURKISH'} based on
           body: JSON.stringify({
             model: "gpt-4o-mini",
             messages: [
-              { role: "system", content: `You are a helpful NASA bioscience research analyst with expertise in space biology. You provide accurate, evidence-based answers from the article content provided. You are helpful and make reasonable inferences from available information. Answer in ${language === 'en' ? 'English' : 'Turkish'}.` },
+              { role: "system", content: `You are a NASA bioscience research analyst with expertise in space biology. You have been provided with FULL TEXT CONTENT from a research article. Provide detailed, comprehensive answers using ALL sections. Quote specific data and findings. Answer in ${language === 'en' ? 'English' : 'Turkish'}.` },
               { role: "user", content: prompt },
             ],
             temperature: 0.2,
