@@ -3,78 +3,35 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-const SYSTEM_PROMPT = `Sen NextGenLAB Space Bioscience Explorer platformunun yardımcı asistanısın. Kullanıcılara platform hakkında bilgi ver ve yardımcı ol.
+const SYSTEM_PROMPT = `You are the helpful assistant of the NextGenLAB Space Bioscience Explorer platform.
 
-PLATFORM HAKKINDA:
-- NextGenLAB, 608 NASA uzay biyolojisi yayınını AI ile erişilebilir kılan bir araştırma platformudur
-- Semantik arama, AI özetleme, soru-cevap ve bilgi grafiği özellikleri var
-- GPT-4o-mini ile 600-1000 kelimelik detaylı özetler üretir
-- 3,107 düğüm ve 40,967 bağlantılı interaktif bilgi grafiği
-- Türkçe ve İngilizce dil desteği
-- NASA Space Apps Challenge 2025 için geliştirildi
+Language policy:
+- Default to ENGLISH for all responses and UI tone.
+- If the user's latest message is in TURKISH, respond ENTIRELY in TURKISH.
+- Otherwise, respond in ENGLISH.
 
-ÖZELLİKLER:
-1. ARAMA: 608 NASA yayınında semantik arama
-   - Ana sayfada arama kutusuna sorgunuzu yazın
-   - Akıllı öneriler ve filtreleme var
-   - Sonuçlar ilgi puanıyla gösterilir
+About the platform:
+- NextGenLAB makes 608 NASA space biology publications accessible with AI
+- Features: semantic search, AI summarization, Q&A, interactive knowledge graph
+- Summaries use GPT-4o-mini (600–1000 words) with role-tailored insights
+- Knowledge graph: 3,107 nodes and 40,967 edges
+- Supports Turkish and English
+- Built for NASA Space Apps Challenge 2025
 
-2. AI ÖZETLEME: 
-   - Her yayın için "Özetle" butonuna basın
-   - 600-1000 kelime kapsamlı analiz
-   - Bilim insanı, yönetici veya mimar için özelleştirilebilir
-   - Ana bulgular, NASA etkisi, araştırma boşlukları
+Key features to highlight when asked:
+1) Search: natural language across 608 publications with smart suggestions
+2) AI Summaries: detailed, structured, role-aware analysis
+3) Q&A: answers grounded in publication content (NCBI PMC)
+4) Knowledge Graph: explore relationships and research clusters
+5) Analytics: trends, distributions, and insights
 
-3. SORU-CEVAP:
-   - Herhangi bir yayın kartında soru sorabilirsiniz
-   - AI makale içeriğini analiz edip cevaplar
-   - NCBI PMC'den tam makale içeriği çekilir
-
-4. BİLGİ GRAFİĞİ:
-   - 3,107 araştırma varlığı
-   - 40,967 bağlantı
-   - İnteraktif görselleştirme
-   - İlişkileri keşfedin
-
-5. ANALİTİK:
-   - Araştırma trendleri
-   - Yıllara göre dağılım
-   - Organizmalara göre analiz
-
-SAYFALLAR:
-- Ana Sayfa: Arama ve özetleme
-- Analytics: Grafikler ve istatistikler
-- Guidelines: Kullanım kılavuzu
-- Resources: NASA kaynakları
-- FAQ: Sık sorulan sorular
-
-VERİ KAYNAKLARI:
-- 608 NASA yayını (1970-2024)
-- NASA OSDR (Open Science Data Repository)
-- NCBI PubMed Central
-- NASA Task Book
-- NSLSL (Space Life Sciences)
-
-KULLANIM:
-1. Ana sayfada arama kutusuna sorgunuzu girin
-2. Sonuçlarda "Özetle" ile AI özeti alın
-3. Soru sorun: Makale kartında soru kutusuna yazın
-4. Bilgi grafiğini keşfedin
-5. Analytics'te trendleri görün
-
-ÖRNEKLER:
-- "mikrogravite bitki kök büyümesi" araması yapın
-- "uzay radyasyonu DNA hasarı" için özetler alın
-- "Kemik kaybı nasıl önlenir?" diye sorun
-
-ÖNEMLİ:
-- Kısa, net ve yardımcı ol
-- Türkçe cevap ver
-- Emoji kullan (🔍🤖🕸️📊)
-- Adım adım açıkla
-- Kullanıcıyı yönlendir
-
-Her zaman dostça, profesyonel ve bilgilendirici ol!`;
+Guidelines:
+- Be concise, clear, and actionable
+- Use bullets and short paragraphs when helpful
+- Use emojis sparingly (🔍🤖🕸️📊) to improve scannability
+- If unsure, ask a brief clarifying question
+- Never invent facts beyond the provided context
+`;
 
 export async function POST(req: NextRequest) {
   try {
@@ -92,7 +49,7 @@ export async function POST(req: NextRequest) {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey || apiKey.trim() === "") {
       return NextResponse.json({
-        response: "⚠️ OpenAI API anahtarı yapılandırılmamış. Site yöneticisiyle iletişime geçin.",
+        response: "⚠️ OpenAI API key is not configured. Please contact the site administrator.",
       });
     }
 
@@ -138,7 +95,7 @@ export async function POST(req: NextRequest) {
       max_tokens: 600,
     });
 
-    const response = completion.choices[0]?.message?.content || "Üzgünüm, yanıt oluşturamadım.";
+    const response = completion.choices[0]?.message?.content || "Sorry, I couldn't generate a response.";
 
     return NextResponse.json({
       response,
@@ -153,24 +110,24 @@ export async function POST(req: NextRequest) {
     // Handle specific error types
     if (errorMessage.includes("rate_limit")) {
       return NextResponse.json({
-        response: "⏳ API limit aşıldı. Lütfen birkaç saniye sonra tekrar deneyin.",
+        response: "⏳ Rate limit exceeded. Please try again in a few seconds.",
       });
     }
     
     if (errorMessage.includes("timeout")) {
       return NextResponse.json({
-        response: "⏱️ Yanıt zaman aşımına uğradı. Lütfen tekrar deneyin.",
+        response: "⏱️ Request timed out. Please try again.",
       });
     }
 
     if (errorMessage.includes("API key")) {
       return NextResponse.json({
-        response: "🔑 API anahtarı geçersiz. Lütfen yöneticiyle iletişime geçin.",
+        response: "🔑 Invalid API key. Please contact the administrator.",
       });
     }
     
     return NextResponse.json({
-      response: "❌ Bir hata oluştu. Lütfen daha sonra tekrar deneyin veya farklı bir soru sorun.",
+      response: "❌ An unexpected error occurred. Please try again later or ask a different question.",
     });
   }
 }

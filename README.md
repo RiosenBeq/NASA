@@ -6,9 +6,9 @@
 
 [![NASA Space Apps Challenge](https://img.shields.io/badge/NASA-Space%20Apps%202025-0B3D91?style=flat-square&logo=nasa)](https://www.spaceappschallenge.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
-[![Live Demo](https://img.shields.io/badge/Live-Demo-blue?style=flat-square&logo=vercel)](https://nasa-space-jhk09xm3p-okans-projects-fcf7250e.vercel.app)
+[![Live Demo](https://img.shields.io/badge/Live-Demo-blue?style=flat-square&logo=vercel)](https://nasa-hazel.vercel.app/)
 
-**[🌐 Live Demo](https://nasa-space-jhk09xm3p-okans-projects-fcf7250e.vercel.app)**
+**[🌐 Live Demo](https://nasa-hazel.vercel.app/)**
 
 Transforming 608 NASA space biology publications into actionable insights through AI-powered analysis, semantic search, and interactive knowledge graphs.
 
@@ -92,6 +92,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 **Built with ❤️ for NASA Space Apps Challenge 2025**
 
-[🌐 Live Demo](https://nasa-space-jhk09xm3p-okans-projects-fcf7250e.vercel.app) • [📖 Documentation](DEPLOYMENT.md) • [🐛 Issues](https://github.com/RiosenBeq/NASA/issues)
+[🌐 Live Demo](https://nasa-hazel.vercel.app/) • [📖 Documentation](DEPLOYMENT.md) • [🐛 Issues](https://github.com/RiosenBeq/NASA/issues)
 
 </div>

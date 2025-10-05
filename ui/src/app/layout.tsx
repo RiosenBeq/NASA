@@ -37,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr">
+    <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <div className="starfield" aria-hidden="true" />
         <div className="logo-background-glow" aria-hidden="true" />

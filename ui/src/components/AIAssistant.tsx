@@ -9,7 +9,7 @@ interface Message {
 
 const INITIAL_MESSAGE: Message = {
   role: "assistant",
-  content: "👋 **Merhaba!** NextGenLAB Space Bioscience Explorer'a hoş geldiniz!\n\nSize nasıl yardımcı olabilirim? Platform özellikleri, arama, AI özetleme veya bilgi grafiği hakkında sorularınızı sorabilirsiniz! 🚀",
+  content: "👋 **Welcome!** This is the NextGenLAB Space Bioscience Explorer.\n\nHow can I help you today? You can ask about search, AI summaries, Q&A, or the knowledge graph. 🚀",
   timestamp: new Date(),
 };
 
@@ -116,7 +116,7 @@ export default function AIAssistant() {
 
       const assistantMessage: Message = {
         role: "assistant",
-        content: data.response || "Üzgünüm, bir hata oluştu. Lütfen tekrar deneyin.",
+        content: data.response || "Sorry, something went wrong. Please try again.",
         timestamp: new Date(),
       };
 
@@ -125,7 +125,7 @@ export default function AIAssistant() {
       console.error("Chatbot error:", error);
       const errorMessage: Message = {
         role: "assistant",
-        content: "⚠️ Bağlantı hatası. Lütfen tekrar deneyin.",
+        content: "⚠️ Connection error. Please try again.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -142,14 +142,14 @@ export default function AIAssistant() {
   };
 
   const quickQuestions = [
-    "🔍 Nasıl arama yapabilirim?",
-    "🤖 AI özetleme nasıl çalışır?",
-    "🕸️ Bilgi grafiği nedir?",
-    "📊 Hangi veriler var?",
-    "🚀 Platform özellikleri neler?",
-    "💡 Soru-cevap özelliği nasıl kullanılır?",
-    "📈 Analytics sayfası ne işe yarar?",
-    "🌌 NASA verileri nereden geliyor?",
+    "🔍 How can I search publications?",
+    "🤖 How do AI summaries work?",
+    "🕸️ What is the knowledge graph?",
+    "📊 What data is available?",
+    "🚀 What are the platform features?",
+    "💡 How to use the Q&A feature?",
+    "📈 What does the Analytics page show?",
+    "🌌 Where do NASA data sources come from?",
   ];
 
   return (
