@@ -5,11 +5,12 @@
 ## ✨ Features
 
 - 🔍 **Search 608 Publications**: Semantic search across NASA space bioscience research
-- 🤖 **AI-Powered Summaries**: Generate structured summaries with AI
-- 💬 **Q&A System**: Ask questions about specific publications
+- 🤖 **AI-Powered Summaries**: Generate comprehensive 600-1000 word summaries with GPT-4o-mini
+- 💬 **Q&A System**: Ask questions about specific publications with full article content analysis
 - 🕸️ **Knowledge Graph**: Interactive visualization (3,107 nodes, 40,967 edges)
 - 📊 **Analytics Dashboard**: Trends, gaps, and consensus analysis
 - 🌍 **Multi-Language Support**: Turkish and English interface
+- 📱 **Fully Mobile Responsive**: Optimized for all devices (desktop, tablet, mobile)
 
 ## 🏗️ Architecture
 
@@ -28,7 +29,7 @@
 
 ### Prerequisites
 - Node.js 18+ 
-- OpenAI API Key
+- OpenAI API Key (get from https://platform.openai.com/api-keys)
 
 ### Local Development
 
@@ -39,17 +40,32 @@ cd NASA/ui
 npm install
 ```
 
-2. **Configure Environment**
+2. **Configure Environment Variables**
 ```bash
-# Create .env.local file
-echo "OPENAI_API_KEY=your_key_here" > .env.local
+# Copy the example environment file
+cp .env.example .env.local
+
+# Edit .env.local and add your OpenAI API key:
+# OPENAI_API_KEY=sk-proj-your_actual_api_key_here
 ```
+
+Alternatively, create `.env.local` manually:
+```bash
+echo "OPENAI_API_KEY=sk-proj-your_actual_api_key_here" > .env.local
+```
+
+⚠️ **Important**: Never commit your `.env.local` file - it's already in `.gitignore`
 
 3. **Run Development Server**
 ```bash
 npm run dev
 # Open http://localhost:3000
 ```
+
+The application will now have full AI capabilities including:
+- ✨ AI-powered publication summarization
+- 💬 Q&A with full article content
+- 🤖 GPT-4o-mini integration
 
 ### Build for Production
 ```bash
