@@ -569,7 +569,12 @@ export default function Home() {
                   )}
                 </div>
                 <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: "clamp(100px, 25vw, 140px)", fontSize: "clamp(14px, 3.5vw, 16px)", flexShrink: 0, padding: "clamp(12px, 3vw, 16px) clamp(16px, 4vw, 32px)", display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }} aria-label="Search publications">
-                  {loading ? "⏳" : (
+                  {loading ? (
+                    <>
+                      <Image src="/logo.png" alt="Loading" width={20} height={20} style={{ objectFit: "contain", animation: "spin 1s linear infinite" }} />
+                      <span>⏳</span>
+                    </>
+                  ) : (
                     <>
                       <Image src="/logo.png" alt="NextGenLAB" width={20} height={20} style={{ objectFit: "contain" }} />
                       <span>{T("search")}</span>
