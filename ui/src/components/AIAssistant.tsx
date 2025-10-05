@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
 interface Message {
   role: "user" | "assistant";
@@ -234,10 +235,10 @@ export default function AIAssistant() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 20,
+                  padding: 6,
                 }}
               >
-                🤖
+                <Image src="/logo.png" alt="NextGenLAB" width={28} height={28} style={{ objectFit: "contain" }} />
               </div>
               <div>
                 <div style={{ fontWeight: 700, fontSize: 16, color: "#fff" }}>AI Assistant</div>
