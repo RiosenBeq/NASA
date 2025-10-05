@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { ids, persona, section_priority } = body;
+    const { ids, persona, section_priority, language } = body;
 
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
       return NextResponse.json(
@@ -94,117 +94,26 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Build enhanced prompt based on NASA requirements
-    const personaContext = getPersonaContext(persona);
-    const sectionFocus = getSectionFocus(section_priority);
+    // Build enhanced prompt based on NASA requirements and language
+    const personaContext = getPersonaContext(persona, language);
+    const sectionFocus = getSectionFocus(section_priority, language);
+    const isTurkish = language === "tr";
     
-    const prompt = `You are an expert NASA bioscience research analyst with 15+ years of experience in space biology research. You are tasked with creating comprehensive, detailed summaries of space biology publications for NASA's Space Bioscience Research Challenge.
-
-TARGET AUDIENCE: ${personaContext}
-
-SECTION FOCUS: ${sectionFocus}
-
-PUBLICATIONS TO ANALYZE:
-${titles.map((t, i) => `${i + 1}. ${t}`).join("\n")}
-
-CRITICAL REQUIREMENTS:
-Create a very concise summary following NASA's Space Bioscience Research Challenge guidelines. Keep it brief and actionable.
-
-STRUCTURE YOUR ANALYSIS AS FOLLOWS:
-
-## 🚀 EXECUTIVE SUMMARY
-Provide a 1-2 sentence overview covering:
-- Research scope and key findings
-- Direct relevance to NASA's space exploration goals
-
-## 🔬 KEY FINDINGS
-For each publication, provide:
-- **Methodology**: Brief experimental approach
-- **Results**: Key findings only
-- **Limitations**: Main study constraints
-
-## 🌌 NASA IMPACT
-- **Space Biology Advancement**: How this advances space biology
-- **Mission Applications**: Direct applications for Moon/Mars missions
-
-## 🔍 RESEARCH GAPS
-- **Critical Questions**: Most important unanswered questions
-- **Next Steps**: Essential follow-up research needed
-
-## 💡 STRATEGIC ACTIONABLE INSIGHTS
-${persona === 'scientist' ? `
-**For Research Scientists:**
-- Specific hypotheses to test in future experiments
-- Recommended experimental protocols and methodologies
-- Potential collaborations with other research groups
-- Data sources and datasets to leverage
-- Equipment and technology requirements for future studies` : ''}
-${persona === 'manager' ? `
-**For Program Managers:**
-- Investment priorities and funding recommendations
-- Research portfolio optimization strategies
-- Resource allocation across different research areas
-- Risk assessment and mitigation strategies
-- Timeline considerations for research programs` : ''}
-${persona === 'architect' ? `
-**For Mission Architects:**
-- Mission design implications and constraints
-- Technology development requirements
-- Crew safety and health considerations
-- Life support system requirements
-- Risk mitigation strategies for long-duration missions` : ''}
-${!persona ? `
-**For All Stakeholders:**
-- Mission planning considerations and constraints
-- Technology development priorities
-- Risk factors and mitigation strategies
-- Resource requirements and optimization
-- Timeline and milestone considerations` : ''}
-
-## 🛰️ NASA RESOURCE INTEGRATION
-- **OSDR Datasets**: Specific datasets that complement this research
-- **Task Book Projects**: Related ongoing NASA research initiatives
-- **NSLSL Resources**: Additional studies in NASA's Space Life Sciences Library
-- **International Collaborations**: Relevant international space agency research
-- **Commercial Partnerships**: Potential industry collaborations
-
-## 🔮 FUTURE RESEARCH DIRECTIONS
-- **Immediate Next Steps**: 1-2 year research priorities
-- **Medium-term Goals**: 3-5 year research objectives
-- **Long-term Vision**: 10+ year research trajectory
-- **Emerging Technologies**: New tools and methodologies to leverage
-- **International Opportunities**: Global collaboration possibilities
-
-## 📊 DETAILED TECHNICAL SPECIFICATIONS
-- **Sample Requirements**: Optimal sample sizes for future studies
-- **Duration Considerations**: Recommended study lengths
-- **Environmental Parameters**: Specific space environment conditions to study
-- **Measurement Protocols**: Standardized approaches for data collection
-- **Quality Assurance**: Data validation and verification methods
-
-FORMATTING REQUIREMENTS:
-- Use clear section headers with emojis (## 🚀)
-- Use concise bullet points (max 2-3 per section)
-- Include only essential data points
-- Provide brief examples
-- Maintain scientific rigor while being accessible
-- Length: Very concise and focused (150-250 words maximum)
-- Include only critical recommendations
-
-TONE: Highly professional, evidence-based, forward-looking, strategically actionable, scientifically rigorous
-
-Begin your comprehensive analysis now. Remember: This analysis will directly inform NASA's space biology research strategy and mission planning decisions.`;
+    const prompt = buildPrompt(titles, personaContext, sectionFocus, persona, isTurkish);
 
     let summary = "";
     try {
       // First try via official SDK (with retries)
+      const systemMessage = isTurkish
+        ? "NASA uzay biyobilim araştırma analisti olarak uzay biyolojisi, insanlı uzay uçuşu ve görev planlaması konularında derin bilgiye sahipsiniz. Karmaşık araştırma bulgularını farklı paydaşlar için uygulanabilir içgörülere dönüştürmede mükemmelsiniz. TÜM CEVAPLARI TÜRKÇE YAZIN."
+        : "You are an expert NASA bioscience research analyst with deep knowledge of space biology, human spaceflight, and mission planning. You excel at synthesizing complex research findings into actionable insights for diverse stakeholders. WRITE ALL RESPONSES IN ENGLISH.";
+      
       const completion = await client.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
           {
             role: "system",
-            content:
-              "You are an expert NASA bioscience research analyst with deep knowledge of space biology, human spaceflight, and mission planning. You excel at synthesizing complex research findings into actionable insights for diverse stakeholders.",
+            content: systemMessage,
           },
           { role: "user", content: prompt },
         ],
@@ -215,6 +124,10 @@ Begin your comprehensive analysis now. Remember: This analysis will directly inf
     } catch {
       // Fallback to direct HTTP call for better diagnostics
       try {
+        const systemMessage = isTurkish
+          ? "NASA uzay biyobilim araştırma analisti olarak tüm cevapları Türkçe yazın."
+          : "You are an expert NASA bioscience research analyst. Write all responses in English.";
+        
         const ctrl = new AbortController();
         const tm = setTimeout(() => ctrl.abort(), 20000);
         const resp = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -227,7 +140,7 @@ Begin your comprehensive analysis now. Remember: This analysis will directly inf
           body: JSON.stringify({
             model: "gpt-3.5-turbo",
             messages: [
-              { role: "system", content: "You are a helpful assistant." },
+              { role: "system", content: systemMessage },
               { role: "user", content: prompt },
             ],
             temperature: 0.6,
@@ -257,6 +170,7 @@ Begin your comprehensive analysis now. Remember: This analysis will directly inf
         section_priority: section_priority || "balanced",
         publication_count: titles.length,
         model: "gpt-3.5-turbo",
+        language: language || "en",
       },
     });
   } catch (error: unknown) {
@@ -273,28 +187,206 @@ Begin your comprehensive analysis now. Remember: This analysis will directly inf
   }
 }
 
-function getPersonaContext(persona?: string): string {
+function buildPrompt(titles: string[], personaContext: string, sectionFocus: string, persona: string | undefined, isTurkish: boolean): string {
+  const publicationsList = titles.map((t, i) => `${i + 1}. ${t}`).join("\n");
+  
+  if (isTurkish) {
+    return `NASA uzay biyobilim araştırma analisti olarak 15+ yıllık uzay biyolojisi araştırma deneyiminizle, NASA'nın Uzay Biyobilim Araştırma Mücadelesi için uzay biyolojisi yayınlarının kapsamlı, detaylı özetlerini oluşturmanız beklenmektedir.
+
+HEDEF KİTLE: ${personaContext}
+
+BÖLÜM ODAĞI: ${sectionFocus}
+
+ANALİZ EDİLECEK YAYINLAR:
+${publicationsList}
+
+KRİTİK GEREKSINIMLER:
+NASA'nın Uzay Biyobilim Araştırma Mücadelesi kılavuzlarını takip ederek çok özet bir analiz oluşturun. Kısa ve uygulanabilir tutun.
+
+ANALİZİNİZİ ŞU ŞEKİLDE YAPILANDIRIN:
+
+## 🚀 YÖNETİCİ ÖZETİ
+Şunları kapsayan 1-2 cümlelik genel bakış:
+- Araştırma kapsamı ve ana bulgular
+- NASA'nın uzay keşif hedefleriyle doğrudan ilgisi
+
+## 🔬 TEMEL BULGULAR
+Her yayın için:
+- **Metodoloji**: Kısa deneysel yaklaşım
+- **Sonuçlar**: Yalnızca ana bulgular
+- **Sınırlamalar**: Ana çalışma kısıtlamaları
+
+## 🌌 NASA ETKİSİ
+- **Uzay Biyolojisi İlerlemesi**: Bu, uzay biyolojisini nasıl ilerletiyor
+- **Görev Uygulamaları**: Ay/Mars görevleri için doğrudan uygulamalar
+
+## 🔍 ARAŞTIRMA BOŞLUKLARI
+- **Kritik Sorular**: En önemli cevaplanmamış sorular
+- **Sonraki Adımlar**: Gerekli takip araştırması
+
+## 💡 STRATEJİK UYGULANABİLİR İÇGÖRÜLER
+${getPersonaInsightsTurkish(persona)}
+
+FORMATLAMA GEREKSİNİMLERİ:
+- Emoji'li net bölüm başlıkları kullanın (## 🚀)
+- Özet madde işaretleri kullanın (bölüm başına maks. 2-3)
+- Yalnızca temel veri noktalarını dahil edin
+- Kısa örnekler verin
+- Bilimsel titizliği korurken erişilebilir olun
+- Uzunluk: Çok özet ve odaklı (maksimum 150-250 kelime)
+- Yalnızca kritik önerileri dahil edin
+
+TON: Son derece profesyonel, kanıta dayalı, ileriye dönük, stratejik olarak uygulanabilir, bilimsel olarak titiz
+
+ÖNEMLİ: Tüm analizi TÜRKÇE yazın. Başlıklar, açıklamalar ve tüm içerik Türkçe olmalıdır.
+
+Kapsamlı analizinize şimdi başlayın. Unutmayın: Bu analiz doğrudan NASA'nın uzay biyolojisi araştırma stratejisini ve görev planlama kararlarını bilgilendirecektir.`;
+  }
+  
+  return `You are an expert NASA bioscience research analyst with 15+ years of experience in space biology research. You are tasked with creating comprehensive, detailed summaries of space biology publications for NASA's Space Bioscience Research Challenge.
+
+TARGET AUDIENCE: ${personaContext}
+
+SECTION FOCUS: ${sectionFocus}
+
+PUBLICATIONS TO ANALYZE:
+${publicationsList}
+
+CRITICAL REQUIREMENTS:
+Create a very concise summary following NASA's Space Bioscience Research Challenge guidelines. Keep it brief and actionable.
+
+STRUCTURE YOUR ANALYSIS AS FOLLOWS:
+
+## 🚀 EXECUTIVE SUMMARY
+Provide a 1-2 sentence overview covering:
+- Research scope and key findings
+- Direct relevance to NASA's space exploration goals
+
+## 🔬 KEY FINDINGS
+For each publication, provide:
+- **Methodology**: Brief experimental approach
+- **Results**: Key findings only
+- **Limitations**: Main study constraints
+
+## 🌌 NASA IMPACT
+- **Space Biology Advancement**: How this advances space biology
+- **Mission Applications**: Direct applications for Moon/Mars missions
+
+## 🔍 RESEARCH GAPS
+- **Critical Questions**: Most important unanswered questions
+- **Next Steps**: Essential follow-up research needed
+
+## 💡 STRATEGIC ACTIONABLE INSIGHTS
+${getPersonaInsightsEnglish(persona)}
+
+FORMATTING REQUIREMENTS:
+- Use clear section headers with emojis (## 🚀)
+- Use concise bullet points (max 2-3 per section)
+- Include only essential data points
+- Provide brief examples
+- Maintain scientific rigor while being accessible
+- Length: Very concise and focused (150-250 words maximum)
+- Include only critical recommendations
+
+TONE: Highly professional, evidence-based, forward-looking, strategically actionable, scientifically rigorous
+
+IMPORTANT: Write the entire analysis in ENGLISH. All headers, descriptions, and content should be in English.
+
+Begin your comprehensive analysis now. Remember: This analysis will directly inform NASA's space biology research strategy and mission planning decisions.`;
+}
+
+function getPersonaInsightsTurkish(persona: string | undefined): string {
   switch (persona) {
-    case "scientist":
-      return "Research scientists generating new hypotheses and designing experiments for space biology studies. Focus on experimental methodology, data interpretation, and hypothesis generation.";
-    case "manager":
-      return "Program managers and decision-makers identifying investment opportunities and research priorities. Focus on strategic importance, resource allocation, and portfolio optimization.";
-    case "architect":
-      return "Mission architects planning safe and efficient lunar and Mars exploration. Focus on operational constraints, technology requirements, and risk mitigation.";
+    case 'scientist':
+      return `**Araştırma Bilimcileri İçin:**
+- Gelecek deneylerde test edilecek spesifik hipotezler
+- Önerilen deneysel protokoller ve metodolojiler
+- Diğer araştırma gruplarıyla potansiyel işbirlikleri`;
+    case 'manager':
+      return `**Program Yöneticileri İçin:**
+- Yatırım öncelikleri ve finansman önerileri
+- Araştırma portföyü optimizasyon stratejileri
+- Farklı araştırma alanlarında kaynak tahsisi`;
+    case 'architect':
+      return `**Görev Mimarları İçin:**
+- Görev tasarımı etkileri ve kısıtlamaları
+- Teknoloji geliştirme gereksinimleri
+- Mürettebat güvenliği ve sağlık hususları`;
     default:
-      return "Diverse stakeholders including scientists, managers, and mission planners. Provide balanced insights relevant to multiple audiences.";
+      return `**Tüm Paydaşlar İçin:**
+- Görev planlama hususları ve kısıtlamaları
+- Teknoloji geliştirme öncelikleri
+- Risk faktörleri ve azaltma stratejileri`;
   }
 }
 
-function getSectionFocus(section?: string): string {
+function getPersonaInsightsEnglish(persona: string | undefined): string {
+  switch (persona) {
+    case 'scientist':
+      return `**For Research Scientists:**
+- Specific hypotheses to test in future experiments
+- Recommended experimental protocols and methodologies
+- Potential collaborations with other research groups`;
+    case 'manager':
+      return `**For Program Managers:**
+- Investment priorities and funding recommendations
+- Research portfolio optimization strategies
+- Resource allocation across different research areas`;
+    case 'architect':
+      return `**For Mission Architects:**
+- Mission design implications and constraints
+- Technology development requirements
+- Crew safety and health considerations`;
+    default:
+      return `**For All Stakeholders:**
+- Mission planning considerations and constraints
+- Technology development priorities
+- Risk factors and mitigation strategies`;
+  }
+}
+
+function getPersonaContext(persona?: string, language?: string): string {
+  const isTurkish = language === "tr";
+  
+  switch (persona) {
+    case "scientist":
+      return isTurkish
+        ? "Uzay biyolojisi çalışmaları için yeni hipotezler üreten ve deneyler tasarlayan araştırma bilimcileri. Deneysel metodoloji, veri yorumlama ve hipotez oluşturmaya odaklanın."
+        : "Research scientists generating new hypotheses and designing experiments for space biology studies. Focus on experimental methodology, data interpretation, and hypothesis generation.";
+    case "manager":
+      return isTurkish
+        ? "Yatırım fırsatlarını ve araştırma önceliklerini belirleyen program yöneticileri ve karar vericiler. Stratejik önem, kaynak tahsisi ve portföy optimizasyonuna odaklanın."
+        : "Program managers and decision-makers identifying investment opportunities and research priorities. Focus on strategic importance, resource allocation, and portfolio optimization.";
+    case "architect":
+      return isTurkish
+        ? "Güvenli ve verimli Ay ve Mars keşfi planlayan görev mimarları. Operasyonel kısıtlamalar, teknoloji gereksinimleri ve risk azaltmaya odaklanın."
+        : "Mission architects planning safe and efficient lunar and Mars exploration. Focus on operational constraints, technology requirements, and risk mitigation.";
+    default:
+      return isTurkish
+        ? "Bilim insanları, yöneticiler ve görev planlayıcıları dahil çeşitli paydaşlar. Birden fazla kitleyle ilgili dengeli içgörüler sağlayın."
+        : "Diverse stakeholders including scientists, managers, and mission planners. Provide balanced insights relevant to multiple audiences.";
+  }
+}
+
+function getSectionFocus(section?: string, language?: string): string {
+  const isTurkish = language === "tr";
+  
   switch (section) {
     case "results":
-      return "Prioritize Results sections - focus on objectively demonstrated findings, experimental data, statistical analyses, and empirical evidence.";
+      return isTurkish
+        ? "Sonuçlar bölümlerine öncelik verin - objektif olarak gösterilen bulgulara, deneysel verilere, istatistiksel analizlere ve ampirik kanıtlara odaklanın."
+        : "Prioritize Results sections - focus on objectively demonstrated findings, experimental data, statistical analyses, and empirical evidence.";
     case "discussion":
-      return "Prioritize Discussion sections - focus on interpretation of results, comparison with existing literature, and broader implications.";
+      return isTurkish
+        ? "Tartışma bölümlerine öncelik verin - sonuçların yorumlanmasına, mevcut literatürle karşılaştırmaya ve daha geniş çıkarımlara odaklanın."
+        : "Prioritize Discussion sections - focus on interpretation of results, comparison with existing literature, and broader implications.";
     case "conclusion":
-      return "Prioritize Conclusion sections - focus on forward-looking insights, future research directions, and practical applications.";
+      return isTurkish
+        ? "Sonuç bölümlerine öncelik verin - ileriye dönük içgörülere, gelecekteki araştırma yönlerine ve pratik uygulamalara odaklanın."
+        : "Prioritize Conclusion sections - focus on forward-looking insights, future research directions, and practical applications.";
     default:
-      return "Balanced analysis across all sections - integrate findings from Introduction, Methods, Results, Discussion, and Conclusions.";
+      return isTurkish
+        ? "Tüm bölümlerde dengeli analiz - Giriş, Yöntemler, Sonuçlar, Tartışma ve Sonuçlardan bulguları entegre edin."
+        : "Balanced analysis across all sections - integrate findings from Introduction, Methods, Results, Discussion, and Conclusions.";
   }
 }

@@ -277,17 +277,19 @@ export default function Home() {
       const res = await fetch(`${api}/summarize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ids: [id] }),
+        body: JSON.stringify({ ids: [id], language: lang }),
       });
       const data = await res.json();
-      const text = res.ok && data.summary ? data.summary + (data.citations?.length ? "\n\n📚 Kaynaklar:\n" + data.citations.join("\n") : "") : (data?.summary || "");
+      const citationsLabel = lang === "tr" ? "\n\n📚 Kaynaklar:\n" : "\n\n📚 References:\n";
+      const text = res.ok && data.summary ? data.summary + (data.citations?.length ? citationsLabel + data.citations.join("\n") : "") : (data?.summary || "");
       setCardSummaries((p) => ({ ...p, [id]: { text, loading: false } }));
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "";
-      setCardSummaries((p) => ({ ...p, [id]: { text: `Özetleme başarısız: ${msg}`, loading: false } }));
+      const errorMsg = lang === "tr" ? `Özetleme başarısız: ${msg}` : `Summarization failed: ${msg}`;
+      setCardSummaries((p) => ({ ...p, [id]: { text: errorMsg, loading: false } }));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [api]);
+  }, [api, lang]);
 
   const askQA = useCallback(async (id: number) => {
     // Get current state to ensure we have the latest question
