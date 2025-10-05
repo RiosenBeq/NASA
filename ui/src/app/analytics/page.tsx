@@ -295,7 +295,7 @@ export default function AnalyticsPage() {
                   {T("noData")}
                 </div>
               ) : (
-                <PieChart data={nodeTypeEntries} colors={["#a78bfa", "#60a5fa", "#22d3ee", "#f472b6", "#fbbf24", "#34d399"]} />
+                <PieChart data={nodeTypeEntries} colors={["#a78bfa", "#60a5fa", "#22d3ee", "#f472b6", "#fbbf24", "#34d399"]} lang={lang} />
             )}
           </div>
             
@@ -312,7 +312,7 @@ export default function AnalyticsPage() {
                   {T("noData")}
                 </div>
               ) : (
-                <BarChart data={edgeRelEntries} color="#a78bfa" />
+                <BarChart data={edgeRelEntries} color="#a78bfa" lang={lang} />
             )}
           </div>
         </section>
@@ -351,7 +351,28 @@ export default function AnalyticsPage() {
   );
 }
 
-function PieChart({ data, colors }: { data: [string, number][]; colors: string[] }) {
+function PieChart({ data, colors, lang }: { data: [string, number][]; colors: string[]; lang: "tr" | "en" }) {
+  const translateNodeType = (type: string): string => {
+    if (lang === "en") return type;
+    
+    const translations: Record<string, string> = {
+      "Publication": "Yayın",
+      "Experiment": "Deney",
+      "Organism": "Organizma",
+      "Project": "Proje",
+      "Platform": "Platform",
+      "Article": "Makale",
+      "Study": "Çalışma",
+      "Dataset": "Veri Seti",
+      "Sample": "Örnek",
+      "Observation": "Gözlem",
+      "Measurement": "Ölçüm",
+      "Analysis": "Analiz"
+    };
+    
+    return translations[type] || type;
+  };
+  
   const total = data.reduce((sum, [, v]) => sum + v, 0) || 1;
   const size = 280;
   const radius = size / 2;
@@ -382,7 +403,7 @@ function PieChart({ data, colors }: { data: [string, number][]; colors: string[]
           <div key={k} className="badge" style={{ justifyContent: "space-between", minWidth: "auto", width: "100%" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <span style={{ width: 14, height: 14, background: colors[i % colors.length], display: "inline-block", borderRadius: 4, boxShadow: `0 0 10px ${colors[i % colors.length]}`, flexShrink: 0 }} />
-              <span style={{ fontSize: "clamp(11px, 2vw, 13px)" }}>{k}</span>
+              <span style={{ fontSize: "clamp(11px, 2vw, 13px)" }}>{translateNodeType(k)}</span>
             </div>
             <span style={{ fontWeight: 700, fontSize: "clamp(11px, 2vw, 13px)", whiteSpace: "nowrap" }}>{v} ({slices[i].percent}%)</span>
           </div>
@@ -392,7 +413,31 @@ function PieChart({ data, colors }: { data: [string, number][]; colors: string[]
   );
 }
 
-function BarChart({ data, color }: { data: [string, number][]; color: string }) {
+function BarChart({ data, color, lang }: { data: [string, number][]; color: string; lang: "tr" | "en" }) {
+  const translateEdgeRelation = (relation: string): string => {
+    if (lang === "en") return relation;
+    
+    const translations: Record<string, string> = {
+      "DESCRIBES": "TANIMLAR",
+      "INVOLVES": "İÇERİR",
+      "OBSERVES": "GÖZLEMLER",
+      "FUNDED_BY": "FONLAYAN",
+      "PUBLISHED_IN": "YAYINLANDI",
+      "CONDUCTED_BY": "YAPAN",
+      "USES": "KULLANIR",
+      "MEASURES": "ÖLÇER",
+      "AFFECTS": "ETKİLER",
+      "RELATES_TO": "İLİŞKİLİ",
+      "PART_OF": "PARÇASI",
+      "HAS_RESULT": "SONUCU",
+      "ANALYZES": "ANALİZ_EDER",
+      "COMPARES": "KARŞILAŞTIRIR",
+      "REQUIRES": "GEREKTİRİR"
+    };
+    
+    return translations[relation] || relation;
+  };
+  
   const maxVal = Math.max(...data.map(([, v]) => v), 1);
   const width = 520;
   const height = 260;
@@ -412,6 +457,7 @@ function BarChart({ data, color }: { data: [string, number][]; color: string }) 
           const h = (v / maxVal) * (height - padding * 2 - 20);
           const x = padding + i * barW;
           const y = height - padding - h - 20;
+          const translatedLabel = translateEdgeRelation(k);
           return (
             <g key={k}>
               <rect 
@@ -431,7 +477,7 @@ function BarChart({ data, color }: { data: [string, number][]; color: string }) 
                 textAnchor="middle" 
                 fontWeight={500}
               >
-                {k}
+                {translatedLabel}
               </text>
               <text 
                 x={x + barW / 2} 

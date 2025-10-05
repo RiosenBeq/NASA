@@ -43,18 +43,19 @@ export default function ResourcesPage() {
   const resources = {
     tr: [
       {
-        title: "📚 SB Publications",
-        desc: "608 açık erişimli NASA Space Biology yayın listesi",
-        url: "https://github.com/jgalazka/SB_publications/tree/main",
-        category: "Primary Source",
-        icon: "📄"
+        title: "🔬 NASA BPS Data",
+        desc: "NASA Open Science Data Repository (OSDR) ve Physical Sciences Informatics (PSI), uzay uçuşu ve yer çalışmalarından elde edilen biyolojik ve fiziksel bilim veri setlerine açık erişim sağlar. Veri yeniden kullanımını, keşfi ve yeniliği mümkün kılarak araştırmayı hızlandırır ve NASA'nın açık bilim misyonunu ilerletir.",
+        url: "https://science.nasa.gov/biological-physical/data/",
+        category: "Data Repository",
+        icon: "🗄️",
+        featured: true
       },
       {
-        title: "🛰️ OSDR (Open Science Data Repository)",
-        desc: "NASA'nın uzay biyolojisi ve fiziksel bilimler verileri için birincil veri ve metadata deposu",
-        url: "https://www.nasa.gov/osdr/",
-        category: "Data Repository",
-        icon: "🗄️"
+        title: "📚 NSLSL (NASA Space Life Sciences Library)",
+        desc: "Küresel uzay yaşam bilimleri literatürünü tek bir veritabanında birleştirmeyi amaçlayan kapsamlı literatür koleksiyonu",
+        url: "https://public.ksc.nasa.gov/nslsl/",
+        category: "Literature Database",
+        icon: "📖"
       },
       {
         title: "📊 NASA Task Book",
@@ -65,34 +66,29 @@ export default function ResourcesPage() {
         featured: true
       },
       {
-        title: "🌍 PMC (PubMed Central)",
-        desc: "Biyomedikal ve yaşam bilimleri dergi literatürünün ücretsiz tam metin arşivi",
-        url: "https://www.ncbi.nlm.nih.gov/pmc/",
-        category: "Publication Archive",
-        icon: "🏛️"
-      },
-      {
-        title: "🚀 NASA Biological & Physical Sciences",
-        desc: "NASA'nın uzay biyolojisi ve fiziksel bilimler araştırmaları ana portalı",
-        url: "https://www.nasa.gov/directorates/somd/space-life-physical-sciences-research-applications/",
-        category: "NASA Portal",
-        icon: "🌌"
+        title: "📄 SB Publications",
+        desc: "608 açık erişimli NASA Space Biology yayın listesi - Bu platformda kullanılan birincil veri kaynağı",
+        url: "https://github.com/jgalazka/SB_publications/tree/main",
+        category: "Primary Source",
+        icon: "📄",
+        featured: true
       }
     ],
     en: [
       {
-        title: "📚 SB Publications",
-        desc: "608 open-access NASA Space Biology publication list",
-        url: "https://github.com/jgalazka/SB_publications/tree/main",
-        category: "Primary Source",
-        icon: "📄"
+        title: "🔬 NASA BPS Data",
+        desc: "The NASA Open Science Data Repository (OSDR) and Physical Sciences Informatics (PSI) provide open access to biological and physical science datasets from spaceflight and ground studies, enabling data reuse for discovery and innovation. Together, they accelerate research and advance NASA's open science mission.",
+        url: "https://science.nasa.gov/biological-physical/data/",
+        category: "Data Repository",
+        icon: "🗄️",
+        featured: true
       },
       {
-        title: "🛰️ OSDR (Open Science Data Repository)",
-        desc: "NASA's primary repository for space biology and physical sciences data and metadata",
-        url: "https://www.nasa.gov/osdr/",
-        category: "Data Repository",
-        icon: "🗄️"
+        title: "📚 NSLSL (NASA Space Life Sciences Library)",
+        desc: "Comprehensive literature collection seeking to consolidate global space life sciences literature into a single database",
+        url: "https://public.ksc.nasa.gov/nslsl/",
+        category: "Literature Database",
+        icon: "📖"
       },
       {
         title: "📊 NASA Task Book",
@@ -103,34 +99,28 @@ export default function ResourcesPage() {
         featured: true
       },
       {
-        title: "🌍 PMC (PubMed Central)",
-        desc: "Free full-text archive of biomedical and life sciences journal literature",
-        url: "https://www.ncbi.nlm.nih.gov/pmc/",
-        category: "Publication Archive",
-        icon: "🏛️"
-      },
-      {
-        title: "🚀 NASA Biological & Physical Sciences",
-        desc: "Main portal for NASA space biology and physical sciences research",
-        url: "https://www.nasa.gov/directorates/somd/space-life-physical-sciences-research-applications/",
-        category: "NASA Portal",
-        icon: "🌌"
+        title: "📄 SB Publications",
+        desc: "608 open-access NASA Space Biology publication list - Primary data source used in this platform",
+        url: "https://github.com/jgalazka/SB_publications/tree/main",
+        category: "Primary Source",
+        icon: "📄",
+        featured: true
       }
     ]
   };
 
   const usageTips = {
     tr: [
-      { label: "SB Publications:", desc: "Platform'da bulunan 608 yayının tam listesi için" },
-      { label: "OSDR:", desc: "Ham veri ve metadata'ya erişim için" },
-      { label: "Task Book:", desc: "Devam eden ve tamamlanmış NASA projeleri için" },
-      { label: "PMC:", desc: "Tam metin yayınlara erişim için" }
+      { label: "NASA BPS Data:", desc: "OSDR ve PSI aracılığıyla ham veri setleri ve metadata'ya erişim için" },
+      { label: "NSLSL:", desc: "Uzay yaşam bilimleri literatürünü aramak ve keşfetmek için" },
+      { label: "Task Book:", desc: "Devam eden ve tamamlanmış NASA BPS ve HRP projeleri için detaylı bilgi" },
+      { label: "SB Publications:", desc: "Platform'da bulunan 608 yayının tam GitHub listesi için" }
     ],
     en: [
-      { label: "SB Publications:", desc: "For the complete list of 608 publications on the platform" },
-      { label: "OSDR:", desc: "For access to raw data and metadata" },
-      { label: "Task Book:", desc: "For ongoing and completed NASA projects" },
-      { label: "PMC:", desc: "For full-text publication access" }
+      { label: "NASA BPS Data:", desc: "For access to raw datasets and metadata via OSDR and PSI" },
+      { label: "NSLSL:", desc: "For searching and exploring space life sciences literature" },
+      { label: "Task Book:", desc: "For detailed information on ongoing and completed NASA BPS and HRP projects" },
+      { label: "SB Publications:", desc: "For the complete GitHub list of 608 publications on the platform" }
     ]
   };
 

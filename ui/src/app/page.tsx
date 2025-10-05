@@ -399,35 +399,35 @@ export default function Home() {
       <div style={{ minHeight: "100vh", position: "relative", zIndex: 1 }}>
         {/* Premium Header */}
         <header className="header-sticky" style={{ zIndex: 100 }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "18px 28px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap" }}>
-            <Link href="/" style={{ display: "flex", alignItems: "center", gap: 18, minWidth: 0, flex: "1 1 200px", textDecoration: "none", cursor: "pointer" }}>
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(12px, 3vw, 18px) clamp(16px, 4vw, 28px)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "clamp(12px, 3vw, 24px)", flexWrap: "wrap" }}>
+            <Link href="/" style={{ display: "flex", alignItems: "center", gap: "clamp(10px, 2.5vw, 18px)", minWidth: 0, flex: "1 1 180px", textDecoration: "none", cursor: "pointer" }}>
               <div style={{ position: "relative", flexShrink: 0 }}>
-                <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" />
+                <Image src="/logo.png" alt="NextGenLAB NASA Space Bioscience Explorer Logo" width={52} height={52} priority className="glow pulse-slow" style={{ width: "clamp(40px, 10vw, 52px)", height: "clamp(40px, 10vw, 52px)" }} />
                 <div style={{ position: "absolute", inset: -8, background: "radial-gradient(circle, rgba(167, 139, 250, 0.4), transparent)", filter: "blur(12px)", zIndex: -1 }} />
               </div>
               <div style={{ minWidth: 0 }}>
-                <div className="text-gradient" style={{ fontWeight: 900, fontSize: 22, letterSpacing: 0.3, whiteSpace: "nowrap" }}>
+                <div className="text-gradient" style={{ fontWeight: 900, fontSize: "clamp(16px, 4vw, 22px)", letterSpacing: 0.3, whiteSpace: "nowrap" }}>
                   {T("brandName")}
                 </div>
-                <div style={{ fontSize: 11, color: "var(--text-secondary)", letterSpacing: 2, fontWeight: 500, whiteSpace: "nowrap" }}>{T("brandSubtitle")}</div>
+                <div style={{ fontSize: "clamp(9px, 2vw, 11px)", color: "var(--text-secondary)", letterSpacing: "clamp(1px, 0.3vw, 2px)", fontWeight: 500, whiteSpace: "nowrap" }}>{T("brandSubtitle")}</div>
               </div>
           </Link>
             
-            <nav style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", justifyContent: "center" }}>
+            <nav style={{ display: "flex", alignItems: "center", gap: "clamp(6px, 2vw, 12px)", flexWrap: "wrap", justifyContent: "center", flex: "1 1 auto" }}>
               {[
                 { href: "/analytics", labelKey: "navAnalytics" },
                 { href: "/guidelines", labelKey: "navGuidelines" },
                 { href: "/resources", labelKey: "navResources" },
                 { href: "/faq", labelKey: "navFAQ" },
               ].map((link) => (
-                <Link key={link.href} href={link.href} className="btn-secondary" style={{ fontSize: 13, whiteSpace: "nowrap" }}>
+                <Link key={link.href} href={link.href} className="btn-secondary" style={{ fontSize: "clamp(11px, 2.5vw, 13px)", whiteSpace: "nowrap", padding: "clamp(8px, 2vw, 12px) clamp(12px, 3vw, 24px)" }}>
                   {T(link.labelKey)}
                 </Link>
               ))}
           </nav>
 
             <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", justifyContent: "flex-end", minWidth: 0 }}>
-              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: 13, fontWeight: 500, minWidth: 60 }}>
+              <select value={lang} onChange={(e) => setLang(e.target.value as "tr" | "en")} style={{ fontSize: "clamp(11px, 2.5vw, 13px)", fontWeight: 500, minWidth: 50, padding: "clamp(6px, 1.5vw, 8px)" }}>
                 <option value="tr">🇹🇷</option>
                 <option value="en">🇬🇧</option>
             </select>
@@ -436,22 +436,22 @@ export default function Home() {
       </header>
 
         {/* Main Content */}
-        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "32px 24px", position: "relative" }}>
+        <main style={{ maxWidth: 1200, margin: "0 auto", padding: "clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px)", position: "relative" }}>
           {/* Premium Hero Section */}
-          <div className="glass-card" style={{ padding: "48px 24px 80px 24px", marginBottom: 40, position: "relative", overflow: "visible", zIndex: 1000 }}>
-            <div style={{ position: "absolute", top: 0, right: 0, width: 400, height: 400, background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
+          <div className="glass-card" style={{ padding: "clamp(24px, 6vw, 48px) clamp(16px, 4vw, 24px) clamp(40px, 10vw, 80px)", marginBottom: "clamp(20px, 5vw, 40px)", position: "relative", overflow: "visible", zIndex: 1000 }}>
+            <div style={{ position: "absolute", top: 0, right: 0, width: "clamp(200px, 50vw, 400px)", height: "clamp(200px, 50vw, 400px)", background: "radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent)", filter: "blur(60px)", pointerEvents: "none", zIndex: 0 }} />
             
-            <div style={{ textAlign: "center", marginBottom: 32, position: "relative", zIndex: 1 }}>
-              <h1 className="text-gradient" style={{ fontSize: "clamp(32px, 5vw, 48px)", fontWeight: 900, marginBottom: 16, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
+            <div style={{ textAlign: "center", marginBottom: "clamp(20px, 5vw, 32px)", position: "relative", zIndex: 1 }}>
+              <h1 className="text-gradient" style={{ fontSize: "clamp(24px, 6vw, 48px)", fontWeight: 900, marginBottom: "clamp(12px, 3vw, 16px)", lineHeight: 1.2, letterSpacing: "-0.02em" }}>
                 {T("title")}
               </h1>
-              <p style={{ fontSize: "clamp(16px, 2.5vw, 18px)", color: "var(--text-secondary)", letterSpacing: 0.3, fontWeight: 500, maxWidth: 700, margin: "0 auto" }}>{T("subtitle")}</p>
+              <p style={{ fontSize: "clamp(14px, 3.5vw, 18px)", color: "var(--text-secondary)", letterSpacing: 0.3, fontWeight: 500, maxWidth: 700, margin: "0 auto", padding: "0 12px" }}>{T("subtitle")}</p>
             </div>
 
             {/* Premium Search Bar with Smart Suggestions */}
             <div style={{ position: "relative", zIndex: 9999999, isolation: "isolate" }}>
-              <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap", position: "relative", zIndex: 9999999 }}>
-                <div style={{ position: "relative", flex: "1 1 300px", minWidth: 0, zIndex: 9999999 }}>
+              <div style={{ display: "flex", gap: "clamp(10px, 2.5vw, 14px)", marginBottom: 12, flexWrap: "wrap", position: "relative", zIndex: 9999999 }}>
+                <div style={{ position: "relative", flex: "1 1 250px", minWidth: 0, zIndex: 9999999 }}>
             <input
               value={q}
                     onChange={(e) => {
@@ -468,7 +468,7 @@ export default function Home() {
                       if (e.key === "Escape") setShowSuggestions(false);
                     }}
               placeholder={T("queryPlaceholder")}
-                    style={{ width: "100%", padding: "18px 24px", fontSize: 16, fontWeight: 500, position: "relative", zIndex: 1 }}
+                    style={{ width: "100%", padding: "clamp(14px, 3.5vw, 18px) clamp(16px, 4vw, 24px)", fontSize: "clamp(14px, 3.5vw, 16px)", fontWeight: 500, position: "relative", zIndex: 1 }}
                   />
                   
                   {/* Smart Suggestions Dropdown - ABSOLUTE MAXIMUM VISIBILITY */}
@@ -568,70 +568,70 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: 140, fontSize: 16, flexShrink: 0 }} aria-label="Search publications">
+                <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: "clamp(100px, 25vw, 140px)", fontSize: "clamp(14px, 3.5vw, 16px)", flexShrink: 0, padding: "clamp(12px, 3vw, 16px) clamp(16px, 4vw, 32px)" }} aria-label="Search publications">
                   {loading ? "⏳" : T("search")}
             </button>
           </div>
               
               {/* Language Indicator */}
               {q.length > 0 && (
-                <div style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ fontSize: "clamp(11px, 2.5vw, 12px)", color: "var(--text-secondary)", marginBottom: 12, display: "flex", alignItems: "center", gap: "clamp(6px, 1.5vw, 8px)", flexWrap: "wrap" }}>
                   <span>🌐 {lang === "tr" ? "Türkçe" : "English"} {T("currentSearchLabel")}</span>
-                  <span style={{ fontWeight: 600, color: "var(--nebula-purple)" }}>{q}</span>
+                  <span style={{ fontWeight: 600, color: "var(--nebula-purple)", wordBreak: "break-word" }}>{q}</span>
                 </div>
               )}
             </div>
 
 
             {error && (
-              <div className="glass-card" style={{ marginTop: 16, padding: 16, border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: 12, color: "#FCA5A5", fontSize: 14 }}>
+              <div className="glass-card" style={{ marginTop: "clamp(12px, 3vw, 16px)", padding: "clamp(12px, 3vw, 16px)", border: "1px solid rgba(239, 68, 68, 0.3)", borderRadius: 12, color: "#FCA5A5", fontSize: "clamp(13px, 3vw, 14px)", wordBreak: "break-word" }}>
                 {T("errorPrefix")} {error}
               </div>
             )}
           </div>
 
           {/* Premium Results */}
-          <div style={{ display: "grid", gap: 24, position: "relative", zIndex: 1 }}>
+          <div style={{ display: "grid", gap: "clamp(16px, 4vw, 24px)", position: "relative", zIndex: 1 }}>
             {loading && (
               Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="result-card loading-shimmer" style={{ height: 180 }} />
+                <div key={i} className="result-card loading-shimmer" style={{ height: "clamp(140px, 30vw, 180px)" }} />
               ))
             )}
 
             {!loading && items.map((it) => (
               <div key={it.id} className="result-card" style={{ position: "relative", zIndex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: 24, marginBottom: 18, flexWrap: "wrap" }}>
-                  <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: "1 1 300px", fontSize: "clamp(16px, 2.5vw, 20px)", fontWeight: 700, color: "var(--text-primary)", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s", minWidth: 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", gap: "clamp(12px, 3vw, 24px)", marginBottom: "clamp(12px, 3vw, 18px)", flexWrap: "wrap" }}>
+                  <a href={it.url} target="_blank" rel="noreferrer" style={{ flex: "1 1 250px", fontSize: "clamp(15px, 3.5vw, 20px)", fontWeight: 700, color: "var(--text-primary)", textDecoration: "none", lineHeight: 1.4, transition: "color 0.3s", minWidth: 0, wordBreak: "break-word" }}>
                     {it.title}
                   </a>
                   
-                  <div style={{ display: "flex", gap: 12, alignItems: "center", flexShrink: 0, flexWrap: "wrap" }}>
-                    <div className="badge" data-tooltip="Relevance Score" style={{ background: `linear-gradient(135deg, rgba(167, 139, 250, ${it.score * 0.3}), rgba(96, 165, 250, ${it.score * 0.2}))`, whiteSpace: "nowrap" }}>
+                  <div style={{ display: "flex", gap: "clamp(8px, 2vw, 12px)", alignItems: "center", flexShrink: 0, flexWrap: "wrap", width: "100%", justifyContent: "flex-start" }}>
+                    <div className="badge" data-tooltip="Relevance Score" style={{ background: `linear-gradient(135deg, rgba(167, 139, 250, ${it.score * 0.3}), rgba(96, 165, 250, ${it.score * 0.2}))`, whiteSpace: "nowrap", fontSize: "clamp(11px, 2.5vw, 13px)", padding: "clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)" }}>
                       ⭐ {(it.score * 100).toFixed(1)}%
                         </div>
-                    <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="btn-primary" style={{ fontSize: 13, padding: "10px 20px", whiteSpace: "nowrap" }} aria-label={`Summarize article: ${it.title}`}>
+                    <button onClick={() => summarizeOne(it.id)} disabled={cardSummaries[it.id]?.loading} className="btn-primary" style={{ fontSize: "clamp(12px, 2.5vw, 13px)", padding: "clamp(8px, 2vw, 10px) clamp(14px, 3.5vw, 20px)", whiteSpace: "nowrap" }} aria-label={`Summarize article: ${it.title}`}>
                       {cardSummaries[it.id]?.loading ? T("summarizing") : (cardSummaries[it.id]?.text ? T("hide") : T("summarizeOne"))}
                         </button>
                       </div>
                     </div>
 
                     {it.snippet && (
-                  <p style={{ color: "var(--text-secondary)", fontSize: 15, lineHeight: 1.7, marginBottom: 20 }}>{it.snippet}</p>
+                  <p style={{ color: "var(--text-secondary)", fontSize: "clamp(13px, 3vw, 15px)", lineHeight: 1.7, marginBottom: "clamp(14px, 3.5vw, 20px)", wordBreak: "break-word" }}>{it.snippet}</p>
                 )}
 
                     {cardSummaries[it.id]?.text && (
-                  <div className="glass-card" style={{ padding: 20, marginTop: 20, marginBottom: 20, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)" }}>
+                  <div className="glass-card" style={{ padding: "clamp(14px, 3.5vw, 20px)", marginTop: "clamp(14px, 3.5vw, 20px)", marginBottom: "clamp(14px, 3.5vw, 20px)", whiteSpace: "pre-wrap", fontSize: "clamp(13px, 3vw, 14px)", lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)", wordBreak: "break-word" }}>
                         {cardSummaries[it.id].text}
                       </div>
                     )}
 
                 {/* Enhanced Q&A Section */}
-                <div style={{ marginTop: 20, padding: 20, background: "rgba(167, 139, 250, 0.05)", borderRadius: 12, border: "1px solid rgba(167, 139, 250, 0.1)" }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 12, color: "var(--nebula-purple)", display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ marginTop: "clamp(14px, 3.5vw, 20px)", padding: "clamp(14px, 3.5vw, 20px)", background: "rgba(167, 139, 250, 0.05)", borderRadius: 12, border: "1px solid rgba(167, 139, 250, 0.1)" }}>
+                  <div style={{ fontSize: "clamp(12px, 2.5vw, 13px)", fontWeight: 600, marginBottom: "clamp(10px, 2.5vw, 12px)", color: "var(--nebula-purple)", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                     <span>💬</span>
                     <span>{lang === "tr" ? "Bu makale hakkında soru sorun" : "Ask about this article"}</span>
                   </div>
-                  <div style={{ display: "flex", gap: 12, alignItems: "flex-start", flexWrap: "wrap" }}>
+                  <div style={{ display: "flex", gap: "clamp(8px, 2vw, 12px)", alignItems: "flex-start", flexWrap: "wrap" }}>
                   <input 
                     value={cardQA[it.id]?.q || ""} 
                     onChange={(e) => setCardQA((p) => ({ ...p, [it.id]: { q: e.target.value, a: p[it.id]?.a || "", loading: false } }))} 
@@ -644,11 +644,13 @@ export default function Home() {
                     placeholder={T("askPlaceholder")}
                       disabled={cardQA[it.id]?.loading}
                       style={{ 
-                        flex: "1 1 200px", 
+                        flex: "1 1 180px", 
                         fontWeight: 500, 
                         minWidth: 0,
                         opacity: cardQA[it.id]?.loading ? 0.6 : 1,
-                        cursor: cardQA[it.id]?.loading ? "not-allowed" : "text"
+                        cursor: cardQA[it.id]?.loading ? "not-allowed" : "text",
+                        fontSize: "clamp(13px, 3vw, 15px)",
+                        padding: "clamp(10px, 2.5vw, 14px) clamp(14px, 3.5vw, 18px)"
                       }}
                     />
                     <button 
@@ -656,22 +658,22 @@ export default function Home() {
                       disabled={cardQA[it.id]?.loading || !cardQA[it.id]?.q?.trim()} 
                       className="btn-primary" 
                       style={{ 
-                        fontSize: 13, 
-                        padding: "12px 24px", 
+                        fontSize: "clamp(12px, 2.5vw, 13px)", 
+                        padding: "clamp(10px, 2.5vw, 12px) clamp(16px, 4vw, 24px)", 
                         flexShrink: 0,
-                        minWidth: 120,
+                        minWidth: "clamp(100px, 25vw, 120px)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        gap: 8
+                        gap: "clamp(6px, 1.5vw, 8px)"
                       }} 
                       aria-label={`Ask question about: ${it.title}`}
                     >
                       {cardQA[it.id]?.loading ? (
                         <>
                           <span className="loading-spinner" style={{ 
-                            width: 14, 
-                            height: 14, 
+                            width: "clamp(12px, 3vw, 14px)", 
+                            height: "clamp(12px, 3vw, 14px)", 
                             border: "2px solid rgba(255,255,255,0.3)", 
                             borderTopColor: "white", 
                             borderRadius: "50%", 
@@ -690,15 +692,15 @@ export default function Home() {
                       </div>
 
                       {cardQA[it.id]?.a && (
-                  <div className="glass-card" style={{ padding: 20, marginTop: 16, whiteSpace: "pre-wrap", fontSize: 14, lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)", borderLeft: "3px solid var(--nebula-purple)" }}>
-                    <div style={{ fontWeight: 600, marginBottom: 10, color: "var(--nebula-purple)" }}>{T("answerLabel")}</div>
+                  <div className="glass-card" style={{ padding: "clamp(14px, 3.5vw, 20px)", marginTop: "clamp(12px, 3vw, 16px)", whiteSpace: "pre-wrap", fontSize: "clamp(13px, 3vw, 14px)", lineHeight: 1.8, color: "var(--text-primary)", background: "rgba(15, 8, 36, 0.5)", borderLeft: "3px solid var(--nebula-purple)", wordBreak: "break-word" }}>
+                    <div style={{ fontWeight: 600, marginBottom: "clamp(8px, 2vw, 10px)", color: "var(--nebula-purple)", fontSize: "clamp(13px, 3vw, 14px)" }}>{T("answerLabel")}</div>
                     {cardQA[it.id].a}
                         </div>
                       )}
 
                 {/* Premium Resource Links */}
-                <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid rgba(167, 139, 250, 0.1)", display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <a href={it.url} target="_blank" rel="noreferrer" className="badge">
+                <div style={{ marginTop: "clamp(14px, 3.5vw, 20px)", paddingTop: "clamp(14px, 3.5vw, 20px)", borderTop: "1px solid rgba(167, 139, 250, 0.1)", display: "flex", gap: "clamp(8px, 2vw, 10px)", flexWrap: "wrap" }}>
+                  <a href={it.url} target="_blank" rel="noreferrer" className="badge" style={{ fontSize: "clamp(11px, 2.5vw, 12px)", padding: "clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px)" }}>
                     {T("pmcSource")}
                   </a>
                   <button onClick={() => navigator.clipboard.writeText(it.url)} className="badge" style={{ cursor: "pointer", background: "transparent" }}>
