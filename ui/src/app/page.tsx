@@ -106,7 +106,7 @@ export default function Home() {
       // Hero
       title: "NASA Uzay Biyobilim Keşif Platformu",
       subtitle: "Yapay zeka destekli semantik arama • 608 yayın • Gerçek zamanlı özetler",
-      search: "🚀 Ara",
+      search: "Ara",
       queryPlaceholder: "Uzay biyolojisi araştırmanızı yazın...",
       
       // Search suggestions
@@ -133,7 +133,7 @@ export default function Home() {
       source: "Kaynak",
       askQuestion: "Soru Sor",
       asking: "Yanıtlanıyor...",
-      askPlaceholder: "💬 Bu makale hakkında soru sorun... (Enter ile sor)",
+      askPlaceholder: "💬 Bu makale hakkında soru sorun...",
       askButton: "🤔 Sor",
       answerLabel: "💡 Yanıt:",
       
@@ -162,7 +162,7 @@ export default function Home() {
       // Hero
       title: "NASA Space Bioscience Explorer",
       subtitle: "AI-powered semantic search • 608 publications • Real-time summaries",
-      search: "🚀 Search",
+      search: "Search",
       queryPlaceholder: "Search space biology research...",
       
       // Search suggestions
@@ -189,7 +189,7 @@ export default function Home() {
       source: "Source",
       askQuestion: "Ask",
       asking: "Answering...",
-      askPlaceholder: "💬 Ask about this article... (Press Enter)",
+      askPlaceholder: "💬 Ask about this article...",
       askButton: "🤔 Ask",
       answerLabel: "💡 Answer:",
       
@@ -568,8 +568,13 @@ export default function Home() {
                     </div>
                   )}
                 </div>
-                <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: "clamp(100px, 25vw, 140px)", fontSize: "clamp(14px, 3.5vw, 16px)", flexShrink: 0, padding: "clamp(12px, 3vw, 16px) clamp(16px, 4vw, 32px)" }} aria-label="Search publications">
-                  {loading ? "⏳" : T("search")}
+                <button onClick={() => search()} disabled={loading} className="btn-primary" style={{ minWidth: "clamp(100px, 25vw, 140px)", fontSize: "clamp(14px, 3.5vw, 16px)", flexShrink: 0, padding: "clamp(12px, 3vw, 16px) clamp(16px, 4vw, 32px)", display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }} aria-label="Search publications">
+                  {loading ? "⏳" : (
+                    <>
+                      <Image src="/logo.png" alt="NextGenLAB" width={20} height={20} style={{ objectFit: "contain" }} />
+                      <span>{T("search")}</span>
+                    </>
+                  )}
             </button>
           </div>
               
