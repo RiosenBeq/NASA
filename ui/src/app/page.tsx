@@ -273,19 +273,49 @@ export default function Home() {
       return;
     }
     setCardSummaries((p) => ({ ...p, [id]: { text: "", loading: true } }));
+    
+    // Create abort controller for timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60000); // 60 second timeout
+    
     try {
       const res = await fetch(`${api}/summarize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids: [id], language: lang }),
+        signal: controller.signal,
       });
+      clearTimeout(timeout);
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        throw new Error(errorData.error || `HTTP ${res.status}`);
+      }
+      
       const data = await res.json();
       const citationsLabel = lang === "tr" ? "\n\n📚 Kaynaklar:\n" : "\n\n📚 References:\n";
-      const text = res.ok && data.summary ? data.summary + (data.citations?.length ? citationsLabel + data.citations.join("\n") : "") : (data?.summary || "");
+      const text = data.summary ? data.summary + (data.citations?.length ? citationsLabel + data.citations.join("\n") : "") : (lang === "tr" ? "Özet oluşturulamadı." : "Could not generate summary.");
       setCardSummaries((p) => ({ ...p, [id]: { text, loading: false } }));
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      const errorMsg = lang === "tr" ? `Özetleme başarısız: ${msg}` : `Summarization failed: ${msg}`;
+      clearTimeout(timeout);
+      let errorMsg = "";
+      
+      if (e instanceof Error) {
+        if (e.name === 'AbortError') {
+          errorMsg = lang === "tr" 
+            ? "⏱️ İstek zaman aşımına uğradı. Lütfen tekrar deneyin." 
+            : "⏱️ Request timed out. Please try again.";
+        } else {
+          errorMsg = lang === "tr" 
+            ? `❌ Özetleme başarısız: ${e.message}\n\nLütfen tekrar deneyin veya farklı bir makale seçin.` 
+            : `❌ Summarization failed: ${e.message}\n\nPlease try again or select a different article.`;
+        }
+      } else {
+        errorMsg = lang === "tr" 
+          ? "❌ Bilinmeyen bir hata oluştu. Lütfen tekrar deneyin." 
+          : "❌ An unknown error occurred. Please try again.";
+      }
+      
       setCardSummaries((p) => ({ ...p, [id]: { text: errorMsg, loading: false } }));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
