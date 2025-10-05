@@ -147,18 +147,20 @@ USER QUESTION:
 ${question}
 
 CRITICAL INSTRUCTIONS:
-- Answer ONLY based on the article content provided above
-- If you don't have enough information from the article, say "${language === 'en' ? 'This information is not found in the article content' : 'Bu makale içeriğinde bu bilgi bulunamadı'}"
-- DO NOT make up information or guess
-- Be factually accurate and cite specific findings from the article when possible
+- Answer based on the article content provided above (title, abstract, methods, results, conclusions)
+- Use any relevant information from the title, abstract, or sections to answer the question
+- If the article content contains ANY relevant information, provide an answer based on it
+- Even if the information is limited, provide what you can find from the abstract or sections
+- ONLY say "${language === 'en' ? 'This specific information is not found in the available article content' : 'Bu spesifik bilgi mevcut makale içeriğinde bulunamadı'}" if the question asks for something completely unrelated to the article topic
+- Be helpful and informative - make reasonable inferences from the available abstract and sections
 - If asked for "one sentence" (tek cümle/brief) or "brief" (kısa/özetle), give 1-2 sentences ONLY
 - If asked for methodology, details, or explanations, provide a thorough answer with specific details from the Methods/Results sections
 - IMPORTANT: Write your answer in ${language === 'en' ? 'ENGLISH' : 'TURKISH (professional scientific Turkish)'}
 - Quote specific data, measurements, or findings when available
-- If the abstract doesn't contain the answer, clearly state that
+- If full details aren't in the abstract, explain based on what's available and note that more details would be in the full paper
 - Language preference: ${language === 'en' ? 'Answer must be in English' : 'Cevap Türkçe olmalı'}
 
-Answer the question now in ${language === 'en' ? 'ENGLISH' : 'TURKISH'} based ONLY on the provided article content:`;
+Answer the question now in ${language === 'en' ? 'ENGLISH' : 'TURKISH'} based on the provided article content. Be helpful and use all available information:`;
 
     // Detect if user wants short/brief answer
     const lowerQ = question.toLowerCase();
@@ -176,7 +178,7 @@ Answer the question now in ${language === 'en' ? 'ENGLISH' : 'TURKISH'} based ON
         messages: [
           {
             role: "system",
-            content: "You are a precise NASA bioscience research analyst with expertise in space biology. You provide accurate, evidence-based answers strictly from the article content provided. Never make up information."
+            content: `You are a helpful NASA bioscience research analyst with expertise in space biology. You provide accurate, evidence-based answers from the article content provided (title, abstract, methods, results, conclusions). You are helpful and informative, making reasonable inferences from available information. Only refuse to answer if the question is completely unrelated to the article topic. Answer in ${language === 'en' ? 'English' : 'Turkish'}.`
           },
           {
             role: "user",
@@ -204,7 +206,7 @@ Answer the question now in ${language === 'en' ? 'ENGLISH' : 'TURKISH'} based ON
           body: JSON.stringify({
             model: "gpt-4o-mini",
             messages: [
-              { role: "system", content: "You are a precise NASA bioscience research analyst with expertise in space biology. You provide accurate, evidence-based answers strictly from the article content provided." },
+              { role: "system", content: `You are a helpful NASA bioscience research analyst with expertise in space biology. You provide accurate, evidence-based answers from the article content provided. You are helpful and make reasonable inferences from available information. Answer in ${language === 'en' ? 'English' : 'Turkish'}.` },
               { role: "user", content: prompt },
             ],
             temperature: 0.2,
