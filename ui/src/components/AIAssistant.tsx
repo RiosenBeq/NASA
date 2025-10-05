@@ -7,19 +7,40 @@ interface Message {
   timestamp: Date;
 }
 
+const INITIAL_MESSAGE: Message = {
+  role: "assistant",
+  content: "👋 **Merhaba!** NextGenLAB Space Bioscience Explorer'a hoş geldiniz!\n\nSize nasıl yardımcı olabilirim? Platform özellikleri, arama, AI özetleme veya bilgi grafiği hakkında sorularınızı sorabilirsiniz! 🚀",
+  timestamp: new Date(),
+};
+
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "👋 Merhaba! NextGenLAB Space Bioscience Explorer'a hoş geldiniz! Size nasıl yardımcı olabilirim?",
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("ai-assistant-messages");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          return parsed.map((m: Message) => ({ ...m, timestamp: new Date(m.timestamp) }));
+        } catch {
+          return [INITIAL_MESSAGE];
+        }
+      }
+    }
+    return [INITIAL_MESSAGE];
+  });
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+  // Save messages to localStorage
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ai-assistant-messages", JSON.stringify(messages));
+    }
+  }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -35,24 +56,60 @@ export default function AIAssistant() {
     }
   }, [isOpen]);
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  // Parse markdown-like formatting
+  const formatMessage = (text: string) => {
+    // Bold
+    let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Line breaks
+    formatted = formatted.replace(/\n/g, '<br/>');
+    // Lists
+    formatted = formatted.replace(/^- (.+)$/gm, '• $1');
+    return formatted;
+  };
+
+  const copyToClipboard = (text: string, index: number) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
+    });
+  };
+
+  const clearChat = () => {
+    setMessages([INITIAL_MESSAGE]);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("ai-assistant-messages");
+    }
+  };
+
+  const sendMessage = async (quickQuestion?: string) => {
+    const messageToSend = quickQuestion || input;
+    if (!messageToSend.trim() || isLoading) return;
 
     const userMessage: Message = {
       role: "user",
-      content: input,
+      content: messageToSend,
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
 
     try {
+      // Send conversation history for context
+      const conversationHistory = updatedMessages.slice(-10).map(m => ({
+        role: m.role,
+        content: m.content
+      }));
+
       const response = await fetch("/api/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ 
+          message: messageToSend,
+          history: conversationHistory
+        }),
       });
 
       const data = await response.json();
@@ -89,6 +146,10 @@ export default function AIAssistant() {
     "🤖 AI özetleme nasıl çalışır?",
     "🕸️ Bilgi grafiği nedir?",
     "📊 Hangi veriler var?",
+    "🚀 Platform özellikleri neler?",
+    "💡 Soru-cevap özelliği nasıl kullanılır?",
+    "📈 Analytics sayfası ne işe yarar?",
+    "🌌 NASA verileri nereden geliyor?",
   ];
 
   return (
@@ -182,35 +243,66 @@ export default function AIAssistant() {
               <div>
                 <div style={{ fontWeight: 700, fontSize: 16, color: "#fff" }}>AI Asistan</div>
                 <div style={{ fontSize: 12, color: "rgba(255, 255, 255, 0.6)" }}>
-                  NextGenLAB Rehberi
+                  {messages.length - 1} mesaj
                 </div>
               </div>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              style={{
-                width: 32,
-                height: 32,
-                borderRadius: "50%",
-                background: "rgba(255, 255, 255, 0.1)",
-                border: "1px solid rgba(255, 255, 255, 0.2)",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 18,
-                color: "#fff",
-                transition: "all 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
-              }}
-            >
-              ✕
-            </button>
+            <div style={{ display: "flex", gap: 8 }}>
+              {messages.length > 1 && (
+                <button
+                  onClick={clearChat}
+                  title="Konuşmayı Temizle"
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: "50%",
+                    background: "rgba(239, 68, 68, 0.1)",
+                    border: "1px solid rgba(239, 68, 68, 0.3)",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: 16,
+                    color: "#ef4444",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "rgba(239, 68, 68, 0.2)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                  }}
+                >
+                  🗑️
+                </button>
+              )}
+              <button
+                onClick={() => setIsOpen(false)}
+                title="Kapat"
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  background: "rgba(255, 255, 255, 0.1)",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 18,
+                  color: "#fff",
+                  transition: "all 0.2s",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
+                }}
+              >
+                ✕
+              </button>
+            </div>
           </div>
 
           {/* Messages */}
@@ -232,6 +324,7 @@ export default function AIAssistant() {
                   flexDirection: msg.role === "user" ? "row-reverse" : "row",
                   gap: 10,
                   animation: "fadeIn 0.3s ease-out",
+                  position: "relative",
                 }}
               >
                 <div
@@ -252,23 +345,54 @@ export default function AIAssistant() {
                 >
                   {msg.role === "user" ? "👤" : "🤖"}
                 </div>
-                <div
-                  style={{
-                    maxWidth: "75%",
-                    padding: "12px 16px",
-                    borderRadius: 16,
-                    background:
-                      msg.role === "user"
-                        ? "linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(59, 130, 246, 0.2))"
-                        : "rgba(167, 139, 250, 0.1)",
-                    border: "1px solid rgba(167, 139, 250, 0.3)",
-                    color: "#fff",
-                    fontSize: 14,
-                    lineHeight: 1.5,
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {msg.content}
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: "75%", flex: 1 }}>
+                  <div
+                    style={{
+                      padding: "12px 16px",
+                      borderRadius: 16,
+                      background:
+                        msg.role === "user"
+                          ? "linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(59, 130, 246, 0.2))"
+                          : "rgba(167, 139, 250, 0.1)",
+                      border: "1px solid rgba(167, 139, 250, 0.3)",
+                      color: "#fff",
+                      fontSize: 14,
+                      lineHeight: 1.6,
+                      wordBreak: "break-word",
+                    }}
+                    dangerouslySetInnerHTML={{ __html: formatMessage(msg.content) }}
+                  />
+                  <button
+                    onClick={() => copyToClipboard(msg.content, idx)}
+                    style={{
+                      alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
+                      padding: "4px 10px",
+                      borderRadius: 8,
+                      background: copiedIndex === idx ? "rgba(34, 197, 94, 0.2)" : "rgba(167, 139, 250, 0.1)",
+                      border: "1px solid " + (copiedIndex === idx ? "rgba(34, 197, 94, 0.3)" : "rgba(167, 139, 250, 0.2)"),
+                      color: copiedIndex === idx ? "#22c55e" : "rgba(255, 255, 255, 0.5)",
+                      fontSize: 11,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                    onMouseEnter={(e) => {
+                      if (copiedIndex !== idx) {
+                        e.currentTarget.style.background = "rgba(167, 139, 250, 0.2)";
+                        e.currentTarget.style.color = "rgba(255, 255, 255, 0.8)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (copiedIndex !== idx) {
+                        e.currentTarget.style.background = "rgba(167, 139, 250, 0.1)";
+                        e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
+                      }
+                    }}
+                  >
+                    {copiedIndex === idx ? "✓ Kopyalandı" : "📋 Kopyala"}
+                  </button>
                 </div>
               </div>
             ))}
@@ -308,29 +432,32 @@ export default function AIAssistant() {
           </div>
 
           {/* Quick Questions */}
-          {messages.length === 1 && (
+          {messages.length <= 2 && !isLoading && (
             <div style={{ padding: "0 20px 16px", display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {quickQuestions.map((q, idx) => (
+              {quickQuestions.slice(0, messages.length === 1 ? 8 : 4).map((q, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setInput(q)}
+                  onClick={() => sendMessage(q)}
                   style={{
                     padding: "8px 14px",
                     borderRadius: 12,
                     background: "rgba(167, 139, 250, 0.1)",
                     border: "1px solid rgba(167, 139, 250, 0.3)",
                     color: "#a78bfa",
-                    fontSize: 12,
+                    fontSize: 11,
                     cursor: "pointer",
                     transition: "all 0.2s",
+                    whiteSpace: "nowrap",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = "rgba(167, 139, 250, 0.2)";
                     e.currentTarget.style.borderColor = "rgba(167, 139, 250, 0.5)";
+                    e.currentTarget.style.transform = "translateY(-1px)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "rgba(167, 139, 250, 0.1)";
                     e.currentTarget.style.borderColor = "rgba(167, 139, 250, 0.3)";
+                    e.currentTarget.style.transform = "translateY(0)";
                   }}
                 >
                   {q}
@@ -377,7 +504,7 @@ export default function AIAssistant() {
                 }}
               />
               <button
-                onClick={sendMessage}
+                onClick={() => sendMessage()}
                 disabled={!input.trim() || isLoading}
                 style={{
                   padding: "12px 20px",

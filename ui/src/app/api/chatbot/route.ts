@@ -79,7 +79,7 @@ Her zaman dostça, profesyonel ve bilgilendirici ol!`;
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { message } = body;
+    const { message, history } = body;
 
     if (!message || typeof message !== "string") {
       return NextResponse.json(
@@ -100,24 +100,42 @@ export async function POST(req: NextRequest) {
     const openai = new OpenAI({
       apiKey: apiKey,
       maxRetries: 2,
-      timeout: 15000,
+      timeout: 20000,
     });
 
-    // Call OpenAI API
+    // Build messages array with conversation history
+    const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+      {
+        role: "system",
+        content: SYSTEM_PROMPT,
+      },
+    ];
+
+    // Add conversation history (last 10 messages max)
+    if (history && Array.isArray(history)) {
+      const recentHistory = history.slice(-10);
+      recentHistory.forEach((msg: { role: string; content: string }) => {
+        if (msg.role === "user" || msg.role === "assistant") {
+          messages.push({
+            role: msg.role as "user" | "assistant",
+            content: msg.content,
+          });
+        }
+      });
+    } else {
+      // If no history, just add current message
+      messages.push({
+        role: "user",
+        content: message,
+      });
+    }
+
+    // Call OpenAI API with conversation context
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [
-        {
-          role: "system",
-          content: SYSTEM_PROMPT,
-        },
-        {
-          role: "user",
-          content: message,
-        },
-      ],
+      messages: messages,
       temperature: 0.7,
-      max_tokens: 500,
+      max_tokens: 600,
     });
 
     const response = completion.choices[0]?.message?.content || "Üzgünüm, yanıt oluşturamadım.";
@@ -142,6 +160,12 @@ export async function POST(req: NextRequest) {
     if (errorMessage.includes("timeout")) {
       return NextResponse.json({
         response: "⏱️ Yanıt zaman aşımına uğradı. Lütfen tekrar deneyin.",
+      });
+    }
+
+    if (errorMessage.includes("API key")) {
+      return NextResponse.json({
+        response: "🔑 API anahtarı geçersiz. Lütfen yöneticiyle iletişime geçin.",
       });
     }
     
