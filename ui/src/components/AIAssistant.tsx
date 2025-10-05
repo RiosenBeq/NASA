@@ -144,7 +144,6 @@ export default function AIAssistant() {
   const quickQuestions = [
     "🔍 How can I search publications?",
     "🤖 How do AI summaries work?",
-    "🕸️ What is the knowledge graph?",
     "📊 What data is available?",
     "🚀 What are the platform features?",
     "💡 How to use the Q&A feature?",
@@ -159,7 +158,7 @@ export default function AIAssistant() {
         <button
           onClick={() => setIsOpen(true)}
           className="ai-assistant-button"
-          aria-label="AI Asistan"
+          aria-label="AI Assistant"
           style={{
             position: "fixed",
             bottom: 24,
@@ -241,9 +240,9 @@ export default function AIAssistant() {
                 🤖
               </div>
               <div>
-                <div style={{ fontWeight: 700, fontSize: 16, color: "#fff" }}>AI Asistan</div>
+                <div style={{ fontWeight: 700, fontSize: 16, color: "#fff" }}>AI Assistant</div>
                 <div style={{ fontSize: 12, color: "rgba(255, 255, 255, 0.6)" }}>
-                  {messages.length - 1} mesaj
+                  {messages.length - 1} {messages.length - 1 === 1 ? 'message' : 'messages'}
                 </div>
               </div>
             </div>
@@ -251,7 +250,7 @@ export default function AIAssistant() {
               {messages.length > 1 && (
                 <button
                   onClick={clearChat}
-                  title="Konuşmayı Temizle"
+                  title="Clear Chat"
                   style={{
                     width: 32,
                     height: 32,
@@ -278,7 +277,7 @@ export default function AIAssistant() {
               )}
               <button
                 onClick={() => setIsOpen(false)}
-                title="Kapat"
+                title="Close"
                 style={{
                   width: 32,
                   height: 32,
@@ -391,7 +390,7 @@ export default function AIAssistant() {
                       }
                     }}
                   >
-                    {copiedIndex === idx ? "✓ Kopyalandı" : "📋 Kopyala"}
+                    {copiedIndex === idx ? "✓ Copied" : "📋 Copy"}
                   </button>
                 </div>
               </div>
@@ -481,7 +480,7 @@ export default function AIAssistant() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Soru sorun..."
+                placeholder="Ask a question..."
                 disabled={isLoading}
                 style={{
                   flex: 1,
